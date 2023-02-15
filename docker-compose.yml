@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: oncampus
+    volumes:
+      - ./db/database.sql:/docker-entrypoint-initdb.d/database.sql
+    ports:
+     - '5433:5432'
+  web:
+    environment:
+      - PORT=9241
+    build:
+      dockerfile: ./web/Dockerfile
+      context: ./
+    ports:
+      - "9241:9241"
+  backend:
+    environment:
+      - PORT=5056
+    build:
+      dockerfile: ./backend/Dockerfile
+      context: ./
+    ports:
+      - "5056:5056"
