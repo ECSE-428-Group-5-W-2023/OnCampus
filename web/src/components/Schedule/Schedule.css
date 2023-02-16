@@ -1,0 +1,97 @@
+.li{
+    list-style-type: none;
+}
+
+.calendar {
+    padding: 10px;
+
+    display: grid;
+    grid-template-columns: 50px 700px;
+    grid-template-rows: 70px 650px;
+    grid-template-areas: ". header ." 
+                         "time-marks events .";
+}
+
+.header {
+    grid-area: header;
+    display: grid;
+    margin-bottom: 10px;
+}
+
+.weekdays, .dates{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.weekdays {
+    align-content: end;
+    font-size: 16px;
+}
+
+.dates {
+    font-size: 13px;
+    color: gray;
+}
+
+.time {
+    grid-area: time-marks;
+
+    text-align: right;
+    position: relative;
+    right: 10px;
+    bottom: 10px;
+    font-size: 14px;
+    color: #fff;
+}
+
+.time li {
+    height: 24px;
+}
+
+.event-container {
+    grid-area: events;
+
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(54, 1fr);
+    position: relative;
+}
+
+
+
+/* border lines deco */
+.time li::after{
+    content: "";
+    position: absolute;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 700px;
+    height: 1px;
+    background-color: lightgray;
+}
+/*round corners*/
+.header {
+    background:#ccc;
+    border-radius: 15px 15px 0px 0px;
+}
+
+/* event */
+.event {
+    position: absolute;
+    width: 90px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+    z-index: 3;
+    text-align: center;
+}
+
+#event1 {
+    /* height = (8pm-6pm)*48 */
+    height: 96px;
+    grid-column: 2; /*monday*/
+    grid-row: 45; /* (6pm-7am)*4 + 1 */
+
+    background: orange;
+}
