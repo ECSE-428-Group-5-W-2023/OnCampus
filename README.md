@@ -18,13 +18,15 @@ Docker allows us to quickly spin up a postgres db that matches whatever we have 
 
 One this to note is that docker doesn't remove the db's data automatically so when you want to "update" it to match any changes in database.sql you will have to run the following
 
+
+
 `docker-compose down --rmi all && docker-compose up db`
 
-if you simply want to bring the db up:
+if you simply want to bring the db up (choose this option if your computer has less than 8GB of RAM):
 
 `docker-compose up db`
 
-For running the backend and the frontend you have two options. The easiest is to simply use docker-compose and run 
+For running the backend and the frontend you have two options. The easiest is to simply use docker-compose and run (need decent computer)
 
 `docker-compose up`
 
@@ -32,7 +34,7 @@ and if you need to rebuild (because you updated the dependencies for example)
 
 `docker-compose up --build`
 
-You can also run them locally (better speed and more control)
+You can also run them locally (better speed and more control, use this if <8GB of RAM)
 
 in ./backend
 
