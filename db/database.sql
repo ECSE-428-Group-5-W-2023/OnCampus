@@ -8,5 +8,7 @@ CREATE TABLE "event" (
     "title" VARCHAR(255),
     "description" VARCHAR(255),
     "is_deleted" BOOLEAN,
+    "start_date" DATE,
+    "end_date" DATE,
     CONSTRAINT "todo_fk1" FOREIGN KEY ("event_list_id") REFERENCES "event_list"("id")
 );
