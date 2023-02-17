@@ -26,10 +26,20 @@ export default class Api {
     return this.client;
   };
 
-  //Add API calls here
-   //TODOS
-   test = async (token) => {
+  test = async (token) => {
     return (await (await this.init(token)).get("/api/example")).data;
   };
 
+  createEvent = async (token, title, description, start_date, end_date) => {
+    return (await this.init(token)).post("/api/event", {
+      title,
+      description,
+      start_date,
+      end_date,
+    });
+  };
+
+  getEvents = async (token) => {
+    return (await (await this.init(token)).get("/api/event")).data;
+  }
 }

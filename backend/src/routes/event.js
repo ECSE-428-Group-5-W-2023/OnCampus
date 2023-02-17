@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
-  const event = req.body
+  const event = req.body;
   // Get event list for user
   var eventlist = await pool.query(
     `SELECT * FROM event_list 
@@ -46,10 +46,16 @@ router.post("/", async (req, res) => {
       `;
 
   if (eventlist.rows.length !== 0) {
-    const values = [eventlist.rows[0].id, event.title, event.description, event.start_date, event.end_date ];
+    const values = [
+      eventlist.rows[0].id,
+      event.title,
+      event.description,
+      event.start_date,
+      event.end_date,
+    ];
     await pool.query(query, values);
   }
-  
+
   res.json({ message: "Successfully posted" });
 });
 
