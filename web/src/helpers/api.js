@@ -27,4 +27,9 @@ export default class Api {
   };
 
   //Add API calls here
+   //TODOS
+   test = async (token) => {
+    return (await (await this.init(token)).get("/api/example")).data;
+  };
+
 }
