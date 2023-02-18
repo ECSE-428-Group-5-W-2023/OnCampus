@@ -59,4 +59,26 @@ router.post("/", async (req, res) => {
   res.json({ message: "Successfully posted" });
 });
 
+router.put("/", async (req, res) => {
+  const event = req.body;
+
+  // Update event
+  const query = `
+        UPDATE event
+        SET title = $1, description = $2, start_date = $3, end_date = $4
+        WHERE id = $5
+      `;
+
+  const values = [
+    event.title,
+    event.description,
+    event.start_date,
+    event.end_date,
+    event.id,
+  ];
+  await pool.query(query, values);
+
+  res.json({ message: "Successfully updated" });
+});
+  
 module.exports = router;
