@@ -27,4 +27,5 @@ const exampleRouter = require("./routes/example");
 //map routes
 app.use("/api/example", exampleRouter);
 app.use("/api/example_login_protected", checkJwt, exampleRouter);
+app.use("/api/event", checkJwt, require("./routes/event")); // route for events, user needs to have an account to view and get events, therefore login required
 
