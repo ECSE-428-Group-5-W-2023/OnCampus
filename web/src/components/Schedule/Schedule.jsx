@@ -6,12 +6,17 @@ import { useAuth0 } from "@auth0/auth0-react";
 export default function Schedule() {
   
   let emptyDaysOfWeek = ["","","","","","",""];
+  
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [is_recurring, setIsRecurring] = useState(false); 
   const [is_private, setIsPrivate] = useState(false); 
   const [days_of_week, setDaysOfWeek] = useState(emptyDaysOfWeek); 
+  const [event_frequency, setEventFrequency] = useState("Once"); 
+  const [event_tags, setEventTags] = useState([]);
+  const [date, setDate] = useState("dateA"); 
+  const [end_period, setEndPeriod] = useState("endPeriod");
   const [events, setEvents] = useState([]);
 
   const api = new Api();
@@ -53,6 +58,10 @@ export default function Schedule() {
         is_recurring,
         is_private,
         days_of_week,
+        event_frequency,
+        event_tags,
+        date, 
+        end_period,
         new Date(Date.now()).toISOString(),
         new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
       )
@@ -120,6 +129,8 @@ export default function Schedule() {
                   {event.is_recurring}
                   <br />
                   {event.days_of_week}
+                  <br />
+                  {event.event_frequency}
                   <br />
                   {start_date}
                   <br />
