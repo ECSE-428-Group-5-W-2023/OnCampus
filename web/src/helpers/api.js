@@ -30,12 +30,13 @@ export default class Api {
     return (await (await this.init(token)).get("/api/example")).data;
   };
 
-  createEvent = async (token, title, description, is_recurring, is_private, start_date, end_date) => {
+  createEvent = async (token, title, description, is_recurring, is_private, days_of_week, start_date, end_date) => {
     return (await this.init(token)).post("/api/event", {
       title,
       description,
       is_recurring,
       is_private,
+      days_of_week,
       start_date,
       end_date,
     });
