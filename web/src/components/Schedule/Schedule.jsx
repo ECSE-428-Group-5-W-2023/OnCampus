@@ -8,6 +8,7 @@ export default function Schedule() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [is_recurring, setIsRecurring] = useState(false); 
+  const [is_private, setIsPrivate] = useState(false); 
   const [events, setEvents] = useState([]);
 
   const api = new Api();
@@ -32,6 +33,11 @@ export default function Schedule() {
     setIsRecurring(e.target.checked); 
   }
 
+  //Updating the is_recurring boolean when the checkbox is clicked
+  function handleVisibilityChange(e){
+    setIsPrivate(e.target.checked); 
+  }
+
   async function createEvent(event) {
     event.preventDefault(); //prevent page refresh
 
@@ -42,6 +48,7 @@ export default function Schedule() {
         title,
         description,
         is_recurring,
+        is_private,
         new Date(Date.now()).toISOString(),
         new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
       )
@@ -82,6 +89,11 @@ export default function Schedule() {
           <div className="flex flex-col mb-10 mr-4">
           <label className="text-white  text-sm font-bold mb-1">Recurring</label>
           <input type="checkbox" checked={is_recurring} name="eventType" onChange={handleRecurringChange} ></input>
+          </div>
+
+          <div className="flex flex-col mb-10 mr-4">
+          <label className="text-white  text-sm font-bold mb-1">Private</label>
+          <input type="checkbox" checked={is_private} name="visibilityType" onChange={handleVisibilityChange} ></input>
           </div>
           
         </div>

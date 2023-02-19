@@ -40,8 +40,8 @@ router.post("/", async (req, res) => {
   }
 
   const query = `
-        INSERT INTO event (event_list_id,title, description, is_recurring, start_date, end_date)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO event (event_list_id,title, description, is_recurring, is_private, start_date, end_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id
       `;
 
@@ -51,6 +51,7 @@ router.post("/", async (req, res) => {
       event.title,
       event.description,
       event.is_recurring,
+      event.is_private,
       event.start_date,
       event.end_date,
     ];
