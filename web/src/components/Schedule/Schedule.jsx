@@ -7,6 +7,8 @@ export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [title_edit, setTitleEdit] = useState("");
+  const [description_edit, setDescriptionEdit] = useState("");
   const [events, setEvents] = useState([]);
 
   const api = new Api();
@@ -45,6 +47,25 @@ export default function Schedule() {
 
     //refresh events
     getAllEvents();
+  }
+
+  async function editEvent(event, id) {
+    event.preventDefault(); //prevent page refresh
+    api.editEvent(
+      await getAccessTokenSilently(),
+      title_edit,
+      description_edit,
+      new Date(Date.now()).toISOString(),
+      new Date(Date.now() + 1000000 * 60 * 60).toISOString(), // 1 hour from now
+      id,
+    )
+    .then((res) => {
+      console.log(res);
+      setEvents(res.message);
+    });
+    //refresh events
+    getAllEvents();
+
   }
 
   return (
@@ -93,6 +114,36 @@ export default function Schedule() {
                   {start_date}
                   <br />
                   {end_date}
+                  <br />
+
+                  <form onSubmit={editEvent}>
+                    <div className="flex">
+                      <div className="flex flex-col mb-2 mr-2">
+                        <label className="text-white  text-sm font-bold mb-1">Title</label>
+                        <input
+                          type="text"
+                          className="border rounded py-1 px-2 leading-tight focus:outline-none focus:border-stone-500" 
+                          id="title_edit"
+                          value={title_edit}
+                          onChange={(event) => setTitleEdit(event.target.value)}
+                        />
+                      </div>
+                      <div className="flex flex-col mb-4">
+                        <label className="text-white  text-sm font-bold mb-1">
+                          Description
+                        </label>
+                        <input
+                          type="text"
+                          className="border rounded py-1 px-2 leading-tight focus:outline-none focus:border-stone-500"
+                          id="description_edit"
+                          value={description_edit}
+                          onChange={(event) => setDescriptionEdit(event.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <Button type="edit">Edit Event</Button>
+                  </form>
                 </div>
               }
             </li>
