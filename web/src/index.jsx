@@ -7,6 +7,7 @@ import Home from "./routes/Home";
 import ErrorPage from "./routes/Error";
 import { Auth0Provider } from "@auth0/auth0-react";
 import Schedule from "./components/Schedule/Schedule";
+import AccountInfo from "./components/Auth/AccountInfo";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/schedule",
         element: <Schedule />,
+      },
+      {
+        path: "/account",
+        element: <AccountInfo />,
       }
     ],
   },

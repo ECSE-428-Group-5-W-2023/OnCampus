@@ -34,15 +34,15 @@ export default function Navbar() {
       <Link to={"schedule"}>
         {NavIcon(<FontAwesomeIcon icon={faCalendar} />, "Login required path", !isAuthenticated)}
       </Link>
-      
       <div className="sm:mt-auto">
+      <Link to={"account"}>
         {!isLoading && isAuthenticated && (
           <div className="hidden sm:block sm:text-white sm:outline outline-gray-800 outline- font-medium rounded-lg text-lg sm:px-3 py-1.5 text-center sm:mx-3 sm:my-2">
             <UserProfile />
           </div>
         )}
-
         <LoginButton />
+      </Link>
       </div>
     </div>
   );
