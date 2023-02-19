@@ -7,6 +7,7 @@ export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [is_recurring, setIsRecurring] = useState(false); 
   const [events, setEvents] = useState([]);
 
   const api = new Api();
@@ -26,6 +27,19 @@ export default function Schedule() {
     });
   }
 
+  async function filterRadioButton() {
+    var radioOutput = document.getElementsByName('eventType');
+    
+    if (radioOutput[0].checked && radioOutput[0].value === "true"){
+      console.log("RECURRING EVENT");
+      setIsRecurring(true); 
+    }
+    else {
+      console.log("UNIQUE EVENT");
+      setIsRecurring(false); 
+    }
+  }
+
   async function createEvent(event) {
     event.preventDefault(); //prevent page refresh
 
@@ -35,6 +49,7 @@ export default function Schedule() {
         await getAccessTokenSilently(),
         title,
         description,
+        filterRadioButton(),
         new Date(Date.now()).toISOString(),
         new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
       )
@@ -62,9 +77,7 @@ export default function Schedule() {
             />
           </div>
           <div className="flex flex-col mb-4">
-            <label className="text-white  text-sm font-bold mb-1">
-              Description
-            </label>
+            <label className="text-white  text-sm font-bold mb-1">Description</label>
             <input
               type="text"
               className="border rounded py-1 px-2 leading-tight focus:outline-none focus:border-stone-500"
@@ -72,6 +85,16 @@ export default function Schedule() {
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             />
+          </div>
+
+          <div className="flex flex-col mb-6 mr-4">
+          <label className="text-white  text-sm font-bold mb-1">Recurring</label>
+          <input type="radio" id="isRecurring" name="eventType" value ="true" ></input>
+          </div>
+
+          <div className="flex flex-col mb-8 mr-4">
+          <label className="text-white  text-sm font-bold mb-1">Unique</label>
+          <input type="radio" id="isUnique" name="eventType" value = "false" ></input>
           </div>
         </div>
 
@@ -89,6 +112,8 @@ export default function Schedule() {
                   {event.title}
                   <br />
                   {event.description}
+                  <br />
+                  {event.is_recurring}
                   <br />
                   {start_date}
                   <br />
