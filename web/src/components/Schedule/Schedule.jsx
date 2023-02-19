@@ -29,7 +29,7 @@ export default function Schedule() {
 
   async function filterRadioButton() {
     var radioOutput = document.getElementsByName('eventType');
-    
+
     if (radioOutput[0].checked && radioOutput[0].value === "true"){
       console.log("RECURRING EVENT");
       setIsRecurring(true); 
@@ -49,7 +49,8 @@ export default function Schedule() {
         await getAccessTokenSilently(),
         title,
         description,
-        filterRadioButton(),
+        await filterRadioButton(),
+        is_recurring,
         new Date(Date.now()).toISOString(),
         new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
       )
