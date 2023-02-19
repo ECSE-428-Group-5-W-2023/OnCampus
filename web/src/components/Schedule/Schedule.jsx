@@ -27,21 +27,26 @@ export default function Schedule() {
     });
   }
 
-  async function filterRadioButton() {
+  function filterRadioButton() {
     var radioOutput = document.getElementsByName('eventType');
 
     if (radioOutput[0].checked && radioOutput[0].value === "true"){
       console.log("RECURRING EVENT");
-      setIsRecurring(true); 
+      setIsRecurring(is_recurring => true); 
+      console.log(is_recurring); 
     }
     else {
       console.log("UNIQUE EVENT");
-      setIsRecurring(false); 
+      setIsRecurring(is_recurring => false); 
+      console.log(is_recurring); 
+
     }
   }
 
   async function createEvent(event) {
+    console.log("creating event");
     event.preventDefault(); //prevent page refresh
+    filterRadioButton();
 
     //create even with specified title and description, set start time to now and end time to 1 hour from now (can be changed once we have interface to pick those)
     await api
@@ -49,7 +54,6 @@ export default function Schedule() {
         await getAccessTokenSilently(),
         title,
         description,
-        await filterRadioButton(),
         is_recurring,
         new Date(Date.now()).toISOString(),
         new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
@@ -97,6 +101,12 @@ export default function Schedule() {
           <label className="text-white  text-sm font-bold mb-1">Unique</label>
           <input type="radio" id="isUnique" name="eventType" value = "false" ></input>
           </div>
+
+          <div className="flex flex-col mb-10 mr-4">
+          <label className="text-white  text-sm font-bold mb-1">Recurring</label>
+          <input type="checkbox" id="isRecurring" name="eventType" value = "false" ></input>
+          </div>
+          
         </div>
 
         <Button type="submit">Create Event</Button>
