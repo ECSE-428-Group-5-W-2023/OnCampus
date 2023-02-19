@@ -27,26 +27,13 @@ export default function Schedule() {
     });
   }
 
-  function filterRadioButton() {
-    var radioOutput = document.getElementsByName('eventType');
-
-    if (radioOutput[0].checked && radioOutput[0].value === "true"){
-      console.log("RECURRING EVENT");
-      setIsRecurring(is_recurring => true); 
-      console.log(is_recurring); 
-    }
-    else {
-      console.log("UNIQUE EVENT");
-      setIsRecurring(is_recurring => false); 
-      console.log(is_recurring); 
-
-    }
+  //Updating the is_recurring boolean when the checkbox is clicked
+  function handleRecurringChange(e){
+    setIsRecurring(e.target.checked); 
   }
 
   async function createEvent(event) {
-    console.log("creating event");
     event.preventDefault(); //prevent page refresh
-    filterRadioButton();
 
     //create even with specified title and description, set start time to now and end time to 1 hour from now (can be changed once we have interface to pick those)
     await api
@@ -92,19 +79,9 @@ export default function Schedule() {
             />
           </div>
 
-          <div className="flex flex-col mb-6 mr-4">
-          <label className="text-white  text-sm font-bold mb-1">Recurring</label>
-          <input type="radio" id="isRecurring" name="eventType" value ="true" ></input>
-          </div>
-
-          <div className="flex flex-col mb-8 mr-4">
-          <label className="text-white  text-sm font-bold mb-1">Unique</label>
-          <input type="radio" id="isUnique" name="eventType" value = "false" ></input>
-          </div>
-
           <div className="flex flex-col mb-10 mr-4">
           <label className="text-white  text-sm font-bold mb-1">Recurring</label>
-          <input type="checkbox" id="isRecurring" name="eventType" value = "false" ></input>
+          <input type="checkbox" checked={is_recurring} name="eventType" onChange={handleRecurringChange} ></input>
           </div>
           
         </div>
