@@ -38,8 +38,12 @@ export default class Api {
       end_date,
     });
   };
-
+  
   getEvents = async (token) => {
     return (await (await this.init(token)).get("/api/event")).data;
+  }
+
+  deleteEvent = async (token, id) => {
+    return (await this.init(token)).delete(`/api/event/${id}`);
   }
 }

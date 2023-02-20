@@ -47,6 +47,23 @@ export default function Schedule() {
     getAllEvents();
   }
 
+  async function deleteEvent(id) {
+
+    //delete event with specified id
+    await api
+      .deleteEvent(
+        await getAccessTokenSilently(),
+        id
+      )
+      .then((res) => {
+        console.log(res);
+        setEvents(res.message);
+      });
+
+    //refresh events
+    getAllEvents();
+  }
+
   return (
     <div>
       <form onSubmit={createEvent}>
@@ -93,6 +110,8 @@ export default function Schedule() {
                   {start_date}
                   <br />
                   {end_date}
+                  <br />
+                  <Button onClick={() => deleteEvent(event.id)}>Delete Event</Button>
                 </div>
               }
             </li>

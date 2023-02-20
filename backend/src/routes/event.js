@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
 
   var events = null;
   if (eventlist.rows.length !== 0) {
-    const query = `SELECT * FROM event where event_list_id = ${eventlist.rows[0].id} AND is_deleted IS NULL OR FALSE`;
+    const query = `SELECT * FROM event where event_list_id = ${eventlist.rows[0].id}`;
     events = await pool.query(query);
   }
 
@@ -79,6 +79,21 @@ router.put("/", async (req, res) => {
   await pool.query(query, values);
 
   res.json({ message: "Successfully updated" });
+});
+
+router.delete("/", async (req, res) => {
+  const event = req.body;
+
+  // Delete event
+  const query = `
+        DELETE FROM event
+        WHERE id = $1 
+      `;
+
+  const value = [event.id];
+  await pool.query(query, value);
+
+  res.json({ message: "Successfully deleted" });
 });
   
 module.exports = router;
