@@ -82,16 +82,13 @@ router.put("/", async (req, res) => {
 });
 
 router.delete("/", async (req, res) => {
-  const event = req.body;
 
   // Delete event
   const query = `
-        DELETE FROM event
-        WHERE id = $1 
+        DELETE FROM event WHERE id = ${req.query.id} 
       `;
 
-  const value = [event.id];
-  await pool.query(query, value);
+      await pool.query(query);
 
   res.json({ message: "Successfully deleted" });
 });

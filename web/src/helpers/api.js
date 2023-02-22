@@ -44,6 +44,6 @@ export default class Api {
   }
 
   deleteEvent = async (token, id) => {
-    return (await this.init(token)).delete(`/api/event/${id}`);
+    return (await this.init(token)).delete(`/api/event?id=${id}`);
   }
 }

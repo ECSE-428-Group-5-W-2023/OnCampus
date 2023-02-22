@@ -50,18 +50,9 @@ export default function Schedule() {
   async function deleteEvent(id) {
 
     //delete event with specified id
-    await api
-      .deleteEvent(
-        await getAccessTokenSilently(),
-        id
-      )
-      .then((res) => {
-        console.log(res);
-        setEvents(res.message);
-      });
-
-    //refresh events
-    getAllEvents();
+    api.deleteEvent(await getAccessTokenSilently(), id).then(() => {
+      getAllEvents();
+    });
   }
 
   return (
