@@ -102,7 +102,9 @@ export default function Schedule() {
                   <br />
                   {end_date}
                   <br />
-                  <Button onClick={() => deleteEvent(event.id)}>Delete Event</Button>
+                  <Button 
+                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`}
+                  onClick={() => deleteEvent(event.id)}>Delete Event</Button>
                 </div>
               }
             </li>
