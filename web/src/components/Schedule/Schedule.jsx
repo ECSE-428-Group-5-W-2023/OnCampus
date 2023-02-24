@@ -4,9 +4,17 @@ import Api from "../../helpers/api";
 import Button from "../Common/Button";
 import { useAuth0 } from "@auth0/auth0-react";
 export default function Schedule() {
+  
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [is_recurring, setIsRecurring] = useState(false); 
+  const [is_private, setIsPrivate] = useState(false); 
+  const [days_of_week, setDaysOfWeek] = useState([]); 
+  const [event_frequency, setEventFrequency] = useState("Once"); 
+  const [event_tags, setEventTags] = useState([]);
+  const [date, setDate] = useState("dateA"); 
+  const [end_period, setEndPeriod] = useState("endPeriod");
   const [events, setEvents] = useState([]);
 
   const api = new Api();
@@ -26,6 +34,16 @@ export default function Schedule() {
     });
   }
 
+  //Updating the is_recurring boolean when the checkbox is clicked
+  function handleRecurringChange(e){
+    setIsRecurring(e.target.checked); 
+  }
+
+  //Updating the is_recurring boolean when the checkbox is clicked
+  function handleVisibilityChange(e){
+    setIsPrivate(e.target.checked); 
+  }
+
   async function createEvent(event) {
     event.preventDefault(); //prevent page refresh
 
@@ -35,6 +53,13 @@ export default function Schedule() {
         await getAccessTokenSilently(),
         title,
         description,
+        is_recurring,
+        is_private,
+        days_of_week,
+        event_frequency,
+        event_tags,
+        date, 
+        end_period,
         new Date(Date.now()).toISOString(),
         new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
       )
@@ -62,9 +87,7 @@ export default function Schedule() {
             />
           </div>
           <div className="flex flex-col mb-4">
-            <label className="text-white  text-sm font-bold mb-1">
-              Description
-            </label>
+            <label className="text-white  text-sm font-bold mb-1">Description</label>
             <input
               type="text"
               className="border rounded py-1 px-2 leading-tight focus:outline-none focus:border-stone-500"
@@ -73,6 +96,17 @@ export default function Schedule() {
               onChange={(event) => setDescription(event.target.value)}
             />
           </div>
+
+          <div className="flex flex-col mb-10 mr-4">
+          <label className="text-white  text-sm font-bold mb-1">Recurring</label>
+          <input type="checkbox" checked={is_recurring} name="eventType" onChange={handleRecurringChange} ></input>
+          </div>
+
+          <div className="flex flex-col mb-10 mr-4">
+          <label className="text-white  text-sm font-bold mb-1">Private</label>
+          <input type="checkbox" checked={is_private} name="visibilityType" onChange={handleVisibilityChange} ></input>
+          </div>
+
         </div>
 
         <Button type="submit">Create Event</Button>
@@ -89,6 +123,12 @@ export default function Schedule() {
                   {event.title}
                   <br />
                   {event.description}
+                  <br />
+                  {event.is_recurring}
+                  <br />
+                  {event.days_of_week}
+                  <br />
+                  {event.event_frequency}
                   <br />
                   {start_date}
                   <br />
