@@ -4,31 +4,34 @@ import Api from "../../helpers/api";
 import Button from "../Common/Button";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import { ViewState, IntegratedEditing, EditingState } from '@devexpress/dx-react-scheduler';
+import * as React from "react";
+import Paper from "@mui/material/Paper";
 import {
-    Scheduler,
-    ConfirmationDialog,
-    Appointments,
-    Toolbar,
-    WeekView,
-    DateNavigator,
-    AppointmentTooltip,
-    AppointmentForm,
-} from '@devexpress/dx-react-scheduler-material-ui';
+  ViewState,
+  IntegratedEditing,
+  EditingState,
+} from "@devexpress/dx-react-scheduler";
+import {
+  Scheduler,
+  ConfirmationDialog,
+  Appointments,
+  Toolbar,
+  WeekView,
+  DateNavigator,
+  AppointmentTooltip,
+  AppointmentForm,
+} from "@devexpress/dx-react-scheduler-material-ui";
 
 export default function Schedule() {
-
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [is_recurring, setIsRecurring] = useState(false); 
-  const [is_private, setIsPrivate] = useState(false); 
-  const [days_of_week, setDaysOfWeek] = useState([]); 
-  const [event_frequency, setEventFrequency] = useState("Once"); 
+  const [is_recurring, setIsRecurring] = useState(false);
+  const [is_private, setIsPrivate] = useState(false);
+  const [days_of_week, setDaysOfWeek] = useState([]);
+  const [event_frequency, setEventFrequency] = useState("Once");
   const [event_tags, setEventTags] = useState([]);
-  const [date, setDate] = useState("dateA"); 
+  const [date, setDate] = useState("dateA");
   const [end_period, setEndPeriod] = useState("endPeriod");
   const [events, setEvents] = useState([]);
 
@@ -36,19 +39,19 @@ export default function Schedule() {
 
   const api = new Api();
 
-    useEffect(() => {
-        try {
-            getAllEvents();
-        } catch (err) {
-            console.log("error" + err);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  useEffect(() => {
+    try {
+      getAllEvents();
+    } catch (err) {
+      console.log("error" + err);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    useEffect(() => {
-        setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
-    }, [events]);
-  
+  useEffect(() => {
+    setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
+  }, [events]);
+
   async function getAllEvents() {
     api.getEvents(await getAccessTokenSilently()).then((res) => {
       setEvents(res.events);
@@ -56,13 +59,13 @@ export default function Schedule() {
   }
 
   //Updating the is_recurring boolean when the checkbox is clicked
-  function handleRecurringChange(e){
-    setIsRecurring(e.target.checked); 
+  function handleRecurringChange(e) {
+    setIsRecurring(e.target.checked);
   }
 
   //Updating the is_recurring boolean when the checkbox is clicked
-  function handleVisibilityChange(e){
-    setIsPrivate(e.target.checked); 
+  function handleVisibilityChange(e) {
+    setIsPrivate(e.target.checked);
   }
 
   async function createEvent(event) {
@@ -79,7 +82,7 @@ export default function Schedule() {
         days_of_week,
         event_frequency,
         event_tags,
-        date, 
+        date,
         end_period,
         new Date(Date.now()).toISOString(),
         new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
@@ -88,71 +91,55 @@ export default function Schedule() {
         console.log(res);
         setEvents(res.events);
       });
-    };
+  }
 
-    //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
-    const commitChanges = ({ added, changed, deleted }) => {
-        if (added) {
-            //CREATE EVENT
-            console.log("CREATED");
-        }
-        if (changed) {
-            //EDIT EVENT
-            console.log("CHANGED");
-        }
-        if (deleted !== undefined) {
-            //DELETE EVENT
-            console.log("DELETED");
-        }
-        //refresh events
-        getAllEvents();
-    };
-
-
-
-    function mapEvents() {
-        const mapped = events.map(value => ({
-            startDate: value.start_date,
-            endDate: value.end_date,
-            title: value.title,
-            id: value.id,
-            //rRule: value.isReccuring,     TODO: once create recurring event is implemented
-            //endPeriod: value.
-            //description and event_list_id are not mapped
-        }))
-        return mapped;
+  //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
+  const commitChanges = ({ added, changed, deleted }) => {
+    if (added) {
+      //CREATE EVENT
+      console.log("CREATED");
     }
+    if (changed) {
+      //EDIT EVENT
+      console.log("CHANGED");
+    }
+    if (deleted !== undefined) {
+      //DELETE EVENT
+      console.log("DELETED");
+    }
+    //refresh events
+    getAllEvents();
+  };
 
+  function mapEvents() {
+    const mapped = events?.map((value) => ({
+      startDate: value.start_date,
+      endDate: value.end_date,
+      title: value.title,
+      id: value.id,
+      //rRule: value.isReccuring,     TODO: once create recurring event is implemented
+      //endPeriod: value.
+      //description and event_list_id are not mapped
+    }));
+    return mapped;
+  }
 
-    return (
-        <div>
-            <Paper>
-                <Scheduler
-                    data={mappedEvents}
-                    height={750}
-                >
-                    <EditingState
-                        onCommitChanges={commitChanges}
-                    />
-                    <ViewState
-                        defaultCurrentDate="2023-02-05"
-                    />
-                    <WeekView
-                        startDayHour={6}
-                        endDayHour={24}
-                    />
-                    <IntegratedEditing />
-                    <Toolbar />
-                    <DateNavigator />
-                    <ConfirmationDialog />
-                    <Appointments />
-                    <AppointmentTooltip
-                        showDeleteButton
-                        showOpenButton
-                    />
-                    <AppointmentForm />
-                </Scheduler>
-            </Paper>
-        </div>
-    );
+  return (
+    <div>
+      <Paper>
+        <Scheduler data={mappedEvents} height={750}>
+          <EditingState onCommitChanges={commitChanges} />
+          <ViewState defaultCurrentDate="2023-02-05" />
+          <WeekView startDayHour={6} endDayHour={24} />
+          <IntegratedEditing />
+          <Toolbar />
+          <DateNavigator />
+          <ConfirmationDialog />
+          <Appointments />
+          <AppointmentTooltip showDeleteButton showOpenButton />
+          <AppointmentForm />
+        </Scheduler>
+      </Paper>
+    </div>
+  );
 }
