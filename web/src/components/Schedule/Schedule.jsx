@@ -5,14 +5,12 @@ import Button from "../Common/Button";
 import { useAuth0 } from "@auth0/auth0-react";
 export default function Schedule() {
   
-  let emptyDaysOfWeek = ["","","","","","",""];
-  
   const { getAccessTokenSilently } = useAuth0();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [is_recurring, setIsRecurring] = useState(false); 
   const [is_private, setIsPrivate] = useState(false); 
-  const [days_of_week, setDaysOfWeek] = useState(emptyDaysOfWeek); 
+  const [days_of_week, setDaysOfWeek] = useState([]); 
   const [event_frequency, setEventFrequency] = useState("Once"); 
   const [event_tags, setEventTags] = useState([]);
   const [date, setDate] = useState("dateA"); 
