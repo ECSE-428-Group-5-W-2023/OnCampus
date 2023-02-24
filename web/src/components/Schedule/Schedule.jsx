@@ -37,21 +37,24 @@ export default function Schedule() {
     useEffect(() => {
         try {
             getAllEvents();
-            console.log("*");
         } catch (err) {
             console.log("error" + err);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
+    }, [events]);
+    
     async function getAllEvents() {
-        api.getEvents(await getAccessTokenSilently()).then((res) => {
-            setEvents(res.events);
-            setMappedEvents(mapEvents);    //map to another form that can be read by react scheduler
-            console.log(events);
-        });
+        const token = await getAccessTokenSilently();
+        const res = await api.getEvents(token);
+        console.log(res);
+        setEvents(res.events);
     }
 
+    
     //   async function createEvent(event) {    //ORIGINAL CODE TO CREATE EVENT 
     //     event.preventDefault(); //prevent page refresh
 
