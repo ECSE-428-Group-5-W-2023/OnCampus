@@ -87,8 +87,8 @@ export default function Schedule() {
       .then((res) => {
         console.log(res);
         setEvents(res.events);
-    }
-
+      });
+    };
 
     //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
     const commitChanges = ({ added, changed, deleted }) => {
