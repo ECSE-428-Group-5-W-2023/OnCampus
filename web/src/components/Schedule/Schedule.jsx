@@ -49,15 +49,14 @@ export default function Schedule() {
     getAllEvents();
   }
 
-  async function editEvent(event, id) {
-    event.preventDefault(); //prevent page refresh
+  async function editEvent(id) {
     api.editEvent(
-      await getAccessTokenSilently(),
+      await getAccessTokenSilently(), 
+      id,
       title_edit,
       description_edit,
       new Date(Date.now()).toISOString(),
       new Date(Date.now() + 1000000 * 60 * 60).toISOString(), // 1 hour from now
-      id,
     )
     .then((res) => {
       console.log(res);
@@ -115,8 +114,6 @@ export default function Schedule() {
                   <br />
                   {end_date}
                   <br />
-
-                  <form onSubmit={editEvent}>
                     <div className="flex">
                       <div className="flex flex-col mb-2 mr-2">
                         <label className="text-white  text-sm font-bold mb-1">Title</label>
@@ -141,9 +138,7 @@ export default function Schedule() {
                         />
                       </div>
                     </div>
-
-                    <Button type="edit">Edit Event</Button>
-                  </form>
+                    <Button onClick={() => editEvent(event.id)}>Edit Event</Button>
                 </div>
               }
             </li>

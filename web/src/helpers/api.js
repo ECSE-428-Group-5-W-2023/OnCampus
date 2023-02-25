@@ -43,13 +43,12 @@ export default class Api {
     return (await (await this.init(token)).get("/api/event")).data;
   }
 
-  editEvent = async (token, title, description, start_date, end_date, id) => {
-    return (await this.init(token)).put("/api/event", {
+  editEvent = async (token, id, title, description, start_date, end_date) => {
+    return (await this.init(token)).put(`/api/event?id=${id}`, {
       title,
       description,
       start_date,
-      end_date,
-      id
+      end_date
     });
   };
 }

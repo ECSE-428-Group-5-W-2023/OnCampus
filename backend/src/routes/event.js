@@ -66,20 +66,13 @@ router.put("/", async (req, res) => {
   const query = `
         UPDATE event
         SET title = $1, description = $2, start_date = $3, end_date = $4
-        WHERE id = $5
+        WHERE id = ${req.query.id}
       `;
-// SET title = $1, description = $2, start_date = $3, end_date = $4, is_recurring = $5, end_period = $6, frequency = $7, day_of_week = $8
-//WHERE id = $9
   const values = [
     event.title,
     event.description,
     event.start_date,
     event.end_date,
-    // event.is_recurring,
-    // event.end_period,
-    // event.frequency, 
-    // event.day_of_week,
-    event.id,
   ];
   await pool.query(query, values);
 
