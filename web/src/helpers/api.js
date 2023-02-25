@@ -63,6 +63,10 @@ export default class Api {
     return (await (await this.init(token)).get("/api/event")).data;
   };
 
+  deleteEvent = async (token, id) => {
+    return (await this.init(token)).delete(`/api/event?id=${id}`);
+  };
+
   editEvent = async (
     token,
     id,

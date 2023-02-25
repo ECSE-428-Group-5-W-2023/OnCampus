@@ -7,7 +7,6 @@ CREATE TABLE "event" (
     "event_list_id" integer NOT NULL,
     "title" VARCHAR(255),
     "description" VARCHAR(255),
-    "is_deleted" BOOLEAN,
     "is_recurring" BOOLEAN,
     "is_private" BOOLEAN,
     "days_of_week" TEXT[],
