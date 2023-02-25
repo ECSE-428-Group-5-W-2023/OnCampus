@@ -72,13 +72,20 @@ router.put("/", async (req, res) => {
   // Update event
   const query = `
         UPDATE event
-        SET title = $1, description = $2, start_date = $3, end_date = $4
-        WHERE id = $5
+        SET title = $1, description = $2, is_recurring = $3, is_private = $4, days_of_week = $5, event_frequency = $6, event_tags = $7, date = $8, end_period = $9, start_date = $10, end_date = $11
+        WHERE id = ${req.query.id}
       `;
 
   const values = [
     event.title,
     event.description,
+    event.is_recurring,
+    event.is_private,
+    event.days_of_week,
+    event.event_frequency,
+    event.event_tags,
+    event.date,
+    event.end_period,
     event.start_date,
     event.end_date,
     event.id,
@@ -87,5 +94,5 @@ router.put("/", async (req, res) => {
 
   res.json({ message: "Successfully updated" });
 });
-  
+
 module.exports = router;
