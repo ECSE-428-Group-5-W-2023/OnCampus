@@ -47,14 +47,6 @@ export default function Schedule() {
     getAllEvents();
   }
 
-  async function deleteEvent(id) {
-
-    //delete event with specified id
-    api.deleteEvent(await getAccessTokenSilently(), id).then(() => {
-      getAllEvents();
-    });
-  }
-
   return (
     <div>
       <form onSubmit={createEvent}>
@@ -101,10 +93,6 @@ export default function Schedule() {
                   {start_date}
                   <br />
                   {end_date}
-                  <br />
-                  <Button 
-                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`}
-                  onClick={() => deleteEvent(event.id)}>Delete Event</Button>
                 </div>
               }
             </li>
