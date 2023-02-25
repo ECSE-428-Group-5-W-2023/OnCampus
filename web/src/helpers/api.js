@@ -30,7 +30,20 @@ export default class Api {
     return (await (await this.init(token)).get("/api/example")).data;
   };
 
-  createEvent = async (token, title, description, is_recurring, is_private, days_of_week, event_frequency, event_tags, date, end_period, start_date, end_date) => {
+  createEvent = async (
+    token,
+    title,
+    description,
+    is_recurring,
+    is_private,
+    days_of_week,
+    event_frequency,
+    event_tags,
+    date,
+    end_period,
+    start_date,
+    end_date
+  ) => {
     return (await this.init(token)).post("/api/event", {
       title,
       description,
@@ -39,7 +52,7 @@ export default class Api {
       days_of_week,
       event_frequency,
       event_tags,
-      date, 
+      date,
       end_period,
       start_date,
       end_date,
@@ -48,5 +61,35 @@ export default class Api {
 
   getEvents = async (token) => {
     return (await (await this.init(token)).get("/api/event")).data;
-  }
+  };
+
+  editEvent = async (
+    token,
+    id,
+    title,
+    description,
+    is_recurring,
+    is_private,
+    days_of_week,
+    event_frequency,
+    event_tags,
+    date,
+    end_period,
+    start_date,
+    end_date
+  ) => {
+    return (await this.init(token)).put(`/api/event?id=${id}`, {
+      title,
+      description,
+      is_recurring,
+      is_private,
+      days_of_week,
+      event_frequency,
+      event_tags,
+      date,
+      end_period,
+      start_date,
+      end_date,
+    });
+  };
 }
