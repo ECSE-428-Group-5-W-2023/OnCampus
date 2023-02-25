@@ -40,8 +40,8 @@ router.post("/", async (req, res) => {
   }
 
   const query = `
-        INSERT INTO event (event_list_id,title, description, start_date, end_date)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO event (event_list_id,title, description, is_recurring, is_private, days_of_week, event_frequency, event_tags, date, end_period, start_date, end_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING id
       `;
 
@@ -50,6 +50,13 @@ router.post("/", async (req, res) => {
       eventlist.rows[0].id,
       event.title,
       event.description,
+      event.is_recurring,
+      event.is_private,
+      event.days_of_week,
+      event.event_frequency,
+      event.event_tags,
+      event.date,
+      event.end_period,
       event.start_date,
       event.end_date,
     ];
@@ -65,13 +72,20 @@ router.put("/", async (req, res) => {
   // Update event
   const query = `
         UPDATE event
-        SET title = $1, description = $2, start_date = $3, end_date = $4
-        WHERE id = $5
+        SET title = $1, description = $2, is_recurring = $3, is_private = $4, days_of_week = $5, event_frequency = $6, event_tags = $7, date = $8, end_period = $9, start_date = $10, end_date = $11
+        WHERE id = ${req.query.id}
       `;
 
   const values = [
     event.title,
     event.description,
+    event.is_recurring,
+    event.is_private,
+    event.days_of_week,
+    event.event_frequency,
+    event.event_tags,
+    event.date,
+    event.end_period,
     event.start_date,
     event.end_date,
     event.id,

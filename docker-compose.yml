@@ -9,6 +9,7 @@ services:
       - ./db/database.sql:/docker-entrypoint-initdb.d/database.sql
     ports:
      - '5433:5432'
+
   web:
     environment:
       - PORT=9241
@@ -17,9 +18,14 @@ services:
       context: ./
     ports:
       - "9241:9241"
+
   backend:
     environment:
       - PORT=5056
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
     build:
       dockerfile: ./backend/Dockerfile
       context: ./
