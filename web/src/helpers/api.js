@@ -92,4 +92,57 @@ export default class Api {
       end_date,
     });
   };
+
+  // PROFILE
+
+  createProfile = async (
+    token,
+    id,
+    email,
+    name,
+    username,
+    school,
+    bio
+  ) => {
+    return (await this.init(token)).post("/api/profile", {
+      email,
+      name,
+      username,
+      school,
+      bio,
+    });
+  };
+
+  updateProfile = async (
+    token,
+    id,
+    email,
+    name,
+    username,
+    school,
+    bio
+  ) => {
+    return (await this.init(token)).put(`/api/profile?id=${id}`, {
+      email,
+      name,
+      username,
+      school,
+      bio,
+    });
+  };
+
+//    getProfile = async (token) => {
+//        return (await (await this.init(token)).get("/api/profile")).data;
+//  };
+  getProfile = async (accessToken) => {
+    const api = new Api();
+    try {
+      const response = await api.init(accessToken).get("/api/profile");
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to get user profile");
+    }
+  };
+
 }
