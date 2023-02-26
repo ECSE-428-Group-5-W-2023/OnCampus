@@ -72,7 +72,7 @@ router.put("/", async (req, res) => {
   // Update event
   const query = `
         UPDATE event
-        SET title = $1, description = $2, is_recurring = $3, is_private = $4, days_of_week = $5, event_frequency = $6, event_tags = $7, date = $8, end_period = $9, start_date = $10, end_date = $11
+        SET title = COALESCE($1, title), description = COALESCE($2, description), is_recurring = COALESCE($3, is_recurring), is_private = COALESCE($4, is_private), days_of_week = COALESCE($5, days_of_week), event_frequency = COALESCE($6, event_frequency), event_tags = COALESCE($7, event_tags), date = COALESCE($8, date), end_period = COALESCE($9, end_period), start_date = COALESCE($10, start_date), end_date =COALESCE($11, end_date)
         WHERE id = ${req.query.id}
       `;
 
@@ -88,7 +88,6 @@ router.put("/", async (req, res) => {
     event.end_period,
     event.start_date,
     event.end_date,
-    event.id,
   ];
   await pool.query(query, values);
 

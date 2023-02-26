@@ -29,6 +29,7 @@ export default function Schedule() {
   const [date, setDate] = useState("dateA");
   const [end_period, setEndPeriod] = useState("endPeriod");
   const [events, setEvents] = useState([]);
+  const [description, setDescription] = useState(null);
 
   const [mappedEvents, setMappedEvents] = useState([]);
 
@@ -50,6 +51,7 @@ export default function Schedule() {
   async function getAllEvents() {
     await api.getEvents(await getAccessTokenSilently()).then((res) => {
       setEvents(res.events);
+      console.log(res.events)
     });
   }
 
@@ -87,6 +89,36 @@ export default function Schedule() {
     getAllEvents();
   }
 
+  async function editEvent(
+    id,
+    title,
+    startDate,
+    endDate,
+  ) {
+    await api
+      .editEvent(
+        await getAccessTokenSilently(),
+        id,
+        title,
+        description,
+        is_recurring,
+        is_private,
+        days_of_week,
+        event_frequency,
+        event_tags,
+        date,
+        end_period,
+        startDate,
+        endDate
+      )
+      .then((res) => {
+        setEvents(res.events);
+      });
+
+    //refresh events
+    getAllEvents();
+  }
+
   //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
   const commitChanges = ({ added, changed, deleted }) => {
     if (added) {
@@ -96,9 +128,21 @@ export default function Schedule() {
         added.startDate,
         added.endDate
       );
+      console.log("ADDED");
     }
     if (changed) {
       //EDIT EVENT
+      const id = Object.keys(changed)[0];
+      const changes = Object.values(changed)[0];
+      editEvent(
+        id,
+        changes.title,
+        changes.startDate,
+        changes.endDate
+      );
+      console.log(changed);
+      console.log(id);
+      console.log(changes);
       console.log("CHANGED");
     }
     if (deleted !== undefined) {
@@ -115,6 +159,7 @@ export default function Schedule() {
       endDate: value.end_date,
       title: value.title,
       id: value.id,
+
       //rRule: value.isReccuring,     TODO: once create recurring event is implemented
       //endPeriod: value.
       //description and event_list_id are not mapped
