@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-
 import Api from "../../helpers/api";
-import Button from "../Common/Button";
 import { useAuth0 } from "@auth0/auth0-react";
-
 import * as React from "react";
 import Paper from "@mui/material/Paper";
 import {
@@ -20,24 +17,49 @@ import {
   DateNavigator,
   AppointmentTooltip,
   AppointmentForm,
+  AllDayPanel,
 } from "@devexpress/dx-react-scheduler-material-ui";
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [is_recurring, setIsRecurring] = useState(false);
   const [is_private, setIsPrivate] = useState(false);
-  const [days_of_week, setDaysOfWeek] = useState([]);
-  const [event_frequency, setEventFrequency] = useState("Once");
   const [event_tags, setEventTags] = useState([]);
-  const [date, setDate] = useState("dateA");
-  const [end_period, setEndPeriod] = useState("endPeriod");
   const [events, setEvents] = useState([]);
 
   const [mappedEvents, setMappedEvents] = useState([]);
 
   const api = new Api();
+
+  const TextEditor = (props) => {
+    // eslint-disable-next-line react/destructuring-assignment
+    if (props.type === 'multilineTextEditor') {
+      return null;
+    } return <AppointmentForm.TextEditor {...props} />;
+  };
+
+  const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+    const onCustomFieldChange = (nextValue) => {
+      onFieldChange({ description: nextValue });
+    };
+
+    return (
+      <AppointmentForm.BasicLayout
+        appointmentData={appointmentData}
+        onFieldChange={onFieldChange}
+        {...restProps}
+      >
+        <AppointmentForm.Label
+          text="Description"
+          type="title"
+        />
+        <AppointmentForm.TextEditor
+          value={appointmentData.description}
+          onValueChange={onCustomFieldChange}
+          placeholder="Add description"
+        />
+      </AppointmentForm.BasicLayout>
+    );
+  };
 
   useEffect(() => {
     try {
@@ -53,7 +75,7 @@ export default function Schedule() {
   }, [events]);
 
   async function getAllEvents() {
-    api.getEvents(await getAccessTokenSilently()).then((res) => {
+    await api.getEvents(await getAccessTokenSilently()).then((res) => {
       setEvents(res.events);
     });
   }
@@ -63,44 +85,93 @@ export default function Schedule() {
     setIsRecurring(e.target.checked);
   }
 
-  //Updating the is_recurring boolean when the checkbox is clicked
+  //Updating the is_private boolean when the checkbox is clicked
   function handleVisibilityChange(e) {
     setIsPrivate(e.target.checked);
   }
 
-  async function createEvent(event) {
-    event.preventDefault(); //prevent page refresh
-
+  async function createEvent(title, description, rRule, exDate, allDay, startDate, endDate) {
     //create even with specified title and description, set start time to now and end time to 1 hour from now (can be changed once we have interface to pick those)
     await api
       .createEvent(
         await getAccessTokenSilently(),
         title,
         description,
-        is_recurring,
         is_private,
-        days_of_week,
-        event_frequency,
         event_tags,
-        date,
-        end_period,
-        new Date(Date.now()).toISOString(),
-        new Date(Date.now() + 1000000 * 60 * 60).toISOString() // 1 hour from now
+        rRule,
+        exDate,
+        allDay,
+        startDate,
+        endDate
       )
       .then((res) => {
-        console.log(res);
         setEvents(res.events);
       });
+
+    getAllEvents();
+  }
+
+  async function editEvent(
+    id,
+    title,
+    description,
+    rRule,
+    exDate,
+    allDay,
+    startDate,
+    endDate,
+  ) {
+    await api
+      .editEvent(
+        await getAccessTokenSilently(),
+        id,
+        title,
+        description,
+        is_private,
+        event_tags,
+        rRule,
+        exDate,
+        allDay,
+        startDate,
+        endDate
+      )
+      .then((res) => {
+        setEvents(res.events);
+      });
+
+    //refresh events
+    getAllEvents();
   }
 
   //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
   const commitChanges = ({ added, changed, deleted }) => {
     if (added) {
-      //CREATE EVENT
-      console.log("CREATED");
+      createEvent(
+        added.title,
+        added.description,
+        added.rRule,
+        added.exDate,
+        added.allDay,
+        added.startDate,
+        added.endDate
+      );
+      console.log("ADDED");
     }
     if (changed) {
       //EDIT EVENT
+      const id = Object.keys(changed)[0];
+      const changes = Object.values(changed)[0];
+      editEvent(
+        id,
+        changes.title,
+        changes.description,
+        changes.rRule,
+        changes.exDate,
+        changes.allDay,
+        changes.startDate,
+        changes.endDate
+      );
       console.log("CHANGED");
     }
     if (deleted !== undefined) {
@@ -113,10 +184,14 @@ export default function Schedule() {
 
   function mapEvents() {
     const mapped = events?.map((value) => ({
+      id: value.id,
+      title: value.title,
+      description: value.description,
+      rRule: value.r_rule,
+      exDate: value.ex_date,
+      allDay: value.all_day,
       startDate: value.start_date,
       endDate: value.end_date,
-      title: value.title,
-      id: value.id,
       //rRule: value.isReccuring,     TODO: once create recurring event is implemented
       //endPeriod: value.
       //description and event_list_id are not mapped
@@ -137,7 +212,10 @@ export default function Schedule() {
           <ConfirmationDialog />
           <Appointments />
           <AppointmentTooltip showDeleteButton showOpenButton />
-          <AppointmentForm />
+          <AppointmentForm 
+            basicLayoutComponent={BasicLayout}
+            textEditorComponent={TextEditor}/>
+          <AllDayPanel />
         </Scheduler>
       </Paper>
     </div>

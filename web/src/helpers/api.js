@@ -34,26 +34,22 @@ export default class Api {
     token,
     title,
     description,
-    is_recurring,
     is_private,
-    days_of_week,
-    event_frequency,
     event_tags,
-    date,
-    end_period,
+    r_rule,
+    ex_date,
+    all_day,
     start_date,
     end_date
   ) => {
     return (await this.init(token)).post("/api/event", {
       title,
       description,
-      is_recurring,
       is_private,
-      days_of_week,
-      event_frequency,
       event_tags,
-      date,
-      end_period,
+      r_rule,
+      ex_date,
+      all_day,
       start_date,
       end_date,
     });
@@ -63,31 +59,31 @@ export default class Api {
     return (await (await this.init(token)).get("/api/event")).data;
   };
 
+  deleteEvent = async (token, id) => {
+    return (await this.init(token)).delete(`/api/event?id=${id}`);
+  };
+
   editEvent = async (
     token,
     id,
     title,
     description,
-    is_recurring,
     is_private,
-    days_of_week,
-    event_frequency,
     event_tags,
-    date,
-    end_period,
+    r_rule,
+    ex_date,
+    all_day,
     start_date,
     end_date
   ) => {
     return (await this.init(token)).put(`/api/event?id=${id}`, {
       title,
       description,
-      is_recurring,
       is_private,
-      days_of_week,
-      event_frequency,
       event_tags,
-      date,
-      end_period,
+      r_rule,
+      ex_date,
+      all_day,
       start_date,
       end_date,
     });
