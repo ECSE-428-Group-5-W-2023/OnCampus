@@ -40,8 +40,8 @@ router.post("/", async (req, res) => {
   }
 
   const query = `
-        INSERT INTO event (event_list_id,title, description, is_recurring, is_private, days_of_week, event_frequency, event_tags, date, end_period, start_date, end_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        INSERT INTO event (event_list_id, title, description, is_private, event_tags, r_rule, ex_date, all_day, start_date, end_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING id
       `;
 
@@ -50,13 +50,11 @@ router.post("/", async (req, res) => {
       eventlist.rows[0].id,
       event.title,
       event.description,
-      event.is_recurring,
       event.is_private,
-      event.days_of_week,
-      event.event_frequency,
       event.event_tags,
-      event.date,
-      event.end_period,
+      event.r_rule,
+      event.ex_date,
+      event.all_day,
       event.start_date,
       event.end_date,
     ];
@@ -72,23 +70,20 @@ router.put("/", async (req, res) => {
   // Update event
   const query = `
         UPDATE event
-        SET title = $1, description = $2, is_recurring = $3, is_private = $4, days_of_week = $5, event_frequency = $6, event_tags = $7, date = $8, end_period = $9, start_date = $10, end_date = $11
+        SET title = COALESCE($1, title), description = COALESCE($2, description), is_private = COALESCE($3, is_private), event_tags = COALESCE($4, event_tags), r_rule = COALESCE($5, r_rule), ex_date = COALESCE($6, ex_date), all_day = COALESCE($7, all_day), start_date = COALESCE($8, start_date), end_date =COALESCE($9, end_date)
         WHERE id = ${req.query.id}
       `;
 
   const values = [
     event.title,
     event.description,
-    event.is_recurring,
     event.is_private,
-    event.days_of_week,
-    event.event_frequency,
     event.event_tags,
-    event.date,
-    event.end_period,
+    event.r_rule,
+    event.ex_date,
+    event.all_day,
     event.start_date,
     event.end_date,
-    event.id,
   ];
   await pool.query(query, values);
 
