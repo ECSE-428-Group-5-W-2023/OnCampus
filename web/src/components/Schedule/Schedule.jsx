@@ -65,20 +65,18 @@ export default function Schedule() {
     setIsPrivate(e.target.checked);
   }
 
-  async function createEvent(title, description, startDate, endDate) {
+  async function createEvent(title, rRule, exDate, allDay, startDate, endDate) {
     //create even with specified title and description, set start time to now and end time to 1 hour from now (can be changed once we have interface to pick those)
     await api
       .createEvent(
         await getAccessTokenSilently(),
         title,
         description,
-        is_recurring,
         is_private,
-        days_of_week,
-        event_frequency,
         event_tags,
-        date,
-        end_period,
+        rRule,
+        exDate,
+        allDay,
         startDate,
         endDate
       )
@@ -92,6 +90,9 @@ export default function Schedule() {
   async function editEvent(
     id,
     title,
+    rRule,
+    exDate,
+    allDay,
     startDate,
     endDate,
   ) {
@@ -101,13 +102,11 @@ export default function Schedule() {
         id,
         title,
         description,
-        is_recurring,
         is_private,
-        days_of_week,
-        event_frequency,
         event_tags,
-        date,
-        end_period,
+        rRule,
+        exDate,
+        allDay,
         startDate,
         endDate
       )
@@ -124,7 +123,9 @@ export default function Schedule() {
     if (added) {
       createEvent(
         added.title,
-        added.description,
+        added.rRule,
+        added.exDate,
+        added.allDay,
         added.startDate,
         added.endDate
       );
@@ -137,6 +138,9 @@ export default function Schedule() {
       editEvent(
         id,
         changes.title,
+        changes.rRule,
+        changes.exDate,
+        changes.allDay,
         changes.startDate,
         changes.endDate
       );
@@ -155,11 +159,13 @@ export default function Schedule() {
 
   function mapEvents() {
     const mapped = events?.map((value) => ({
+      id: value.id,
+      title: value.title,
+      rRule: value.r_rule,
+      exDate: value.ex_date,
+      allDay: value.all_day,
       startDate: value.start_date,
       endDate: value.end_date,
-      title: value.title,
-      id: value.id,
-
       //rRule: value.isReccuring,     TODO: once create recurring event is implemented
       //endPeriod: value.
       //description and event_list_id are not mapped

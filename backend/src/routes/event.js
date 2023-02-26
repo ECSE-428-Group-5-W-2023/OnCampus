@@ -40,8 +40,8 @@ router.post("/", async (req, res) => {
   }
 
   const query = `
-        INSERT INTO event (event_list_id,title, description, is_recurring, is_private, days_of_week, event_frequency, event_tags, date, end_period, start_date, end_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        INSERT INTO event (event_list_id, title, description, is_private, event_tags, r_rule, ex_date, all_day, start_date, end_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING id
       `;
 
@@ -50,13 +50,11 @@ router.post("/", async (req, res) => {
       eventlist.rows[0].id,
       event.title,
       event.description,
-      event.is_recurring,
       event.is_private,
-      event.days_of_week,
-      event.event_frequency,
       event.event_tags,
-      event.date,
-      event.end_period,
+      event.r_rule,
+      event.ex_date,
+      event.all_day,
       event.start_date,
       event.end_date,
     ];
@@ -72,20 +70,18 @@ router.put("/", async (req, res) => {
   // Update event
   const query = `
         UPDATE event
-        SET title = COALESCE($1, title), description = COALESCE($2, description), is_recurring = COALESCE($3, is_recurring), is_private = COALESCE($4, is_private), days_of_week = COALESCE($5, days_of_week), event_frequency = COALESCE($6, event_frequency), event_tags = COALESCE($7, event_tags), date = COALESCE($8, date), end_period = COALESCE($9, end_period), start_date = COALESCE($10, start_date), end_date =COALESCE($11, end_date)
+        SET title = COALESCE($1, title), description = COALESCE($2, description), is_private = COALESCE($3, is_private), event_tags = COALESCE($4, event_tags), r_rule = COALESCE($5, r_rule), ex_date = COALESCE($6, ex_date), all_day = COALESCE($7, all_day), start_date = COALESCE($8, start_date), end_date =COALESCE($9, end_date)
         WHERE id = ${req.query.id}
       `;
 
   const values = [
     event.title,
     event.description,
-    event.is_recurring,
     event.is_private,
-    event.days_of_week,
-    event.event_frequency,
     event.event_tags,
-    event.date,
-    event.end_period,
+    event.r_rule,
+    event.ex_date,
+    event.all_day,
     event.start_date,
     event.end_date,
   ];
