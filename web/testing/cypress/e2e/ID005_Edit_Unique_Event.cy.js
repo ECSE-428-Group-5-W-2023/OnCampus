@@ -8,7 +8,7 @@ describe("Edit Unique Events", () => {
     cy.visit("/");
   });
 
-it("Edit Event", () => {
+it("Edit an unique event", () => {
   //log in
   const userEmail = `e2e+${Math.ceil(
     Math.random() * 1000000000000000
@@ -27,25 +27,37 @@ it("Edit Event", () => {
     }
   );
 
-  //create an unique event
+  //create volunteer event
   cy.visit("/schedule");
   cy.get(":nth-child(5) > :nth-child(2)").dblclick();
-  cy.get("input[placeholder=Title]").type("Test", { force: true }).should('have.value', 'Test');
+  cy.get("input[placeholder=Title]").type("Volunteer", { force: true }).should('have.value', 'Volunteer');
+  cy.get('input[placeholder="Add description"]').type("D", { force: true });
+  cy.get('input[value="06/02/2023 08:00 AM"]').click().clear().type("06/02/2023 09:00 AM", {delay: 100}, { force: true }); //edit time 
+  cy.get('input[value="06/02/2023 08:30 AM"]').clear().type("06/02/2023 06:00 PM", { force: true }); //edit time 
+  cy.get("button").contains("Save").click();
+  cy.url().should("include", "/schedule"); // check that at the correct url
+
+  //create work event
+  cy.get(":nth-child(5) > :nth-child(3)").dblclick();
+  cy.get("input[placeholder=Title]").type("Work", { force: true }).should('have.value', 'Work');
+  cy.get('input[value="07/02/2023 08:00 AM"]').clear().type("07/02/2023 09:00 AM", { force: true }); //edit time 
+  cy.get('input[value="07/02/2023 08:30 AM"]').clear().type("07/02/2023 06:00 PM", { force: true }); //edit time 
   cy.get('input[placeholder="Add description"]').type("D", { force: true });
   cy.get("button").contains("Save").click();
   cy.url().should("include", "/schedule"); // check that at the correct url
 
-  cy.contains("Test").click();
+  //edit volunteer event title and end time 
+  cy.contains("Volunteer").click();
   cy.get("button").get("svg").get('[data-testid^=EditIcon]').click();
-  console.log("Edit Icon clicked");
-  cy.get("input[placeholder=Title]").type("Update", { force: true }).should('have.value', 'TestUpdate');
-  cy.get('input[placeholder="Add description"]').type("U", { force: true }).should('have.value', 'DU');
-
-  cy.get('input[value="06/02/2023 08:30 AM"]').clear().type("06/02/2023 09:30 AM", { force: true }); //edit time 
+  cy.get('input[value="06/02/2023 06:00 PM"]').clear().type("06/02/2023 03:00 PM", { force: true }); //edit time 
+  cy.get("input[placeholder=Title]").type("Day", { force: true }).should('have.value', 'VolunteerDay');
   cy.get("button").contains("Save").click();
   cy.url().should("include", "/schedule"); // check that at the correct url
-  cy.get("div").contains("TestUpdate").click(); // check that the event is there
-  cy.get(".Content-title").contains("TestUpdate"); // check that the title is correct
+  cy.get("div").contains("VolunteerDay").click(); // check that the event is there
+  cy.get(".Content-title").contains("VolunteerDay"); // check that the title is correct
+  cy.get("button").get("svg").get('[data-testid^=EditIcon]').click(); //check that start and end time are correct
+  cy.get('input[value="06/02/2023 09:00 AM"]');
+  cy.get('input[value="06/02/2023 03:00 PM"]');
   });
 
 });
