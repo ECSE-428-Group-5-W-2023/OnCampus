@@ -80,6 +80,11 @@ export default function Schedule() {
     });
   }
 
+  // //Updating the is_recurring boolean when the checkbox is clicked
+  // function handleRecurringChange(e) {
+  //   setIsRecurring(e.target.checked);
+  // }
+
   //Updating the is_private boolean when the checkbox is clicked
   function handleVisibilityChange(e) {
     setIsPrivate(e.target.checked);
@@ -139,6 +144,13 @@ export default function Schedule() {
     getAllEvents();
   }
 
+  //delete event with specified id
+  async function deleteEvent(id) {
+    api.deleteEvent(await getAccessTokenSilently(), id).then(() => {
+      getAllEvents();
+    });
+  }
+
   //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
   const commitChanges = ({ added, changed, deleted }) => {
     if (added) {
@@ -171,6 +183,7 @@ export default function Schedule() {
     }
     if (deleted !== undefined) {
       //DELETE EVENT
+      deleteEvent(deleted);
       console.log("DELETED");
     }
     //refresh events
