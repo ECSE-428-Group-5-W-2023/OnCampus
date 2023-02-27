@@ -5,7 +5,7 @@ describe("Basic app navigation", () => {
   beforeEach(() => {
     cy.viewport(1440, 900);
 
-    cy.visit("/");
+    cy.visit("http://localhost:9241");
   });
 
   it("Create Event", () => {
@@ -21,7 +21,7 @@ describe("Basic app navigation", () => {
       cy.contains("button[value=default]", "Continue").click();
       cy.get("button").contains("Accept").click();
     });
-    cy.visit("/schedule");
+    cy.visit("http://localhost:9241/schedule");
     cy.get(":nth-child(5) > :nth-child(2)").dblclick();
     cy.get("input[placeholder=Title]").type("Test Event");
     cy.get("textarea[placeholder=Notes]").type("Test Description");
