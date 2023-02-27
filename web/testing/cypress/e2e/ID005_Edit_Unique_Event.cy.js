@@ -30,16 +30,18 @@ it("Edit Event", () => {
   //create an unique event
   cy.visit("/schedule");
   cy.get(":nth-child(5) > :nth-child(2)").dblclick();
-  cy.get("input[placeholder=Title]").type("Test", {timeout: 10000}).should('have.value', 'Test');
-  cy.get('input[placeholder="Add description"]').type("D", {timeout: 10000});
+  cy.get("input[placeholder=Title]").type("Test", { force: true }).should('have.value', 'Test');
+  cy.get('input[placeholder="Add description"]').type("D", { force: true });
   cy.get("button").contains("Save").click();
   cy.url().should("include", "/schedule"); // check that at the correct url
 
   cy.contains("Test").click();
   cy.get("button").get("svg").get('[data-testid^=EditIcon]').click();
   console.log("Edit Icon clicked");
-  cy.get("input[placeholder=Title]").type("Update", {timeout: 10000}).should('have.value', 'TestUpdate');
-  cy.get('input[placeholder="Add description"]').type("U", {timeout: 10000}).should('have.value', 'DU');
+  cy.get("input[placeholder=Title]").type("Update", { force: true }).should('have.value', 'TestUpdate');
+  cy.get('input[placeholder="Add description"]').type("U", { force: true }).should('have.value', 'DU');
+
+  cy.get('input[value="06/02/2023 08:30 AM"]').clear().type("06/02/2023 09:30 AM", { force: true }); //edit time 
   cy.get("button").contains("Save").click();
   cy.url().should("include", "/schedule"); // check that at the correct url
   cy.get("div").contains("TestUpdate").click(); // check that the event is there
