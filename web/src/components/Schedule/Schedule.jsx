@@ -144,6 +144,13 @@ export default function Schedule() {
     getAllEvents();
   }
 
+  //delete event with specified id
+  async function deleteEvent(id) {
+    api.deleteEvent(await getAccessTokenSilently(), id).then(() => {
+      getAllEvents();
+    });
+  }
+
   //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
   const commitChanges = ({ added, changed, deleted }) => {
     if (added) {
@@ -176,6 +183,7 @@ export default function Schedule() {
     }
     if (deleted !== undefined) {
       //DELETE EVENT
+      deleteEvent(deleted);
       console.log("DELETED");
     }
     //refresh events
