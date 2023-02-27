@@ -5,38 +5,37 @@ import Api from "../../helpers/api";
 import Button from "../Common/Button";
 
 const Profile = () => {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [email, setEmail] = useState("");
+  const { user, getAccessTokenSilently } = useAuth0();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
   const [bio, setBio] = useState("");
-  const [profile, setProfile] = useState([]);
   const [profileCompleted, setProfileCompleted] = useState(false);
 
   const api = new Api();
 
   useEffect(() => {
       try {
-        getUserProfile();
+//         getUserProfile();
       } catch (err) {
         console.log("error" + err);
       }
     }, []);
-
-    async function getUserProfile() {
-        try {
-            api.getProfile(await getAccessTokenSilently()).then((res) => {
-              setProfile(res.profile);
-            });
-          } catch (err) {
-            console.log("error" + err);
-          }
-    }
+//
+//     async function getUserProfile() {
+//         try {
+//             api.getProfile(await getAccessTokenSilently()).then((res) => {
+//               setProfile(res.profile);
+//             });
+//           } catch (err) {
+//             console.log("error" + err);
+//           }
+//     }
 
     async function createProfile(event, name, username, school, bio) {
           event.preventDefault(); //prevent page refresh
           console.log(user.sub);
+          console.log(user.email);
           //create or update profile
               await api
                 .createProfile(
@@ -49,14 +48,10 @@ const Profile = () => {
                 )
                 .then((res) => {
                   console.log(res);
-                  setUsername(res.username);
-                  setName(res.name);
-                  setSchool(res.school);
-                  setBio(res.bio);
                   setProfileCompleted(true);
                 });
 
-                getUserProfile();
+//                 getUserProfile();
           }
 
 //   async function handleSubmit (userProfile) {
@@ -144,30 +139,40 @@ const Profile = () => {
                 value={username}
                 onChange={(username) => setUsername(username.target.value)}
               />
-              <label htmlFor="name">Name:</label>
+              <br></br>
+              <label htmlFor="name"className="text-white text-lg font-bold m-3 mx-auto">
+                Name:
+              </label>
               <input
                 type="text"
                 id="name"
                 value={name}
                 onChange={(name) => setName(name.target.value)}
               />
-              <label htmlFor="school">School:</label>
+              <br></br>
+              <label htmlFor="school" className="text-white text-lg font-bold m-3 mx-auto">
+                School:
+              </label>
               <input
                 type="text"
                 id="school"
                 value={school}
                 onChange={(school) => setSchool(school.target.value)}
               />
-              <label htmlFor="bio">Bio:</label>
+              <br></br>
+              <label htmlFor="bio" className="text-white text-lg font-bold m-3 mx-auto">
+                Bio:
+              </label>
               <input
                 id="bio"
                 value={bio}
                 onChange={(bio) => setBio(bio.target.value)}
               />
+             <br></br>
             <Button type="submit">Submit</Button>
           </form>
 
-      {profileCompleted => {
+      { profileCompleted => {
           return (
               <div>
                 <img

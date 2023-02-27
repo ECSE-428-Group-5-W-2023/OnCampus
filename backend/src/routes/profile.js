@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
 
   const query = {
       text: `INSERT INTO profile (profile_id, email, name, username, school, bio) VALUES ('${userProfile.sub.replace("|", "_")}', '${userProfile.email}', $1, $2, $3, $4) RETURNING *`,
-      values: [profile.name, profile.username, profile.school, profile.bio]
+      values: [name, username, school, bio]
   };
 
   await pool.query(query);
@@ -29,8 +29,8 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
-  const profile = req.body;
   const userProfile = req.auth.payload;
+  const profile = req.body;
 
   // Update profile
   const query = `

@@ -80,11 +80,6 @@ export default function Schedule() {
     });
   }
 
-  //Updating the is_recurring boolean when the checkbox is clicked
-  function handleRecurringChange(e) {
-    setIsRecurring(e.target.checked);
-  }
-
   //Updating the is_private boolean when the checkbox is clicked
   function handleVisibilityChange(e) {
     setIsPrivate(e.target.checked);
