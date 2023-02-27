@@ -10,6 +10,8 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
   const [bio, setBio] = useState("");
+  const [profile, setProfile] = useState("");
+
   const [profileCompleted, setProfileCompleted] = useState(false);
 
   const api = new Api();
@@ -32,15 +34,14 @@ const Profile = () => {
 //           }
 //     }
 
-    async function createProfile(event, name, username, school, bio) {
-          event.preventDefault(); //prevent page refresh
-          console.log(user.sub);
-          console.log(user.email);
+    async function createProfile(profile) {
+          profile.preventDefault(); //prevent page refresh
+          const email = user.email;
           //create or update profile
               await api
                 .createProfile(
                   await getAccessTokenSilently(),
-                  user.email,
+                  email,
                   name,
                   username,
                   school,
@@ -137,7 +138,7 @@ const Profile = () => {
                 type="text"
                 id="username"
                 value={username}
-                onChange={(username) => setUsername(username.target.value)}
+                onChange={(profile) => setUsername(profile.target.value)}
               />
               <br></br>
               <label htmlFor="name"className="text-white text-lg font-bold m-3 mx-auto">
@@ -147,7 +148,7 @@ const Profile = () => {
                 type="text"
                 id="name"
                 value={name}
-                onChange={(name) => setName(name.target.value)}
+                onChange={(profile) => setName(profile.target.value)}
               />
               <br></br>
               <label htmlFor="school" className="text-white text-lg font-bold m-3 mx-auto">
@@ -157,7 +158,7 @@ const Profile = () => {
                 type="text"
                 id="school"
                 value={school}
-                onChange={(school) => setSchool(school.target.value)}
+                onChange={(profile) => setSchool(profile.target.value)}
               />
               <br></br>
               <label htmlFor="bio" className="text-white text-lg font-bold m-3 mx-auto">
@@ -166,7 +167,7 @@ const Profile = () => {
               <input
                 id="bio"
                 value={bio}
-                onChange={(bio) => setBio(bio.target.value)}
+                onChange={(profile) => setBio(profile.target.value)}
               />
              <br></br>
             <Button type="submit">Submit</Button>
@@ -191,15 +192,15 @@ const Profile = () => {
                 </div>
 
                 <div className="text-white text-lg font-bold m-3 mx-auto">
-                    Name: {name}
+                    Name: {profile.name}
                 </div>
 
                 <div className="text-white text-lg font-bold m-3 mx-auto">
-                    School: {school}
+                    School: {profile.school}
                 </div>
 
                 <div className="text-white text-lg font-bold m-3 mx-auto">
-                 Bio: {bio}
+                 Bio: {profile.bio}
                  </div>
               </div>
           );

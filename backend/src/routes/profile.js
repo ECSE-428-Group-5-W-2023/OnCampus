@@ -16,11 +16,11 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
-  const { name, username, school, bio } = req.body;
+  const profile = req.body;
 
   const query = {
-      text: `INSERT INTO profile (profile_id, email, name, username, school, bio) VALUES ('${userProfile.sub.replace("|", "_")}', '${userProfile.email}', $1, $2, $3, $4) RETURNING *`,
-      values: [name, username, school, bio]
+      text: `INSERT INTO profile (profile_id, email, name, username, school, bio) VALUES ('${userProfile.sub.replace("|", "_")}', $1, $2, $3, $4, $5) RETURNING *`,
+      values: [profile.email, profile.name, profile.username, profile.school, profile.bio]
   };
 
   await pool.query(query);

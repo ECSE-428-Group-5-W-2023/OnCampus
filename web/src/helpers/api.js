@@ -93,7 +93,6 @@ export default class Api {
 
   createProfile = async (
     token,
-    id,
     email,
     name,
     username,
