@@ -23,8 +23,8 @@ Scenario Outline: User edits an attribute of an existing recurring event (Normal
     And the following events are displayed on the schedule
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | ECSE 428 | 1/1/2023 18:00 | 1/1/2023 21:00 | true | 13/4/2023 | weekly | [Monday] |
-    | 002 | ECSE 310 | 1/2/2023 10:00 | 1/2/2023 12:00 | true | 13/4/2023 | weekly | [Monday, Wednesday] |
+    | 001 | ECSE 428 | 1/1/2023 18:00 | 1/1/2023 20:00 | true | 13/4/2023 | weekly | [Monday] |
+    | 002 | ECSE 310 | 1/2/2023 10:00 | 1/2/2023 11:30 | true | 13/4/2023 | weekly | [Monday, Wednesday] |
 
 Scenario Outline: User edits an existing recurring event with invalid dates (Error Flow)
 
