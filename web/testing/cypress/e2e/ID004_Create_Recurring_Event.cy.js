@@ -53,10 +53,7 @@ describe("Create Recurring Events", () => {
     cy.get("div").contains("COMP251").click(); // check that the event is there
     cy.get(".Content-title").contains("COMP251"); // check that the title is correct
     cy.visit("/schedule");
-    cy.get("button")
-      .get("svg")
-      .get("[data-testid^=ChevronRightIcon]")
-      .click(); //check following week also has event
+    cy.get("button").get("svg").get("[data-testid^=ChevronRightIcon]").click(); //check following week also has event
     cy.get("div").contains("COMP251").click(); // check that the event is there
     cy.get(".Content-title").contains("COMP251"); // check that the title is correct
   });
