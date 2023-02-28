@@ -36,9 +36,6 @@ describe("Edit Unique Events", () => {
     cy.get('input[placeholder="Add description"]').type("D", { force: true });
     cy.get('input[value="06/02/2023 08:00 AM"]').click().clear().type("06/02/2023 06:00 PM", {delay: 100}, { force: true }); //edit time 
     cy.get('input[value="06/02/2023 08:30 AM"]').clear().type("06/02/2023 09:00 PM", { force: true }); //edit time 
-    // cy.get('div[class="MuiFormControl-root MuiFormControl-marginNormal MuiTextField-root css-1rv3ei8-MuiFormControl-root-MuiTextField-root"]').within(() => {
-    //   cy.get("button").click();
-    // });
 
     cy.get("label").get("span").contains("Repeat").click();
     cy.get("div").contains("Daily").click();
