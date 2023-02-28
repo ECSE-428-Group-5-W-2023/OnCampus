@@ -23,8 +23,6 @@
     "axios": "^1.3.2",
     "concurrently": "^7.2.1",
     "electron": "^22.0.0",
-    "headlessui": "^0.0.0",
-    "heroicons": "^2.0.16",
     "nth-check": "^2.1.1",
     "react": "^18.1.0",
     "react-basic-popup": "^1.0.0",
