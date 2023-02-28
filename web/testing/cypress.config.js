@@ -5,5 +5,6 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
     },
   },
+  videoCompression: 0,
   projectId: "1vse71",
 });
