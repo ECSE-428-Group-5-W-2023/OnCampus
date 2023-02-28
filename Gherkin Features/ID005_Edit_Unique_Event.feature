@@ -9,8 +9,8 @@ Scenario Outline: User edits an attribute of an existing unique event (Normal Fl
     Given the following events displayed on the schedule:
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | Volunteer | 1/1/2023 09:00 | 1/1/2023 18:00 | false | null | null | null |
-    | 002 | Work | 1/2/2023 09:00 | 1/2/2023 18:00 | false | null | null | null |
+    | 001 | Volunteer | 6/2/2023 09:00 | 6/2/2023 18:00 | false | null | null | null |
+    | 002 | Work | 6/2/2023 09:00 | 6/2/2023 18:00 | false | null | null | null |
 
     When the user selects <event_id>
     And the user modifies the <end_date>
@@ -19,8 +19,8 @@ Scenario Outline: User edits an attribute of an existing unique event (Normal Fl
     And the following events are displayed on the schedule
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | Volunteer | 1/1/2023 09:00 | 1/1/2023 15:00 | false | null | null | null |
-    | 002 | Work | 1/2/2023 09:00 | 1/2/2023 18:00 | false | null | null | null |
+    | 001 | Volunteer | 6/2/2023 09:00 | 6/2/2023 15:00 | false | null | null | null |
+    | 002 | Work | 6/2/2023 09:00 | 6/2/2023 18:00 | false | null | null | null |
 
 Scenario Outline: User edits an existing unique event with invalid dates (Error Flow)
 
@@ -41,8 +41,8 @@ Scenario Outline: User modifies an unique event to a recurring event (Normal Flo
     Given the following events displayed on the schedule:
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | Volunteer | 1/1/2023 09:00 | 1/1/2023 18:00 | false | null | null | null |
-    | 002 | Work | 1/2/2023 09:00 | 1/2/2023 18:00 | false | null | null | null |
+    | 001 | Volunteer | 6/2/2023 09:00 | 6/2/2023 18:00 | false | null | null | null |
+    | 002 | Work | 6/2/2023 09:00 | 6/2/2023 18:00 | false | null | null | null |
 
     When the user selects <event_id>
     And the user modifies <is_recurring> of the event to true
@@ -52,8 +52,8 @@ Scenario Outline: User modifies an unique event to a recurring event (Normal Flo
     And the following events are displayed on the schedule
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | Volunteer | 1/1/2023 09:00 | 1/1/2023 18:00 | false | null | null | null |
-    | 002 | Work | 1/2/2023 09:00 | 1/2/2023 18:00 | true | 13/4/2023 | weekly | [Monday] |
+    | 001 | Volunteer | 6/2/2023 09:00 | 6/2/2023 18:00 | false | null | null | null |
+    | 002 | Work | 6/2/2023 09:00 | 6/2/2023 18:00 | true | 12/4/2023 | weekly | [Monday] |
 
 Scenario Outline: User modifies an unique event to a recurring event with an invalid date (Error Flow)
 
