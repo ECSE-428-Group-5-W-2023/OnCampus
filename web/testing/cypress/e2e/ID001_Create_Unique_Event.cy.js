@@ -24,7 +24,7 @@ describe("Basic app navigation", () => {
     cy.visit("/schedule");
     cy.get(":nth-child(5) > :nth-child(2)").dblclick();
     cy.get("input[placeholder=Title]").type("Test Event");
-    cy.get("textarea[placeholder=Notes]").type("Test Description");
+    cy.get("input[placeholder=\"Add description\"]").type("Test Description");
     cy.get("button").contains("Save").click();
     cy.url().should("include", "/schedule"); // check that at the correct url
     cy.get("div").contains("Test Event").click(); // check that the event is there
