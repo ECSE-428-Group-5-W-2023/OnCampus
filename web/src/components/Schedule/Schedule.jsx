@@ -188,7 +188,7 @@ export default function Schedule() {
       const changes = Object.values(changed)[0];
 
       if (changed.startDate > changed.endDate) {
-        setShowModal(true);
+        incorrectDates();
 
         return;
       }
