@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cypress open -c baseUrl=http://localhost:9241"
+    "test": "cypress open -c baseUrl=http://localhost:9241",
+    "test-record": "cypress run --record --key fd7090f0-0881-4ba1-919c-dce3ebf460f4 -c baseUrl=http://localhost:9241"
     },
   "author": "",
   "license": "ISC",
