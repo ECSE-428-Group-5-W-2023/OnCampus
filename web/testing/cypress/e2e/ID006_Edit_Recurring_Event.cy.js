@@ -30,7 +30,7 @@ describe("Edit Unique Events", () => {
     //create ECSE428 event
     cy.visit("/schedule");
 
-    cy.wait(10000);
+    cy.wait(5000);
     cy.get(":nth-child(5) > :nth-child(2)").dblclick();
     cy.get("input[placeholder=Title]").type("ECSE428", { force: true }).should('have.value', 'ECSE428');
     cy.get('input[placeholder="Add description"]').type("D", { force: true });
@@ -58,7 +58,7 @@ describe("Edit Unique Events", () => {
 
      //create ECSE310 event
      cy.visit("/schedule");
-     cy.wait(10000);
+     cy.wait(5000);
      cy.get(":nth-child(5) > :nth-child(2)").dblclick();
      cy.get("input[placeholder=Title]").type("ECSE310", { force: true }).should('have.value', 'ECSE310');
      cy.get('input[placeholder="Add description"]').type("D", { force: true });
@@ -106,7 +106,6 @@ describe("Edit Unique Events", () => {
     const userEmail = `e2e+${Math.ceil(
       Math.random() * 1000000000000000
     )}@testdfas.com`;
-    console.log(userEmail);
     cy.get(".w-full > .flex").click();
     cy.origin(
       "https://oncampus.us.auth0.com",
@@ -123,7 +122,7 @@ describe("Edit Unique Events", () => {
     //create Coffee&Chat event
     cy.visit("/schedule");
 
-    cy.wait(10000);
+    cy.wait(5000);
     cy.get(":nth-child(5) > :nth-child(2)").dblclick();
     cy.get("input[placeholder=Title]").type("Coffee&Chat", { force: true }).should('have.value', 'Coffee&Chat');
     cy.get('input[placeholder="Add description"]').type("D", { force: true });
@@ -151,7 +150,7 @@ describe("Edit Unique Events", () => {
 
      //create ECSE310 event
      cy.visit("/schedule");
-     cy.wait(10000);
+     cy.wait(5000);
      cy.get(":nth-child(5) > :nth-child(2)").dblclick();
      cy.get("input[placeholder=Title]").type("ECSE310", { force: true }).should('have.value', 'ECSE310');
      cy.get('input[placeholder="Add description"]').type("D", { force: true });

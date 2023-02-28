@@ -13,7 +13,6 @@ it("Edit an unique event", () => {
   const userEmail = `e2e+${Math.ceil(
     Math.random() * 1000000000000000
   )}@testdfas.com`;
-  console.log(userEmail);
   cy.get(".w-full > .flex").click();
   cy.origin(
     "https://oncampus.us.auth0.com",
@@ -29,7 +28,7 @@ it("Edit an unique event", () => {
 
   //create volunteer event
   cy.visit("/schedule");
-  cy.wait(10000);
+  cy.wait(5000);
   cy.get(":nth-child(5) > :nth-child(2)").dblclick();
   cy.get("input[placeholder=Title]").type("Volunteer", { force: true }).should('have.value', 'Volunteer');
   cy.get('input[placeholder="Add description"]').type("D", { force: true });
@@ -42,7 +41,7 @@ it("Edit an unique event", () => {
 
   //create work event
   cy.visit("/schedule");
-  cy.wait(10000);
+  cy.wait(5000);
   cy.get(":nth-child(5) > :nth-child(3)").dblclick();
   cy.get("input[placeholder=Title]").type("Work", { force: true }).should('have.value', 'Work');
   cy.get('input[value="07/02/2023 08:00 AM"]').click().clear().type("07/02/2023 09:00 AM", {delay: 100}, { force: true }); //edit time 
@@ -55,7 +54,7 @@ it("Edit an unique event", () => {
 
   //edit volunteer event title and end time 
   cy.visit("/schedule");
-  cy.wait(10000);
+  cy.wait(5000);
   cy.contains("Volunteer").click();
   cy.get("button").get("svg").get('[data-testid^=EditIcon]').click();
   cy.get('input[value="06/02/2023 06:00 PM"]').clear().type("06/02/2023 03:00 PM", {delay: 100}, { force: true }); //edit time 
@@ -90,7 +89,7 @@ it("Edit an unique event", () => {
   
     //create volunteer event
     cy.visit("/schedule");
-    cy.wait(10000);
+    cy.wait(5000);
     cy.get(":nth-child(5) > :nth-child(2)").dblclick();
     cy.get("input[placeholder=Title]").type("Volunteer", { force: true }).should('have.value', 'Volunteer');
     cy.get('input[placeholder="Add description"]').type("D", { force: true });
@@ -103,7 +102,7 @@ it("Edit an unique event", () => {
   
     //create work event
     cy.visit("/schedule");
-    cy.wait(10000);
+    cy.wait(5000);
     cy.get(":nth-child(5) > :nth-child(3)").dblclick();
     cy.get("input[placeholder=Title]").type("Work", { force: true }).should('have.value', 'Work');
     cy.get('input[value="07/02/2023 08:00 AM"]').clear().type("07/02/2023 09:00 AM", { force: true }); //edit time 
@@ -116,7 +115,7 @@ it("Edit an unique event", () => {
   
     //making work event into a recurring event 
     cy.visit("/schedule");
-    cy.wait(10000);
+    cy.wait(5000);
     cy.contains("Work").click();
     cy.get("button").get("svg").get('[data-testid^=EditIcon]').click();
     cy.get("label").get("span").contains("Repeat").click();
