@@ -25,7 +25,6 @@
     "electron": "^22.0.0",
     "nth-check": "^2.1.1",
     "react": "^18.1.0",
-    "react-basic-popup": "^1.0.0",
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.4.0",
     "react-scripts": "^5.0.1",
