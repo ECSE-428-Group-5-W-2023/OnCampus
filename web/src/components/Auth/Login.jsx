@@ -16,7 +16,7 @@ const LoginButton = () => {
           onClick={() => logout({ returnTo: window.location.origin })}
         >
           <div className=" flex flex-row">
-            <FontAwesomeIcon icon={faSignOut} />
+            <FontAwesomeIcon icon={faSignOut} className="my-auto" />
             <div className="hidden sm:block ml-2"> Log Out</div>
           </div>
         </button>
@@ -28,7 +28,7 @@ const LoginButton = () => {
           onClick={() => loginWithRedirect()}
         >
           <div className=" flex flex-row">
-            <FontAwesomeIcon icon={faSignIn} />
+            <FontAwesomeIcon icon={faSignIn} className="my-auto"/>
             <div className="hidden sm:block ml-2"> Log In</div>
           </div>
         </button>
