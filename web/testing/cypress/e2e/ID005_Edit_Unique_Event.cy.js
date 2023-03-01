@@ -28,7 +28,7 @@ it("Edit an unique event", () => {
 
   //create volunteer event
   cy.visit("/schedule");
-  cy.wait(1000);
+  cy.wait(5000);
   cy.get(":nth-child(5) > :nth-child(2)").dblclick();
   cy.get("input[placeholder=Title]").type("Volunteer", { force: true }).should('have.value', 'Volunteer');
   cy.get('input[placeholder="Add description"]').type("D", { force: true });
@@ -163,7 +163,7 @@ it("Edit an unique event", () => {
     
       //create volunteer event
       cy.visit("/schedule");
-      cy.wait(1000);
+      cy.wait(5000);
       cy.get(":nth-child(5) > :nth-child(2)").dblclick();
       cy.get("input[placeholder=Title]").type("Volunteer", { force: true }).should('have.value', 'Volunteer');
       cy.get('input[placeholder="Add description"]').type("D", { force: true });
