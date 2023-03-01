@@ -7,6 +7,7 @@ describe("Remove Event From Schedule", () => {
   
       cy.visit("/");
     });
+
     it("Remove Event from Schedule", () => {
     //log in
     const userEmail = `e2e+${Math.ceil(
@@ -108,5 +109,6 @@ describe("Remove Event From Schedule", () => {
         //can't delete event without the event existing in the database
         cy.get("div").contains("Volunteer").should("not.exist");
     });
+    
   });
   
