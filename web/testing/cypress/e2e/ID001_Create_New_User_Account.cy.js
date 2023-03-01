@@ -11,7 +11,7 @@ describe("User Authentication", () => {
       cy.visit("/");
     });
 
-    it("Log in", () => {
+    it("Create an account", () => {
       const email = chance.email();
       console.log(email);
       cy.get(".w-full > .flex").click();
