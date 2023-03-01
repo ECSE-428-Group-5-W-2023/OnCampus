@@ -191,11 +191,13 @@ it("Edit an unique event", () => {
       cy.get("div").contains("Work").click(); // check that the event is there
       cy.get(".Content-title").contains("Work"); // check that the title is correct
     
-      //edit volunteer event title and end time 
+      //edit volunteer event start time and end time 
       cy.visit("/schedule");
       cy.wait(5000);
       cy.contains("Volunteer").click();
       cy.get("button").get("svg").get('[data-testid^=EditIcon]').click();
+      cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(0).clear();
+      cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(0).should("be.enabled").type("07/02/2023 10:00 AM");
       cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(1).clear();
       cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(1).should("be.enabled").type("05/02/2023 09:00 PM");
       cy.get("button").contains("Save").click();
