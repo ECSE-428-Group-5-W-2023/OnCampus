@@ -13,7 +13,6 @@ describe("Remove Event From Schedule", () => {
     const userEmail = `e2e+${Math.ceil(
         Math.random() * 1000000000000000
       )}@testdfas.com`;
-      console.log(userEmail);
       cy.get(".w-full > .flex").click();
       cy.origin(
         "https://oncampus.us.auth0.com",
@@ -33,8 +32,10 @@ describe("Remove Event From Schedule", () => {
     cy.get(":nth-child(5) > :nth-child(2)").dblclick();
     cy.get("input[placeholder=Title]").type("Volunteer", { force: true }).should('have.value', 'Volunteer');
     cy.get('input[placeholder="Add description"]').type("D", { force: true });
-    cy.get('input[value="06/02/2023 08:00 AM"]').click().clear().type("06/02/2023 09:00 AM", {delay: 100}, { force: true }); //edit time 
-    cy.get('input[value="06/02/2023 08:30 AM"]').clear().type("06/02/2023 06:00 PM", {delay: 100}, { force: true }); //edit time 
+    cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(0).clear();
+    cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(0).should("be.enabled").type("06/02/2023 09:00 AM");
+    cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(1).clear();
+    cy.get('input[placeholder="dd/mm/yyyy hh:mm (a|p)m"]').eq(1).should("be.enabled").type("06/02/2023 06:00 PM");
     cy.get("button").contains("Save").click();
     cy.url().should("include", "/schedule"); // check that at the correct url
     cy.get("div").contains("Volunteer").click(); // check that the event is there
