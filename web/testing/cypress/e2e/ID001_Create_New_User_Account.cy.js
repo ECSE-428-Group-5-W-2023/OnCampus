@@ -4,7 +4,7 @@
 import Chance from 'chance'
 const chance = new Chance();
 
-describe("User Authentication", () => {
+describe("Creating new user account", () => {
 
     beforeEach(() => {
       cy.viewport(1440, 900); 
