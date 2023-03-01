@@ -187,9 +187,8 @@ export default function Schedule() {
       const id = Object.keys(changed)[0];
       const changes = Object.values(changed)[0];
 
-      if (changed.startDate > changed.endDate) {
-        setShowModal(true);
-
+      if (changes.startDate > changes.endDate) {
+        incorrectDates();
         return;
       }
       editEvent(
