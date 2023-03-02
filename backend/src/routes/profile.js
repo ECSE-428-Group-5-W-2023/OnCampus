@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
   // Get user from profile list
   var profile = await pool.query(
     `SELECT * FROM profile
-    WHERE profile_id = '${userProfile.sub.replace("|", "_")}'`
+    WHERE profile_id = '${userProfile.sub.replace("|", "_")}' LIMIT 1`
   );
 
   res.json({ profile: profile?.rows });

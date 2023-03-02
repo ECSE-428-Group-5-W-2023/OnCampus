@@ -126,18 +126,7 @@ export default class Api {
     });
   };
 
-//    getProfile = async (token) => {
-//        return (await (await this.init(token)).get("/api/profile")).data;
-//  };
-  getProfile = async (accessToken) => {
-    const api = new Api();
-    try {
-      const response = await api.init(accessToken).get("/api/profile");
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw new Error("Failed to get user profile");
-    }
+    getProfile = async (token) => {
+        return (await (await this.init(token)).get("/api/profile")).data;
   };
-
 }

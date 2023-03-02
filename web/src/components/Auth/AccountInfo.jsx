@@ -10,29 +10,32 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
   const [bio, setBio] = useState("");
-  const [profile, setProfile] = useState("");
-
-  const [profileCompleted, setProfileCompleted] = useState(false);
+  const [profile, setProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
   const api = new Api();
 
   useEffect(() => {
       try {
-//         getUserProfile();
+        getUserProfile();
       } catch (err) {
         console.log("error" + err);
       }
     }, []);
-//
-//     async function getUserProfile() {
-//         try {
-//             api.getProfile(await getAccessTokenSilently()).then((res) => {
-//               setProfile(res.profile);
-//             });
-//           } catch (err) {
-//             console.log("error" + err);
-//           }
-//     }
+
+    async function getUserProfile() {
+        try {
+            api.getProfile(await getAccessTokenSilently()).then((res) => {
+              setUserProfile(res.profile[0]);
+               console.log("res.profile= " + res.profile);
+               console.log("res= " + res);
+               console.log("userProfile= " + userProfile);
+               console.log("name= " + name);
+            });
+          } catch (err) {
+            console.log("error" + err);
+          }
+    }
 
     async function createProfile(profile) {
           profile.preventDefault(); //prevent page refresh
@@ -49,87 +52,36 @@ const Profile = () => {
                 )
                 .then((res) => {
                   console.log(res);
-                  setProfileCompleted(true);
                 });
-
-//                 getUserProfile();
+                getUserProfile();
           }
-
-//   async function handleSubmit (userProfile) {
-//     userProfile.preventDefault();
-//
-//     const data = {
-//         name,
-//         username,
-//         school,
-//         bio,
-//     };
-//
-//     async function createProfile(userProfile) {
-//       userProfile.preventDefault(); //prevent page refresh
-// //       const profile = await api.getProfile(await getAccessTokenSilently());
-//
-//       //create or update profile
-//       if (profile) {
-//           await api
-//             .createProfile(
-//               await getAccessTokenSilently(),
-//               email,
-//               name,
-//               username,
-//               school,
-//               bio
-//             )
-//             .then((res) => {
-//               console.log(res);
-//               setUsername(res.username);
-//               setName(res.name);
-//               setSchool(res.school);
-//               setBio(res.bio);
-//               setProfileCompleted(true);
-//             });
-//       } else {
-//         await api
-//         .updateProfile(
-//          await getAccessTokenSilently(),
-//          email,
-//          name,
-//          username,
-//          school,
-//          bio
-//          )
-//          .then((res) => {
-//             console.log(res);
-//             setUsername(res.username);
-//             setName(res.name);
-//             setSchool(res.school);
-//             setBio(res.bio);
-//             setProfileCompleted(true);
-//          });
-//       }
-//     } };
-
-//   useEffect(() => {
-//      async function  fetchProfile() {
-//       if (isAuthenticated) {
-//         const profile = await api.getProfile(await getAccessTokenSilently());
-//         if (profile) {
-//           setUsername(profile.username);
-//           setName(profile.name);
-//           setSchool(profile.school);
-//           setBio(profile.bio);
-//           setProfileCompleted(true);
-//         }
-//       }
-//     };
-//
-//     fetchProfile();
-//   }, [isAuthenticated, api, getAccessTokenSilently]);
-
 
   return (
     <div className="user-profile">
-          <h1 className="text-white text-lg font-bold m-3 mx-auto">Complete Your Profile</h1>
+      {userProfile ? (
+        <div>
+          <img
+              src={user?.picture}
+              alt={`${user?.name}`}
+              className="w-40 h-40 rounded-full mx-auto"
+          />
+          <div className="text-white text-lg font-bold m-3 mx-auto">
+              Email: {user?.email}
+          </div>
+          <div className="text-white text-lg font-bold m-3 mx-auto">
+              Name: {userProfile.name}
+          </div>
+          <div className="text-white text-lg font-bold m-3 mx-auto">
+              School: {userProfile.school}
+          </div>
+          <div className="text-white text-lg font-bold m-3 mx-auto">
+           Bio: {userProfile.bio}
+          </div>
+        </div>
+      ) : (
+      <div>
+          <h1 className="text-white">Complete Your Profile!</h1>
+          <div>
           <form onSubmit={createProfile}>
               <label htmlFor="username" className="text-white text-lg font-bold m-3 mx-auto">
                 Username:
@@ -172,40 +124,10 @@ const Profile = () => {
              <br></br>
             <Button type="submit">Submit</Button>
           </form>
-
-      { profileCompleted => {
-          return (
-              <div>
-                <img
-                    src={user?.picture}
-                    alt={`${user?.name}`}
-                    className="w-40 h-40 rounded-full mx-auto"
-                />
-
-                <div className="text-white text-lg font-bold m-3 mx-auto">
-                    Email: {user?.email}
-                </div>
-                <div className="row">
-                    <pre className="col-12 text-light bg-dark p-4">
-                        {JSON.stringify(user, null, 2)}
-                    </pre>
-                </div>
-
-                <div className="text-white text-lg font-bold m-3 mx-auto">
-                    Name: {profile.name}
-                </div>
-
-                <div className="text-white text-lg font-bold m-3 mx-auto">
-                    School: {profile.school}
-                </div>
-
-                <div className="text-white text-lg font-bold m-3 mx-auto">
-                 Bio: {profile.bio}
-                 </div>
-              </div>
-          );
-        }}
-        </div>
+          </div>
+      </div>
+      )}
+    </div>
   );
 };
 
