@@ -19,12 +19,16 @@ import {
   AppointmentForm,
   AllDayPanel,
 } from "@devexpress/dx-react-scheduler-material-ui";
+import Popup from "../Common/Popup";
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
   const [is_private, setIsPrivate] = useState(false);
   const [event_tags, setEventTags] = useState([]);
   const [events, setEvents] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState(false);
+  const [modalDescription, setModalDescription] = useState(false);
 
   const [mappedEvents, setMappedEvents] = useState([]);
 
@@ -32,9 +36,10 @@ export default function Schedule() {
 
   const TextEditor = (props) => {
     // eslint-disable-next-line react/destructuring-assignment
-    if (props.type === 'multilineTextEditor') {
+    if (props.type === "multilineTextEditor") {
       return null;
-    } return <AppointmentForm.TextEditor {...props} />;
+    }
+    return <AppointmentForm.TextEditor {...props} />;
   };
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
@@ -48,10 +53,7 @@ export default function Schedule() {
         onFieldChange={onFieldChange}
         {...restProps}
       >
-        <AppointmentForm.Label
-          text="Description"
-          type="title"
-        />
+        <AppointmentForm.Label text="Description" type="title" />
         <AppointmentForm.TextEditor
           value={appointmentData.description}
           onValueChange={onCustomFieldChange}
@@ -85,7 +87,15 @@ export default function Schedule() {
     setIsPrivate(e.target.checked);
   }
 
-  async function createEvent(title, description, rRule, exDate, allDay, startDate, endDate) {
+  async function createEvent(
+    title,
+    description,
+    rRule,
+    exDate,
+    allDay,
+    startDate,
+    endDate
+  ) {
     //create even with specified title and description, set start time to now and end time to 1 hour from now (can be changed once we have interface to pick those)
     await api
       .createEvent(
@@ -115,7 +125,7 @@ export default function Schedule() {
     exDate,
     allDay,
     startDate,
-    endDate,
+    endDate
   ) {
     await api
       .editEvent(
@@ -139,9 +149,28 @@ export default function Schedule() {
     getAllEvents();
   }
 
+  //delete event with specified id
+  async function deleteEvent(id) {
+    api.deleteEvent(await getAccessTokenSilently(), id).then(() => {
+      getAllEvents();
+    });
+  }
+
+  async function incorrectDates() {
+    setModalTitle("Start date after end date");
+    setModalDescription(
+      "It looks like your start date was set to a time after your end date. Fix and try again"
+    );
+    setShowModal(true);
+  }
+
   //IMPLEMENT CREATE/EDIT/DELETE EVENT HERE
   const commitChanges = ({ added, changed, deleted }) => {
     if (added) {
+      if (added.startDate > added.endDate) {
+        incorrectDates();
+        return;
+      }
       createEvent(
         added.title,
         added.description,
@@ -157,6 +186,11 @@ export default function Schedule() {
       //EDIT EVENT
       const id = Object.keys(changed)[0];
       const changes = Object.values(changed)[0];
+
+      if (changes.startDate > changes.endDate) {
+        incorrectDates();
+        return;
+      }
       editEvent(
         id,
         changes.title,
@@ -171,6 +205,7 @@ export default function Schedule() {
     }
     if (deleted !== undefined) {
       //DELETE EVENT
+      deleteEvent(deleted);
       console.log("DELETED");
     }
     //refresh events
@@ -204,12 +239,19 @@ export default function Schedule() {
           <IntegratedEditing />
           <Toolbar />
           <DateNavigator />
+          <Popup
+            open={showModal}
+            setOpen={setShowModal}
+            title={modalTitle}
+            description={modalDescription}
+          />
           <ConfirmationDialog />
           <Appointments />
           <AppointmentTooltip showDeleteButton showOpenButton />
-          <AppointmentForm 
+          <AppointmentForm
             basicLayoutComponent={BasicLayout}
-            textEditorComponent={TextEditor}/>
+            textEditorComponent={TextEditor}
+          />
           <AllDayPanel />
         </Scheduler>
       </Paper>

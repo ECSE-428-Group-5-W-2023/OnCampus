@@ -13,8 +13,8 @@ Scenario Outline: User edits an attribute of an existing recurring event (Normal
     Given the following events displayed on the schedule:
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | ECSE 428 | 1/1/2023 18:00 | 1/1/2023 21:00 | true | 13/4/2023 | weekly | [Monday] |
-    | 002 | ECSE 310 | 1/2/2023 10:00 | 1/2/2023 11:30 | true | 13/4/2023 | weekly | [Monday, Wednesday] |
+    | 001 | ECSE428 | 6/2/2023 18:00 | 6/2/2023 21:00 | true | 12/4/2023 | weekly | [Monday] |
+    | 002 | ECSE310 | 6/2/2023 10:00 | 6/2/2023 11:30 | true | 12/4/2023 | weekly | [Monday, Wednesday] |
 
     When the user selects <event_id>
     And the user modifies the <end_date>
@@ -23,16 +23,16 @@ Scenario Outline: User edits an attribute of an existing recurring event (Normal
     And the following events are displayed on the schedule
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | ECSE 428 | 1/1/2023 18:00 | 1/1/2023 21:00 | true | 13/4/2023 | weekly | [Monday] |
-    | 002 | ECSE 310 | 1/2/2023 10:00 | 1/2/2023 12:00 | true | 13/4/2023 | weekly | [Monday, Wednesday] |
+    | 001 | ECSE428 | 6/2/2023 18:00 | 6/2/2023 20:00 | true | 12/4/2023 | weekly | [Monday] |
+    | 002 | ECSE310 | 6/2/2023 10:00 | 6/2/2023 11:30 | true | 12/4/2023 | weekly | [Monday, Wednesday] |
 
 Scenario Outline: User edits an existing recurring event with invalid dates (Error Flow)
 
     Given the following events displayed on the schedule:
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | ECSE 428 | 1/1/2023 18:00 | 1/1/2023 21:00 | true | 13/4/2023 | weekly | [Monday] |
-    | 002 | ECSE 310 | 1/2/2023 10:00 | 1/2/2023 12:00 | true | 13/4/2023 | weekly | [Monday, Wednesday] |
+    | 001 | ECSE428 | 6/2/2023 18:00 | 6/2/2023 21:00 | true | 12/4/2023 | weekly | [Monday] |
+    | 002 | ECSE310 | 6/2/2023 10:00 | 6/2/2023 11:30 | true | 12/4/2023 | weekly | [Monday, Wednesday] |
 
     When the user selects <event_id>
     And the user modifies <end_date> to earlier than <start_date> 
@@ -45,8 +45,8 @@ Scenario Outline: User modifies an existing recurring event to an unique event (
     Given the following events displayed on the schedule:
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | Coffee & Chat | 1/1/2023 18:00 | 1/1/2023 21:00 | true | 13/4/2023 | weekly | [Monday] |
-    | 002 | ECSE 310 | 1/2/2023 10:00 | 1/2/2023 12:00 | true | 13/4/2023 | weekly | [Monday, Wednesday] |
+    | 001 | Coffee&Chat | 6/2/2023 18:00 | 6/2/2023 21:00 | true | 12/4/2023 | weekly | [Monday] |
+    | 002 | ECSE310 | 6/2/2023 10:00 | 6/2/2023 11:30 | true | 12/4/2023 | weekly | [Monday, Wednesday] |
 
     When the user selects <event_id>
     And the user modifies <is_recurring> of the event to false
@@ -55,6 +55,6 @@ Scenario Outline: User modifies an existing recurring event to an unique event (
     And the following events are displayed on the schedule
 
     | event_id | event_name | start_date | end_date | is_recurring | end_period | frequency | day_of_week |
-    | 001 | Coffee & Chat | 1/1/2023 18:00 | 1/1/2023 21:00 | false | null | null | null |
-    | 002 | ECSE 310 | 1/2/2023 10:00 | 1/2/2023 12:00 | true | 13/4/2023 | weekly | [Monday, Wednesday] |
+    | 001 | Coffee&Chat | 6/2/2023 18:00 | 6/2/2023 21:00 | false | null | null | null |
+    | 002 | ECSE310 | 6/2/2023 10:00 | 6/2/2023 11:30 | true | 12/4/2023 | weekly | [Monday, Wednesday] |
  

@@ -4,10 +4,7 @@ import UserProfile from "../Auth/AuthInfo";
 import LoginButton from "../Auth/Login";
 import NavIcon from "./NavIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendar
-
-} from "@fortawesome/free-solid-svg-icons";
+import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 export default function Navbar() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -29,11 +26,13 @@ export default function Navbar() {
         </div>
       </Link>
       <Link to={"schedule"}>
-        {NavIcon(<FontAwesomeIcon icon={faCalendar} />, "Schedule")}
+        {NavIcon(
+          <FontAwesomeIcon icon={faCalendar} />,
+          "Schedule",
+          !isAuthenticated
+        )}
       </Link>
-      <Link to={"schedule"}>
-        {NavIcon(<FontAwesomeIcon icon={faCalendar} />, "Login required path", !isAuthenticated)}
-      </Link>
+
       <div className="sm:mt-auto">
       <Link to={"account"}>
         {!isLoading && isAuthenticated && (
