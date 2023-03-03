@@ -24,14 +24,23 @@ router.post("/", async (req, res) => {
 
   // create the profile if it doesn't exist or update it if it does
   if (profileCreated.rows.length === 0) {
-  const query = {
-      text: `INSERT INTO profile (profile_id, email, name, username, school, bio) VALUES ('${userProfile.sub.replace("|", "_")}', $1, $2, $3, $4, $5) RETURNING *`,
-      values: [profile.email, profile.name, profile.username, profile.school, profile.bio]
-  };
-  await pool.query(query);
-  res.json({ message: "Successfully posted" });
+    const query = {
+      text: `INSERT INTO profile (profile_id, email, name, username, school, bio) VALUES ('${userProfile.sub.replace(
+        "|",
+        "_"
+      )}', $1, $2, $3, $4, $5) RETURNING *`,
+      values: [
+        profile.email,
+        profile.name,
+        profile.username,
+        profile.school,
+        profile.bio,
+      ],
+    };
+    await pool.query(query);
+    res.json({ message: "Successfully posted" });
   } else {
-   // Update profile
+    // Update profile
     const query = `
           UPDATE profile
           SET name = $1, username = $2, school = $3, bio = $4
