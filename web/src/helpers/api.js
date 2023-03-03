@@ -89,8 +89,6 @@ export default class Api {
     });
   };
 
-  // PROFILE
-
   createProfile = async (
     token,
     email,
@@ -108,25 +106,7 @@ export default class Api {
     });
   };
 
-  updateProfile = async (
-    token,
-    id,
-    email,
-    name,
-    username,
-    school,
-    bio
-  ) => {
-    return (await this.init(token)).put(`/api/profile?id=${id}`, {
-      email,
-      name,
-      username,
-      school,
-      bio,
-    });
-  };
-
-    getProfile = async (token) => {
-        return (await (await this.init(token)).get("/api/profile")).data;
+  getProfile = async (token) => {
+    return (await (await this.init(token)).get("/api/profile")).data;
   };
 }

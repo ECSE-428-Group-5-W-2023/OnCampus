@@ -12,6 +12,7 @@ const Profile = () => {
   const [bio, setBio] = useState("");
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const api = new Api();
 
@@ -27,10 +28,6 @@ const Profile = () => {
         try {
             api.getProfile(await getAccessTokenSilently()).then((res) => {
               setUserProfile(res.profile[0]);
-               console.log("res.profile= " + res.profile);
-               console.log("res= " + res);
-               console.log("userProfile= " + userProfile);
-               console.log("name= " + name);
             });
           } catch (err) {
             console.log("error" + err);
@@ -40,6 +37,7 @@ const Profile = () => {
     async function createProfile(profile) {
           profile.preventDefault(); //prevent page refresh
           const email = user.email;
+          setShowModal(false);
           //create or update profile
               await api
                 .createProfile(
@@ -56,6 +54,10 @@ const Profile = () => {
                 getUserProfile();
           }
 
+    const handleModalOpen = () => {
+      setShowModal(true);
+    };
+
   return (
     <div className="user-profile">
       {userProfile ? (
@@ -69,6 +71,9 @@ const Profile = () => {
               Email: {user?.email}
           </div>
           <div className="text-white text-lg font-bold m-3 mx-auto">
+              Username: {userProfile.username}
+          </div>
+          <div className="text-white text-lg font-bold m-3 mx-auto">
               Name: {userProfile.name}
           </div>
           <div className="text-white text-lg font-bold m-3 mx-auto">
@@ -76,6 +81,52 @@ const Profile = () => {
           </div>
           <div className="text-white text-lg font-bold m-3 mx-auto">
            Bio: {userProfile.bio}
+          </div>
+
+          <Button onClick={handleModalOpen}>Edit</Button>
+          <div className={`modal ${showModal ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+          <form onSubmit={createProfile}>
+              <label htmlFor="username" className="text-white text-lg font-bold m-3 mx-auto">
+                Username:
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(profile) => setUsername(profile.target.value)}
+              />
+              <br></br>
+              <label htmlFor="name"className="text-white text-lg font-bold m-3 mx-auto">
+                Name:
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(profile) => setName(profile.target.value)}
+              />
+              <br></br>
+              <label htmlFor="school" className="text-white text-lg font-bold m-3 mx-auto">
+                School:
+              </label>
+              <input
+                type="text"
+                id="school"
+                value={school}
+                onChange={(profile) => setSchool(profile.target.value)}
+              />
+              <br></br>
+              <label htmlFor="bio" className="text-white text-lg font-bold m-3 mx-auto">
+                Bio:
+              </label>
+              <input
+                id="bio"
+                value={bio}
+                onChange={(profile) => setBio(profile.target.value)}
+              />
+             <br></br>
+            <Button type="submit">Submit Changes</Button>
+          </form>
           </div>
         </div>
       ) : (
