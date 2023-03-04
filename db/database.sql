@@ -16,3 +16,12 @@ CREATE TABLE "event" (
     "end_date" VARCHAR(255),
     CONSTRAINT "todo_fk1" FOREIGN KEY ("event_list_id") REFERENCES "event_list"("id")
 );
+CREATE TABLE "profile" (
+    "id" SERIAL PRIMARY KEY,
+    "profile_id" VARCHAR(255) NOT NULL,
+    "email" VARCHAR(255),
+    "name" VARCHAR(255),
+    "username" VARCHAR(255),
+    "school" VARCHAR(255),
+    "bio" VARCHAR(255)
+);

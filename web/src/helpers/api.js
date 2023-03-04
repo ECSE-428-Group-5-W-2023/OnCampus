@@ -88,4 +88,18 @@ export default class Api {
       end_date,
     });
   };
+
+  createProfile = async (token, email, name, username, school, bio) => {
+    return (await this.init(token)).post("/api/profile", {
+      email,
+      name,
+      username,
+      school,
+      bio,
+    });
+  };
+
+  getProfile = async (token) => {
+    return (await (await this.init(token)).get("/api/profile")).data;
+  };
 }
