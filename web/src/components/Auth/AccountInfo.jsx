@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import * as React from "react";
 import Api from "../../helpers/api";
 import Button from "../Common/Button";
+import Popup from "../Common/Popup";
 
 const Profile = () => {
   const { user, getAccessTokenSilently } = useAuth0();
@@ -13,6 +14,9 @@ const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showPopupModal, setShowPopupModal] = useState(false);
+  const [modalPopupTitle, setModalPopupTitle] = useState(false);
+  const [modalPopupDescription, setModalPopupDescription] = useState(false);
 
   const api = new Api();
 
@@ -34,8 +38,25 @@ const Profile = () => {
     }
   }
 
+  function isValidName(name) {
+    var pattern = /^[a-zA-Z\s\-]+$/; // Allowed: Characters, Space, Hyphens
+    return name.match(pattern) !== null;
+  }
+
+  async function invalidName() {
+    setModalPopupTitle("Invalid Name");
+    setModalPopupDescription(
+      "Your name must not contain a number or any special characters."
+    );
+    setShowPopupModal(true);
+  }
+
   async function createProfile(profile) {
     profile.preventDefault(); //prevent page refresh
+    if (!isValidName(name)) {
+          invalidName();
+          return;
+    }
     const email = user.email;
     setShowModal(false);
     //create or update profile
@@ -143,6 +164,12 @@ const Profile = () => {
                 onChange={(profile) => setBio(profile.target.value)}
               />
               <br></br>
+              <Popup
+                open={showPopupModal}
+                setOpen={setShowPopupModal}
+                title={modalPopupTitle}
+                description={modalPopupDescription}
+              />
               <Button type="submit">Submit Changes</Button>
             </form>
           </div>
@@ -203,6 +230,12 @@ const Profile = () => {
                 onChange={(profile) => setBio(profile.target.value)}
               />
               <br></br>
+              <Popup
+                open={showPopupModal}
+                setOpen={setShowPopupModal}
+                title={modalPopupTitle}
+                description={modalPopupDescription}
+              />
               <Button type="submit">Submit</Button>
             </form>
           </div>
