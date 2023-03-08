@@ -20,6 +20,8 @@ router.get("/", async (req, res) => {
   res.json({ events: events?.rows });
 });
 
+// TODO: delete user that is logged in
+
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const event = req.body;
