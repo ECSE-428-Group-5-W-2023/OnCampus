@@ -1,7 +1,7 @@
-Feature: Sending Friend Requests
+Feature: Responding To Friend Requests
 
 As an OnCampus User
-I would like to be able to accept friend requrests that were sent to me
+I would like to be able to reply to friend requests that were sent to me
 So that I can connect with other users
 
 Scenario Outline: Accept Friend Request (Normal Flow)
