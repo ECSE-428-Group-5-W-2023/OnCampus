@@ -15,7 +15,7 @@ As an OnCampus User
     Then the user is removed from the group
     And the removed user can no longer access the group's shared schedule 
 
-  Scenario: Remove a non-existent user from a group (Error Flow)
+  Scenario: Remove a user from a group while not being the creator of the group (Error Flow)
     When the user requests to remove a user from a group
     And the user to be removed is in the group
     But the user requesting the removal is not the creator of the group
