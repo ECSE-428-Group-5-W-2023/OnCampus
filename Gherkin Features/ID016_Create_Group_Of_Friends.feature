@@ -2,7 +2,7 @@ Feature: Create a group of friends
 
 As an OnCampus User
   I would like to create a group of friends 
-  So that I can keep share my schedule to a group of friends that I wish
+  So that I could share a single schedule where we can see our shared events
 
   Background:
     Given the user is logged in the OnCampus system
@@ -21,7 +21,7 @@ As an OnCampus User
     |      004 |     yu.a.lu@mail.mcgill.ca | 
 
   
-  Scenario Outline: Create another new group of friends event (Normal Flow)
+  Scenario Outline: Create another new group of friends event (Alternate Flow)
     And the user already has a group of friends with <group_id> and <email>
     And the following group of friends exist
     | group_id | member | 
