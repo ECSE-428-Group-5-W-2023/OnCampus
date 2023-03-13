@@ -2,7 +2,7 @@ Feature: Unfriend Another User
 
 As an OnCampus User
 I would like to remove another user from my friend list
-So that I can stop sharing my schedule to them
+So that i can stop sharing my schedule with them
 
 Background:
 Given the user with email "jake.doe@mail.mcgill.ca" and password "jk123" is logged into their account in OnCampus
