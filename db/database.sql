@@ -29,5 +29,5 @@ CREATE TABLE "friend_group" (
     "id" SERIAL PRIMARY KEY,
     "group_name" VARCHAR(255),
     "profile_id" integer NOT NULL,
-    CONSTRAINT "todo_fk1" FOREIGN KEY ("profile_id") REFERENCES "profile"("id")
+    CONSTRAINT "todo_fk1" FOREIGN KEY ("profile_id") REFERENCES "profile"("profile_id")
 );
