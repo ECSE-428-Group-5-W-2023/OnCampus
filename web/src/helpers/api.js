@@ -102,4 +102,20 @@ export default class Api {
   getProfile = async (token) => {
     return (await (await this.init(token)).get("/api/profile")).data;
   };
+
+  createFriendship = async (token, usernameFriend) => {
+    return (await this.init(token)).post("/api/friendship", null, {
+      params: {
+        usernameFriend,
+      },
+    });
+  };
+
+  getFriend = async (token, usernameFriend) => {
+    return (await this.init(token)).get("/api/friendship", {
+        params: {
+            usernameFriend,
+        },
+    });
+  };
 }
