@@ -25,3 +25,8 @@ CREATE TABLE "profile" (
     "school" VARCHAR(255),
     "bio" VARCHAR(255)
 );
+CREATE TABLE "friend_requests" (
+    "id" SERIAL PRIMARY KEY,
+    "sending_profile_id" VARCHAR(255),
+    "receiving_profile_id" VARCHAR(255)
+);
