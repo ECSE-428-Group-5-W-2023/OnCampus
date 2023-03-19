@@ -8,6 +8,7 @@ import ErrorPage from "./routes/Error";
 import { Auth0Provider } from "@auth0/auth0-react";
 import Schedule from "./components/Schedule/Schedule";
 import AccountInfo from "./components/Auth/AccountInfo";
+import FriendRequests from "./components/Friendship/FriendRequests";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "/account",
         element: <AccountInfo />,
+      },
+      {
+        path: "/friendrequests",
+        element: <FriendRequests />,
       }
     ],
   },
