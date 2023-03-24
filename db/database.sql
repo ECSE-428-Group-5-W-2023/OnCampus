@@ -14,11 +14,11 @@ CREATE TABLE "event" (
     "all_day" BOOLEAN,
     "start_date" VARCHAR(255),
     "end_date" VARCHAR(255),
-    CONSTRAINT "todo_fk1" FOREIGN KEY ("event_list_id") REFERENCES "event_list"("id")
+    CONSTRAINT "event_fk1" FOREIGN KEY ("event_list_id") REFERENCES "event_list"("id")
 );
 CREATE TABLE "profile" (
     "id" SERIAL PRIMARY KEY,
-    "profile_id" VARCHAR(255) NOT NULL,
+    "profile_id" VARCHAR(255) NOT NULL UNIQUE,
     "email" VARCHAR(255),
     "name" VARCHAR(255),
     "username" VARCHAR(255),
@@ -28,6 +28,6 @@ CREATE TABLE "profile" (
 CREATE TABLE "friend_group" (
     "id" SERIAL PRIMARY KEY,
     "group_name" VARCHAR(255),
-    "profile_id" integer NOT NULL,
-    CONSTRAINT "todo_fk1" FOREIGN KEY ("profile_id") REFERENCES "profile"("profile_id")
+    "profile_id" VARCHAR(255)  NOT NULL,
+    CONSTRAINT "friend_group_fk1" FOREIGN KEY ("profile_id") REFERENCES "profile"("profile_id")
 );
