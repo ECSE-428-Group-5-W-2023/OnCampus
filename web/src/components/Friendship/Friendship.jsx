@@ -25,10 +25,26 @@ const Friendship = () => {
     }
   }, []);
 
-  async function friendDoesNotExist() {
+  async function friendNotFound() {
     setModalPopupTitle("Account Does Not Exist");
     setModalPopupDescription(
       "Your friend may not have an OnCampus account or the username is wrong."
+    );
+    setShowPopupModal(true);
+  }
+
+  async function friendshipExists() {
+    setModalPopupTitle("You are already friends!");
+    setModalPopupDescription(
+      "You have already added this person as a friend."
+    );
+    setShowPopupModal(true);
+  }
+
+  async function addingYourself() {
+    setModalPopupTitle("You are adding yourself!");
+    setModalPopupDescription(
+      "You cannot add yourself as a friend."
     );
     setShowPopupModal(true);
   }
@@ -45,7 +61,7 @@ const Friendship = () => {
     } catch (err) {
       console.log("error" + err);
     }
-    // add error handling for friendDoesNotExist
+    // add error handling for friendNotFound
     handleModalOpen();
   }
 
@@ -57,7 +73,12 @@ const Friendship = () => {
       usernameFriend
       )
       .then((res) => {
-        setUserProfileFriend(res.data.profileFriend[0]);
+        if (res.data.profileFriend.length === 0) {
+            friendNotFound();
+            console.log("username not found!");
+        } else {
+            setUserProfileFriend(res.data.profileFriend[0]);
+        }
       });
     } catch (err) {
       console.log("error" + err);
@@ -76,7 +97,15 @@ const Friendship = () => {
       )
       .then((res) => {
         console.log(res);
+        if (res.data.message == "Friendship already exists") {
+            friendshipExists();
+            console.log("friendship already exists!");
+        } else if (res.data.message == "Adding yourself") {
+            addingYourself();
+            console.log("adding yourself!");
+        }
       });
+    setShowModal(false);
     getFriend(usernameFriend);
   }
 
@@ -105,6 +134,12 @@ const Friendship = () => {
                 onChange={(event) => setUsernameFriend(event.target.value)}
               />
               <br></br>
+              <Popup
+                open={showPopupModal}
+                setOpen={setShowPopupModal}
+                title={modalPopupTitle}
+                description={modalPopupDescription}
+              />
               <Button type="submit">Search</Button>
             </form>
           </div>
@@ -121,6 +156,12 @@ const Friendship = () => {
         <div className="text-white text-lg font-bold m-3 mx-auto">
             Bio: {userProfileFriend.bio}
         </div>
+        <Popup
+            open={showPopupModal}
+            setOpen={setShowPopupModal}
+            title={modalPopupTitle}
+            description={modalPopupDescription}
+        />
         <Button onClick={createFriendship}>Add Friend!</Button>
       </div>
       ) : (
@@ -141,6 +182,12 @@ const Friendship = () => {
                 onChange={(event) => setUsernameFriend(event.target.value)}
               />
               <br></br>
+              <Popup
+                open={showPopupModal}
+                setOpen={setShowPopupModal}
+                title={modalPopupTitle}
+                description={modalPopupDescription}
+              />
               <Button type="submit">Search</Button>
             </form>
           </div>
