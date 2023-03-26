@@ -91,15 +91,14 @@ router.put("/", async (req, res) => {
 });
 
 router.delete("/", async (req, res) => {
-
   // Delete event
   const query = `
         DELETE FROM event WHERE id = ${req.query.id} 
       `;
 
-      await pool.query(query);
+  await pool.query(query);
 
   res.json({ message: "Successfully deleted" });
 });
-  
+
 module.exports = router;
