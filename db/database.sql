@@ -30,9 +30,8 @@ CREATE TABLE "friendship" (
     "profile_id_one" VARCHAR(255),
     "profile_id_two" VARCHAR(255)
 );
-CREATE TABLE "friend_group" (
+CREATE TABLE "friendrequest"(
     "id" SERIAL PRIMARY KEY,
-    "group_name" VARCHAR(255),
-    "profile_id" integer NOT NULL,
-    CONSTRAINT "todo_fk1" FOREIGN KEY ("profile_id") REFERENCES "profile"("profile_id")
-);
+    "sending_profile_id" VARCHAR(255),
+    "receiving_profile_id" VARCHAR(255)
+)

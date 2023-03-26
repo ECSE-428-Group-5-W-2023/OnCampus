@@ -118,4 +118,17 @@ export default class Api {
         },
     });
   };
+  
+  sendFriendRequest = async (token, usernameFriend) => {
+    return (await this.init(token)).post("/api/friendrequests", null, {
+      params: {
+        usernameFriend,
+      },
+    });
+  };
+
+  deleteFriendRequest = async (token, id) => {
+    return (await this.init(token)).delete(`/api/friendship?id=${id}`);
+  };
+
 }
