@@ -2,17 +2,6 @@ const express = require("express");
 const pool = require("../config/db");
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const userProfile = req.auth.payload;
-
-  // Get user from profile list
-  var profile = await pool.query(
-    `SELECT * FROM profile
-      WHERE profile_id = '${userProfile.sub.replace("|", "_")}' LIMIT 1`
-  );
-  res.json({ profile: profile?.rows });
-});
-
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const usernameFriend = req.query.usernameFriend;
@@ -101,5 +90,7 @@ router.delete("/", async (req, res) => {
 
   res.json({ message: "Successfully deleted" });
 });
+
+//need an api call to get all the friendrequests associated with the user that is logged in 
 
 module.exports = router;

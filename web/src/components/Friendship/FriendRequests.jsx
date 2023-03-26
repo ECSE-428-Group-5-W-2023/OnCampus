@@ -14,6 +14,21 @@ const Friendship = () => {
     </div>
   );
 
+
+  //Link for the delete button inside of frontend: https://github.com/ECSE-428-Group-5-W-2023/OnCampus/commit/78b0addd19136d0ce2df47776a1ab25dcd9d56bc
+  //Link for the frontend displaying all the events: https://github.com/ECSE-428-Group-5-W-2023/OnCampus/tree/78b0addd19136d0ce2df47776a1ab25dcd9d56bc
+
+  //need a method that is called when Accept is pressed 
+    // ->This will take the two id's from the database row
+    // ->create a friendship between the two ids 
+    // ->delete the friend request 
+    // ->delete the front end 
+
+  //need a method that is called when Decline is pressed 
+    // ->This will just delete the friend request and nothing more 
+
+
+
 };
 
 export default Friendship;
