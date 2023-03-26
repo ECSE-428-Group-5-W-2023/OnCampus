@@ -49,6 +49,30 @@ const Friendship = () => {
     setShowPopupModal(true);
   }
 
+  async function friendshipDoesNotExist() {
+    setModalPopupTitle("You are not friends!");
+    setModalPopupDescription(
+      "You have not added this person as a friend."
+    );
+    setShowPopupModal(true);
+  }
+
+  async function deletingYourself() {
+    setModalPopupTitle("You are deleting yourself!");
+    setModalPopupDescription(
+      "You cannot delete yourself as a friend."
+    );
+    setShowPopupModal(true);
+  }
+
+  async function friendshipDeleted() {
+    setModalPopupTitle("Friendship Deleted!");
+    setModalPopupDescription(
+      "You have successfully deleted this friend."
+    );
+    setShowPopupModal(true);
+  }
+
   async function getFriend(usernameFriend) {
     try {
       api.getFriend(
@@ -109,6 +133,30 @@ const Friendship = () => {
     getFriend(usernameFriend);
   }
 
+  async function deleteFriendship(event) {
+    event.preventDefault(); //prevent page refresh
+    await api
+      .deleteFriendship(
+        await getAccessTokenSilently(),
+        usernameFriend
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.data.message == "Friendship does not exist") {
+            friendshipDoesNotExist();
+            console.log("friendship does not exist!");
+        } else if (res.data.message == "Deleting yourself") {
+            deletingYourself();
+            console.log("deleting yourself!");
+        } else if (res.data.message == "Friendship deleted") {
+            friendshipDeleted();
+            console.log("friendship deleted!");
+        }
+      });
+    setShowModal(false);
+    getFriend(usernameFriend);
+  }
+
   const handleModalOpen = () => {
     setShowModal(true);
   };
@@ -163,6 +211,8 @@ const Friendship = () => {
             description={modalPopupDescription}
         />
         <Button onClick={createFriendship}>Add Friend!</Button>
+        &nbsp;
+        <Button onClick={deleteFriendship}>Delete Friend!</Button>
       </div>
       ) : (
         <div>
