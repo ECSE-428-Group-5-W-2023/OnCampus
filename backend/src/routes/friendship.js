@@ -76,11 +76,6 @@ router.delete("/", async (req, res) => {
   const valuesProfile = [usernameFriend];
   try {
     const profileFriend = await pool.query(queryProfile, valuesProfile);
-
-    if (userProfile.sub.replace("|", "_") === profileFriend.rows[0].profile_id) {
-        res.json({ message: "Deleting yourself" });
-        return;
-    }
   
     // check if they are friends
     const queryFriendshipExists = `

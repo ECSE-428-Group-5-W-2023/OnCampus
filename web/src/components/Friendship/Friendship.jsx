@@ -57,14 +57,6 @@ const Friendship = () => {
     setShowPopupModal(true);
   }
 
-  async function deletingYourself() {
-    setModalPopupTitle("You are deleting yourself!");
-    setModalPopupDescription(
-      "You cannot delete yourself as a friend."
-    );
-    setShowPopupModal(true);
-  }
-
   async function friendshipDeleted() {
     setModalPopupTitle("Friendship Deleted!");
     setModalPopupDescription(
@@ -145,9 +137,6 @@ const Friendship = () => {
         if (res.data.message == "Friendship does not exist") {
             friendshipDoesNotExist();
             console.log("friendship does not exist!");
-        } else if (res.data.message == "Deleting yourself") {
-            deletingYourself();
-            console.log("deleting yourself!");
         } else if (res.data.message == "Friendship deleted") {
             friendshipDeleted();
             console.log("friendship deleted!");
