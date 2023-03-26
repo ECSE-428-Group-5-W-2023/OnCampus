@@ -2,6 +2,7 @@ const express = require("express");
 const pool = require("../config/db");
 const router = express.Router();
 
+//This handle sending a friend request
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const usernameFriend = req.query.usernameFriend;
@@ -66,7 +67,7 @@ router.post("/", async (req, res) => {
     const queryCreateFriendRequest = {
       text: `
           INSERT INTO friendrequest (receiving_profile_id, sending_profile_id)
-          VALUES ($1, $2)
+          VALUES ($2, $1)
           RETURNING *
         `,
       values: [
@@ -81,6 +82,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+//Not tested, but should delete a friend request
 router.delete("/", async (req, res) => {
   // Delete friend request
   const query = `
@@ -92,5 +94,21 @@ router.delete("/", async (req, res) => {
 });
 
 //need an api call to get all the friendrequests associated with the user that is logged in 
+//WIP
+router.get("/", async (req, res) => {
+  const userProfile = req.auth.payload;
+
+  //Get friend request list from user (ngl not sure if receiving profile is the user that didn't send)
+  const query = 
+    `SELECT * FROM friendrequest 
+    WHERE receiving_profile_id = '${userProfile.sub.replace("|", "_")}'`;
+
+  //Putting the list obtained into a variable 
+  var friendRequests = null
+  friendRequests = await pool.query(query);
+
+  res.json({ friendRequests: friendRequests?.rows });
+});
+
 
 module.exports = router;

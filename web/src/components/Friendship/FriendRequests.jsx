@@ -6,12 +6,78 @@ import Button from "../Common/Button";
 import Popup from "../Common/Popup";
 
 const Friendship = () => {
+  const [requests, setRequests] = useState([]);
+  const { getAccessTokenSilently } = useAuth0();
+  // const [userProfileFriend, setUserProfileFriend] = useState(null);
+
   const api = new Api();
 
+  useEffect(() => {
+    try {
+      getAllFriendRequests();
+    } catch (err) {
+      console.log("error" + err);
+    }
+  }, []);
+
+  
+  async function getAllFriendRequests() {
+    await api.getFriendRequests(await getAccessTokenSilently()).then((res) => {
+      setRequests(res.friendRequests);
+    });
+  }
+
+  // async function getFriend(usernameFriend) {
+  //   console.log("woop"); 
+  //   try {
+  //     api
+  //       .getFriend(await getAccessTokenSilently(), usernameFriend)
+  //       .then((res) => {
+  //         setUserProfileFriend(res.data.profileFriend[0]);
+  //         console.log("hi");
+  //       });
+  //   } catch (err) {
+  //     console.log("error" + err);
+  //   }
+  // }
+
+
   return (
+    //<div>
+   // <h1 className="text-white">Here are your friend requests!</h1>
+    //</div>
     <div>
-    <h1 className="text-white">Here are your friend requests!</h1>
+      <form onSubmit={getAllFriendRequests}>
+        <Button type="submit">Display Friend Requests</Button>
+      </form>
+      
+      <h1 className="text-white">Here are your friend requests!</h1>
+      {requests &&
+        requests.map((requests, key) => {
+          // console.log(requests.sending_profile_id);
+          //getting info of the sending_profile_id 
+          // var sendingProfile; 
+          // getFriend(requests.sending_profile_id);
+          // var na
+          // console.log(userProfileFriend.username); 
+          return (
+            
+            <li className="list-none" key={key}>
+              {
+                <div className="bg-slate-300 w-fit my-1 py-1 px-2 rounded ">
+                  {requests.sending_profile_id}
+                  <br />
+                  {requests.receiving_profile_id}
+                  <br />
+                  {requests.id}
+                  <br />  
+                </div>
+              }
+            </li>
+          );
+        })}
     </div>
+  
   );
 
 
