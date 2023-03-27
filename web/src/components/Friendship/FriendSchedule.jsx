@@ -30,6 +30,9 @@ export default function FriendSchedule() {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState(false);
   const [modalDescription, setModalDescription] = useState(false);
+  const [showPopupModal, setShowPopupModal] = useState(false);
+  const [modalPopupTitle, setModalPopupTitle] = useState(false);
+  const [modalPopupDescription, setModalPopupDescription] = useState(false);
 
   const [mappedEvents, setMappedEvents] = useState([]);
 
@@ -78,9 +81,29 @@ export default function FriendSchedule() {
     setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
   }, [events]);
 
+  async function friendshipDoesNotExist() {
+    setModalPopupTitle("You are not friends!");
+    setModalPopupDescription("You have not added this person as a friend.");
+    setShowPopupModal(true);
+  }
+
+  async function friendshipDeleted() {
+    setModalPopupTitle("Friendship Deleted!");
+    setModalPopupDescription("You have successfully deleted this friend.");
+    setShowPopupModal(true);
+  }
+
   async function getAllEvents() {
-    await api.getFriendsEvents(await getAccessTokenSilently(), searchparams.get("friend")).then((res) => {
-      setEvents(res.events);
+    await api
+    .getFriendsEvents(await getAccessTokenSilently(), searchparams.get("friend"))
+    .then((res) => {
+      console.log(res);
+      if(res.message == "Friendship does not exist"){
+        friendshipDoesNotExist();
+        console.log("friendship does not exist!")
+      } else { 
+        setEvents(res.events);
+      }  
     });
   }
 
@@ -116,6 +139,12 @@ export default function FriendSchedule() {
             setOpen={setShowModal}
             title={modalTitle}
             description={modalDescription}
+          />
+          <Popup
+                  open={showPopupModal}
+                  setOpen={setShowPopupModal}
+                  title={modalPopupTitle}
+                  description={modalPopupDescription}
           />
           <ConfirmationDialog />
           <WeekView
