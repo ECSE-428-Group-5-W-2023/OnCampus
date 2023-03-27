@@ -52,7 +52,6 @@ export default function FriendSchedule() {
     );
   };
 
-  //TODO
   const TimeTableCell = React.useCallback(
     React.memo(({ onDoubleClick, ...restProps }) => (
       <WeekView.TimeTableCell
