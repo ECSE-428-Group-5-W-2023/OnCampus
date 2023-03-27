@@ -87,7 +87,6 @@ router.delete("/", async (req, res) => {
   const valuesProfile = [usernameFriend];
   try {
     const profileFriend = await pool.query(queryProfile, valuesProfile);
-
     // check if they are friends
     const queryFriendshipExists = `
       SELECT COUNT(*) as count
@@ -95,14 +94,8 @@ router.delete("/", async (req, res) => {
       WHERE (profile_id_one = $1 AND profile_id_two = $2)
         OR (profile_id_one = $2 AND profile_id_two = $1)
     `;
-    const valuesFriendshipExists = [
-      userProfile.sub.replace("|", "_"),
-      profileFriend.rows[0].profile_id,
-    ];
-    const friendshipExists = await pool.query(
-      queryFriendshipExists,
-      valuesFriendshipExists
-    );
+    const valuesFriendshipExists = [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id];
+    const friendshipExists = await pool.query(queryFriendshipExists, valuesFriendshipExists);
     if (friendshipExists.rows[0].count <= 0) {
       res.json({ message: "Friendship does not exist" });
       return;
@@ -115,10 +108,7 @@ router.delete("/", async (req, res) => {
       WHERE (profile_id_one = $1 AND profile_id_two = $2)
         OR (profile_id_one = $2 AND profile_id_two = $1)
     `;
-    const valuesDelete = [
-      userProfile.sub.replace("|", "_"),
-      profileFriend.rows[0].profile_id,
-    ];
+    const valuesDelete = [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id];
     await pool.query(queryDelete, valuesDelete);
     res.json({ message: "Friendship deleted" });
   } catch (error) {
