@@ -38,7 +38,7 @@ export default function FriendSchedule() {
 
   const api = new Api();
 
-  const[searchparams] = useSearchParams();
+  const [searchparams] = useSearchParams();
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
     return (
@@ -53,20 +53,32 @@ export default function FriendSchedule() {
   };
 
   //TODO
-  const TimeTableCell = React.useCallback(React.memo(({ onDoubleClick, ...restProps }) => (
-    <WeekView.TimeTableCell
-      {...restProps}
-      onDoubleClick={undefined} // disable creating event through double clicking 
-    />
-  )), [false]);
+  const TimeTableCell = React.useCallback(
+    React.memo(({ onDoubleClick, ...restProps }) => (
+      <WeekView.TimeTableCell
+        {...restProps}
+        onDoubleClick={undefined} // disable creating event through double clicking
+      />
+    )),
+    [false]
+  );
 
   // disable deleting an event
-  const CommandButton = React.useCallback(({ id, ...restProps }) => {
-    if (id === 'deleteButton') {
-      return <AppointmentForm.CommandButton id={id} {...restProps} disabled={true} />;
-    }
-    return <AppointmentForm.CommandButton id={id} {...restProps} />;
-  }, [false]);
+  const CommandButton = React.useCallback(
+    ({ id, ...restProps }) => {
+      if (id === "deleteButton") {
+        return (
+          <AppointmentForm.CommandButton
+            id={id}
+            {...restProps}
+            disabled={true}
+          />
+        );
+      }
+      return <AppointmentForm.CommandButton id={id} {...restProps} />;
+    },
+    [false]
+  );
 
   useEffect(() => {
     try {
@@ -95,16 +107,19 @@ export default function FriendSchedule() {
 
   async function getAllEvents() {
     await api
-    .getFriendsEvents(await getAccessTokenSilently(), searchparams.get("friend"))
-    .then((res) => {
-      console.log(res);
-      if(res.message == "Friendship does not exist"){
-        friendshipDoesNotExist();
-        console.log("friendship does not exist!")
-      } else { 
-        setEvents(res.events);
-      }  
-    });
+      .getFriendsEvents(
+        await getAccessTokenSilently(),
+        searchparams.get("friend")
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.message == "Friendship does not exist") {
+          friendshipDoesNotExist();
+          console.log("friendship does not exist!");
+        } else {
+          setEvents(res.events);
+        }
+      });
   }
 
   function mapEvents() {
@@ -128,7 +143,7 @@ export default function FriendSchedule() {
     <div>
       <Paper>
         <Scheduler data={mappedEvents} height={750}>
-          <EditingState/>
+          <EditingState />
           <ViewState defaultCurrentDate="2023-02-05" />
           <WeekView startDayHour={6} endDayHour={24} />
           <IntegratedEditing />
@@ -141,19 +156,17 @@ export default function FriendSchedule() {
             description={modalDescription}
           />
           <Popup
-                  open={showPopupModal}
-                  setOpen={setShowPopupModal}
-                  title={modalPopupTitle}
-                  description={modalPopupDescription}
+            open={showPopupModal}
+            setOpen={setShowPopupModal}
+            title={modalPopupTitle}
+            description={modalPopupDescription}
           />
           <ConfirmationDialog />
-          <WeekView
-            timeTableCellComponent={TimeTableCell}
-          />
+          <WeekView timeTableCellComponent={TimeTableCell} />
           <Appointments />
           <AppointmentTooltip showDeleteButton={false} showOpenButton />
           <AppointmentForm
-            readOnly={true} //disable editing an event 
+            readOnly={true} //disable editing an event
           />
           <AllDayPanel />
         </Scheduler>

@@ -33,14 +33,12 @@ const router = createBrowserRouter([
       {
         path: "/friendSchedule",
         element: <FriendSchedule />,
-      }
+      },
     ],
   },
 ]);
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root")
-);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Auth0Provider
     audience="OnCampus-auth"

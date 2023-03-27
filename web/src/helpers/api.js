@@ -113,25 +113,29 @@ export default class Api {
 
   getFriend = async (token, usernameFriend) => {
     return (await this.init(token)).get("/api/friendship", {
-        params: {
-            usernameFriend,
-        },
+      params: {
+        usernameFriend,
+      },
     });
   };
 
   getFriendsEvents = async (token, usernameFriend) => {
-    return (await (await this.init(token)).get("/api/friendship/events", {
+    return (
+      await (
+        await this.init(token)
+      ).get("/api/friendship/events", {
         params: {
           usernameFriend,
-        }
-    })).data;
+        },
+      })
+    ).data;
   };
-  
+
   deleteFriendship = async (token, usernameFriend) => {
     return (await this.init(token)).delete("/api/friendship", {
-        params: {
-            usernameFriend,
-        },
+      params: {
+        usernameFriend,
+      },
     });
-  }
+  };
 }
