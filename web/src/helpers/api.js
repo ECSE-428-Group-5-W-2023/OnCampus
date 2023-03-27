@@ -118,4 +118,13 @@ export default class Api {
         },
     });
   };
+
+  getFriendsEvents = async (token, usernameFriend) => {
+    return (await (await this.init(token)).get("/api/friendship/events", {
+        params: {
+          usernameFriend,
+        }
+    })).data;
+  };
+  
 }
