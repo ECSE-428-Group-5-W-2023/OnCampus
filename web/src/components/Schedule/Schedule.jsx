@@ -6,8 +6,7 @@ import Paper from "@mui/material/Paper";
 import {
   ViewState,
   IntegratedEditing,
-  EditingState,
-} from "@devexpress/dx-react-scheduler";
+  EditingState} from "@devexpress/dx-react-scheduler";
 import {
   Scheduler,
   ConfirmationDialog,
@@ -17,11 +16,19 @@ import {
   DateNavigator,
   AppointmentTooltip,
   AppointmentForm,
+  AppointmentFormProps,
   AllDayPanel,
+  Resources,
+  MonthView,
+  EditRecurrenceMenu,
+  DragDropProvider,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import Popup from "../Common/Popup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
@@ -33,116 +40,8 @@ export default function Schedule() {
   const [modalDescription, setModalDescription] = useState(false);
 
   const [mappedEvents, setMappedEvents] = useState([]);
-  const [file, setFile] = useState(null);
-
+  
   const api = new Api();
-
-  const handleFileChange = (event) => {
-    console.log(event.target.files[0]);
-    setFile(event.target.files[0]);
-  };
-
-  const handleFileUpload = async () => {
-    if (file) {
-      // Process the file here
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        // Use reader.result
-        const events = parseICalData(reader.result);
-        for (let i = 0; i < events.length; i++) {
-          const event = events[i];
-          console.log(event);
-          createEvent(
-            event.summary,
-            event.location,
-            undefined,
-            undefined,
-            false,
-            event.start,
-            event.end
-          );
-        }
-        setFile(null);
-      };
-      reader.readAsText(file);
-      console.log(`Processing file: ${file.name}`);
-    } else {
-      console.log("Please select a file to upload");
-    }
-  };
-
-  function parseICalData(data) {
-    const events = [];
-    const lines = data.split(/\r?\n/);
-
-    let event = null;
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      const matches = line.match(/^([A-Z]+)(;.+)?:(.*)$/);
-      if (!matches) {
-        continue;
-      }
-
-      const prop = matches[1];
-      const value = matches[3];
-
-      switch (prop) {
-        case "BEGIN":
-          if (value === "VEVENT") {
-            event = {};
-          }
-          break;
-        case "END":
-          if (value === "VEVENT") {
-            events.push(event);
-            event = null;
-          }
-          break;
-        case "UID":
-          if (event) {
-            event.uid = value;
-          }
-          break;
-        case "SUMMARY":
-          if (event) {
-            event.summary = value;
-          }
-          break;
-        case "DTSTART":
-          if (event) {
-            const year = value.slice(0, 4);
-            const month = parseInt(value.slice(4, 6)) - 1;
-            const day = value.slice(6, 8);
-            const hour = value.slice(9, 11);
-            const minute = value.slice(11, 13);
-            const second = value.slice(13, 15);
-            event.start = new Date(year, month, day, hour, minute, second);
-          }
-          break;
-        case "DTEND":
-          if (event) {
-            const year = value.slice(0, 4);
-            const month = parseInt(value.slice(4, 6)) - 1;
-            const day = value.slice(6, 8);
-            const hour = value.slice(9, 11);
-            const minute = value.slice(11, 13);
-            const second = value.slice(13, 15);
-            event.end = new Date(year, month, day, hour, minute, second);
-          }
-          break;
-        case "LOCATION":
-          if (event) {
-            event.location = value;
-          }
-          break;
-        default:
-          // Ignore any other properties
-          break;
-      }
-    }
-
-    return events;
-  }
 
   const TextEditor = (props) => {
     // eslint-disable-next-line react/destructuring-assignment
@@ -157,6 +56,10 @@ export default function Schedule() {
       onFieldChange({ description: nextValue });
     };
 
+    const handleChange = (nextValue) => {
+      setEventTags(nextValue.target.value);
+    };
+
     return (
       <AppointmentForm.BasicLayout
         appointmentData={appointmentData}
@@ -169,6 +72,26 @@ export default function Schedule() {
           onValueChange={onCustomFieldChange}
           placeholder="Add description"
         />
+
+        <AppointmentForm.Label text="Tag" type="title" />
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Tag</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={event_tags}
+              label="Tag"
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>Class</MenuItem>
+              <MenuItem value={20}>Work</MenuItem>
+              <MenuItem value={30}>Meeting</MenuItem>
+              <MenuItem value={40}>Study</MenuItem>
+              <MenuItem value={50}>Personal</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
       </AppointmentForm.BasicLayout>
     );
   };
@@ -186,6 +109,7 @@ export default function Schedule() {
     setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
   }, [events]);
 
+
   async function getAllEvents() {
     await api.getEvents(await getAccessTokenSilently()).then((res) => {
       setEvents(res.events);
@@ -200,6 +124,7 @@ export default function Schedule() {
   async function createEvent(
     title,
     description,
+    event_tags,
     rRule,
     exDate,
     allDay,
@@ -231,6 +156,7 @@ export default function Schedule() {
     id,
     title,
     description,
+    event_tags,
     rRule,
     exDate,
     allDay,
@@ -284,6 +210,7 @@ export default function Schedule() {
       createEvent(
         added.title,
         added.description,
+        added.event_tags,
         added.rRule,
         added.exDate,
         added.allDay,
@@ -305,6 +232,7 @@ export default function Schedule() {
         id,
         changes.title,
         changes.description,
+        changes.event_tags,
         changes.rRule,
         changes.exDate,
         changes.allDay,
@@ -327,6 +255,7 @@ export default function Schedule() {
       id: value.id,
       title: value.title,
       description: value.description,
+      event_tags: value.event_tags,
       rRule: value.r_rule,
       exDate: value.ex_date,
       allDay: value.all_day,
@@ -365,34 +294,6 @@ export default function Schedule() {
           <AllDayPanel />
         </Scheduler>
       </Paper>
-
-      <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-4 mt-2 ">
-        <label
-          for="file-upload"
-          className="flex items-center justify-center w-full md:w-auto mb-3 md:mb-0"
-        >
-          <FontAwesomeIcon
-            icon={faUpload}
-            className="mx-2 hover:cursor-pointer bg-white  p-2 rounded"
-          />
-          <span className="text-white hover:cursor-pointer ">
-            {file?.name ? file.name : "Choose ICS file to upload"}
-          </span>
-        </label>
-        <input
-          id="file-upload"
-          type="file"
-          className="hidden"
-          onChange={handleFileChange}
-        />
-
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleFileUpload}
-        >
-          Upload and Process File
-        </button>
-      </div>
     </div>
   );
 }
