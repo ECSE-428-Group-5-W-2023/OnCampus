@@ -127,4 +127,11 @@ export default class Api {
     })).data;
   };
   
+  deleteFriendship = async (token, usernameFriend) => {
+    return (await this.init(token)).delete("/api/friendship", {
+        params: {
+            usernameFriend,
+        },
+    });
+  }
 }

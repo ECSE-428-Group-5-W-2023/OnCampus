@@ -4,7 +4,7 @@ import * as React from "react";
 import Api from "../../helpers/api";
 import Button from "../Common/Button";
 import Popup from "../Common/Popup";
-import { Link, createSearchParams} from "react-router-dom";
+import { Link, createSearchParams } from "react-router-dom";
 
 const Friendship = () => {
   const { user, getAccessTokenSilently } = useAuth0();
@@ -43,6 +43,18 @@ const Friendship = () => {
   async function addingYourself() {
     setModalPopupTitle("You are adding yourself!");
     setModalPopupDescription("You cannot add yourself as a friend.");
+    setShowPopupModal(true);
+  }
+
+  async function friendshipDoesNotExist() {
+    setModalPopupTitle("You are not friends!");
+    setModalPopupDescription("You have not added this person as a friend.");
+    setShowPopupModal(true);
+  }
+
+  async function friendshipDeleted() {
+    setModalPopupTitle("Friendship Deleted!");
+    setModalPopupDescription("You have successfully deleted this friend.");
     setShowPopupModal(true);
   }
 
@@ -93,6 +105,24 @@ const Friendship = () => {
         } else if (res.data.message == "Adding yourself") {
           addingYourself();
           console.log("adding yourself!");
+        }
+      });
+    setShowModal(false);
+    getFriend(usernameFriend);
+  }
+
+  async function deleteFriendship(event) {
+    event.preventDefault(); //prevent page refresh
+    await api
+      .deleteFriendship(await getAccessTokenSilently(), usernameFriend)
+      .then((res) => {
+        console.log(res);
+        if (res.data.message == "Friendship does not exist") {
+          friendshipDoesNotExist();
+          console.log("friendship does not exist!");
+        } else if (res.data.message == "Friendship deleted") {
+          friendshipDeleted();
+          console.log("friendship deleted!");
         }
       });
     setShowModal(false);
@@ -154,10 +184,12 @@ const Friendship = () => {
           />
           <Button onClick={createFriendship}>Add Friend!</Button>
           &nbsp;
+          <Button onClick={deleteFriendship}>Delete Friend!</Button>
+          &nbsp;
           <Link
             to={{
               pathname: "/friendSchedule",
-              search: createSearchParams({friend: usernameFriend}).toString()
+              search: createSearchParams({ friend: usernameFriend }).toString(),
             }}
           >
             <Button>View Friend's Schedule</Button>

@@ -75,6 +75,48 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.delete("/", async (req, res) => {
+  const userProfile = req.auth.payload;
+  const usernameFriend = req.query.usernameFriend;
+
+  // Get friend from profile list
+  const queryProfile = `
+    SELECT * FROM profile
+    WHERE username = $1
+  `;
+  const valuesProfile = [usernameFriend];
+  try {
+    const profileFriend = await pool.query(queryProfile, valuesProfile);
+  
+    // check if they are friends
+    const queryFriendshipExists = `
+      SELECT COUNT(*) as count
+      FROM friendship
+      WHERE (profile_id_one = $1 AND profile_id_two = $2)
+        OR (profile_id_one = $2 AND profile_id_two = $1)
+    `;
+    const valuesFriendshipExists = [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id];
+    const friendshipExists = await pool.query(queryFriendshipExists, valuesFriendshipExists);
+    if (friendshipExists.rows[0].count <= 0) {
+      res.json({ message: "Friendship does not exist" });
+      return;
+    }
+
+    // Delete friendship
+    const queryDelete = `
+      DELETE 
+      FROM friendship 
+      WHERE (profile_id_one = $1 AND profile_id_two = $2)
+        OR (profile_id_one = $2 AND profile_id_two = $1)
+    `;
+    const valuesDelete = [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id];
+    await pool.query(queryDelete, valuesDelete);
+    res.json({ message: "Friendship deleted" });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 //get all events from user's friend
 router.get("/events", async (req, res) => {
   const userProfile = req.auth.payload;
