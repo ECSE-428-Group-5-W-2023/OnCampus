@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
     ];
     await pool.query(query, values);
 
-    res.json({ message: "Successfully posted frieng group" });
+    res.json({ message: "Successfully posted friend group" });
 });
 
 module.exports = router;

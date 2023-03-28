@@ -126,4 +126,15 @@ export default class Api {
         },
     });
   }
+
+  getFriendGroups = async (token) => {
+    return (await (await this.init(token)).get("/api/friendGroup")).data;
+  };
+
+  createFriendGroup = async (token, group_name) => {
+    return (await this.init(token)).post("/api/friendGroup", {
+      group_name
+    });
+  };
+
 }

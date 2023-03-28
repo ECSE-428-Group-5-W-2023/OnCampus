@@ -39,6 +39,13 @@ export default function Navbar() {
             !isAuthenticated
         )}
       </Link>
+      <Link to={"friendgroup"}>
+        {NavIcon(
+            <FontAwesomeIcon icon={faCalendar} />,
+            "Friend Groups",
+            !isAuthenticated
+        )}
+      </Link>
 
       <div className="sm:mt-auto">
         <Link to={"account"}>
