@@ -55,6 +55,7 @@ const Friendship = () => {
   const handleUserSelect = (user) => {
     setSearchTerm("");
     setUserProfileFriend(user);
+    setUsernameFriend(user.username);
   };
 
   async function friendNotFound() {
