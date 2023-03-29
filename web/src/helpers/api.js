@@ -113,33 +113,42 @@ export default class Api {
 
   getFriend = async (token, usernameFriend) => {
     return (await this.init(token)).get("/api/friendship", {
-        params: {
-            usernameFriend,
-        },
+      params: {
+        usernameFriend,
+      },
     });
   };
 
   deleteFriendship = async (token, usernameFriend) => {
     return (await this.init(token)).delete("/api/friendship", {
-        params: {
-            usernameFriend,
-        },
+      params: {
+        usernameFriend,
+      },
     });
-  }
+  };
 
   getFriendGroups = async (token) => {
     return (await (await this.init(token)).get("/api/friendGroup")).data;
   };
 
-  createFriendGroup = async (token, group_name) => {
+  createFriendGroup = async (token, name, description) => {
     return (await this.init(token)).post("/api/friendGroup", {
-      group_name
+      name,
+      description,
     });
+  };
+  getAllGroups = async (token) => {
+    return (await (await this.init(token)).get("/api/friendGroup/all")).data
+      .groups;
   };
 
   getAllUsers = async (token) => {
     return (await (await this.init(token)).get("/api/users")).data.users;
-
+  };
+  leaveGroup = async (token, id) => {
+    return (await this.init(token)).post(`/api/friendGroup/leave/${id}`);
   }
-
+  joinGroup = async (token, id) => {
+    return (await this.init(token)).post(`/api/friendGroup/join/${id}`);
+  }
 }

@@ -377,7 +377,7 @@ export default function Schedule() {
               className="mr-1 mb-1"
             >
               <FontAwesomeIcon icon={faUserGroup} className="mr-1" />
-              {friendGroup.group_name}
+              {friendGroup.name}
             </Button>
           );
         })}
