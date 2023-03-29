@@ -21,7 +21,12 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 import Popup from "../Common/Popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUpload,
+  faUser,
+  faUserGroup,
+} from "@fortawesome/free-solid-svg-icons";
+import Button from "../Common/Button";
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
@@ -31,12 +36,22 @@ export default function Schedule() {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState(false);
   const [modalDescription, setModalDescription] = useState(false);
-
+  const [friendGroups, setFriendGroups] = useState([]);
   const [mappedEvents, setMappedEvents] = useState([]);
   const [file, setFile] = useState(null);
-
   const api = new Api();
 
+  useEffect(() => {
+    console.log(" hererererererererererrrr");
+    getGroups();
+  }, []);
+
+  async function getGroups() {
+    api.getFriendGroups(await getAccessTokenSilently()).then((res) => {
+      setFriendGroups(res.profile);
+      console.log(res.profile);
+    });
+  }
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
     setFile(event.target.files[0]);
@@ -175,7 +190,7 @@ export default function Schedule() {
 
   useEffect(() => {
     try {
-      getAllEvents();
+      getAllEventsPersonal();
     } catch (err) {
       console.log("error" + err);
     }
@@ -186,10 +201,14 @@ export default function Schedule() {
     setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
   }, [events]);
 
-  async function getAllEvents() {
+  async function getAllEventsPersonal() {
     await api.getEvents(await getAccessTokenSilently()).then((res) => {
       setEvents(res.events);
     });
+  }
+
+  async function getAllEventsGroup() {
+    console.log("Getting all events for friend group");
   }
 
   //Updating the is_private boolean when the checkbox is clicked
@@ -224,7 +243,7 @@ export default function Schedule() {
         setEvents(res.events);
       });
 
-    getAllEvents();
+    getAllEventsPersonal();
   }
 
   async function editEvent(
@@ -256,13 +275,13 @@ export default function Schedule() {
       });
 
     //refresh events
-    getAllEvents();
+    getAllEventsPersonal();
   }
 
   //delete event with specified id
   async function deleteEvent(id) {
     api.deleteEvent(await getAccessTokenSilently(), id).then(() => {
-      getAllEvents();
+      getAllEventsPersonal();
     });
   }
 
@@ -319,7 +338,7 @@ export default function Schedule() {
       console.log("DELETED");
     }
     //refresh events
-    getAllEvents();
+    getAllEventsPersonal();
   };
 
   function mapEvents() {
@@ -332,15 +351,36 @@ export default function Schedule() {
       allDay: value.all_day,
       startDate: value.start_date,
       endDate: value.end_date,
-      //rRule: value.isReccuring,     TODO: once create recurring event is implemented
-      //endPeriod: value.
-      //description and event_list_id are not mapped
     }));
     return mapped;
   }
 
   return (
     <div>
+      <div>
+        <Button
+          onClick={() => {
+            getAllEventsPersonal();
+          }}
+          className="mr-1 mb-1"
+        >
+          <FontAwesomeIcon icon={faUser} className="mr-1" />
+          My Schedule
+        </Button>
+        {friendGroups?.map((friendGroup) => {
+          return (
+            <Button
+              onClick={() => {
+                getAllEventsGroup(friendGroup.id);
+              }}
+              className="mr-1 mb-1"
+            >
+              <FontAwesomeIcon icon={faUserGroup} className="mr-1" />
+              {friendGroup.group_name}
+            </Button>
+          );
+        })}
+      </div>
       <Paper>
         <Scheduler data={mappedEvents} height={750}>
           <EditingState onCommitChanges={commitChanges} />
