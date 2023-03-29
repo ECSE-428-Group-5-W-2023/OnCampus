@@ -39,18 +39,16 @@ export default function Schedule() {
   const [friendGroups, setFriendGroups] = useState([]);
   const [mappedEvents, setMappedEvents] = useState([]);
   const [file, setFile] = useState(null);
-  const [selectedGroupId, setSelectedGroupId] = useState(null);
+  const [selectedGroupId, setSelectedGroupId] = useState(-1);
   const api = new Api();
 
   useEffect(() => {
-    console.log(" hererererererererererrrr");
     getGroups();
   }, []);
 
   async function getGroups() {
     api.getFriendGroups(await getAccessTokenSilently()).then((res) => {
       setFriendGroups(res.profile);
-      console.log(res.profile);
     });
   }
   const handleFileChange = (event) => {
@@ -75,8 +73,7 @@ export default function Schedule() {
             undefined,
             false,
             event.start,
-            event.end
-          );
+            event.end          );
         }
         setFile(null);
       };
@@ -191,25 +188,23 @@ export default function Schedule() {
 
   useEffect(() => {
     try {
-      getAllEventsPersonal();
+      getAllEvents();
     } catch (err) {
       console.log("error" + err);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedGroupId]);
 
   useEffect(() => {
     setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
   }, [events]);
 
-  async function getAllEventsPersonal() {
-    await api.getEvents(await getAccessTokenSilently()).then((res) => {
-      setEvents(res.events);
-    });
-  }
-
-  async function getAllEventsGroup() {
-    console.log("Getting all events for friend group");
+  async function getAllEvents() {
+    await api
+      .getEvents(await getAccessTokenSilently(), selectedGroupId)
+      .then((res) => {
+        setEvents(res.events);
+      });
   }
 
   //Updating the is_private boolean when the checkbox is clicked
@@ -238,13 +233,14 @@ export default function Schedule() {
         exDate,
         allDay,
         startDate,
-        endDate
+        endDate,
+        selectedGroupId
       )
       .then((res) => {
         setEvents(res.events);
       });
 
-    getAllEventsPersonal();
+    getAllEvents();
   }
 
   async function editEvent(
@@ -276,13 +272,13 @@ export default function Schedule() {
       });
 
     //refresh events
-    getAllEventsPersonal();
+    getAllEvents();
   }
 
   //delete event with specified id
   async function deleteEvent(id) {
     api.deleteEvent(await getAccessTokenSilently(), id).then(() => {
-      getAllEventsPersonal();
+      getAllEvents();
     });
   }
 
@@ -339,7 +335,7 @@ export default function Schedule() {
       console.log("DELETED");
     }
     //refresh events
-    getAllEventsPersonal();
+    getAllEvents();
   };
 
   function mapEvents() {
@@ -361,9 +357,11 @@ export default function Schedule() {
       <div>
         <Button
           onClick={() => {
-            getAllEventsPersonal();
+            getAllEvents();
+            setSelectedGroupId(-1);
           }}
           className="mr-1 mb-1"
+          selected={selectedGroupId === -1}
         >
           <FontAwesomeIcon icon={faUser} className="mr-1" />
           My Schedule
@@ -372,9 +370,10 @@ export default function Schedule() {
           return (
             <Button
               onClick={() => {
-                getAllEventsGroup(friendGroup.id);
+                setSelectedGroupId(friendGroup.id);
               }}
               className="mr-1 mb-1"
+              selected={selectedGroupId === friendGroup.id}
             >
               <FontAwesomeIcon icon={faUserGroup} className="mr-1" />
               {friendGroup.name}
@@ -382,30 +381,32 @@ export default function Schedule() {
           );
         })}
       </div>
-      <Paper>
-        <Scheduler data={mappedEvents} height={750}>
-          <EditingState onCommitChanges={commitChanges} />
-          <ViewState defaultCurrentDate="2023-02-05" />
-          <WeekView startDayHour={6} endDayHour={24} />
-          <IntegratedEditing />
-          <Toolbar />
-          <DateNavigator />
-          <Popup
-            open={showModal}
-            setOpen={setShowModal}
-            title={modalTitle}
-            description={modalDescription}
-          />
-          <ConfirmationDialog />
-          <Appointments />
-          <AppointmentTooltip showDeleteButton showOpenButton />
-          <AppointmentForm
-            basicLayoutComponent={BasicLayout}
-            textEditorComponent={TextEditor}
-          />
-          <AllDayPanel />
-        </Scheduler>
-      </Paper>
+      <div className="h-3/4 flex">
+        <Paper>
+          <Scheduler data={mappedEvents}>
+            <EditingState onCommitChanges={commitChanges} />
+            <ViewState defaultCurrentDate="2023-02-05" />
+            <WeekView startDayHour={6} endDayHour={24} />
+            <IntegratedEditing />
+            <Toolbar />
+            <DateNavigator />
+            <Popup
+              open={showModal}
+              setOpen={setShowModal}
+              title={modalTitle}
+              description={modalDescription}
+            />
+            <ConfirmationDialog />
+            <Appointments />
+            <AppointmentTooltip showDeleteButton showOpenButton />
+            <AppointmentForm
+              basicLayoutComponent={BasicLayout}
+              textEditorComponent={TextEditor}
+            />
+            <AllDayPanel />
+          </Scheduler>
+        </Paper>
+      </div>
 
       <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-4 mt-2 ">
         <label

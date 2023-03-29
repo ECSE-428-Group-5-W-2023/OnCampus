@@ -40,7 +40,8 @@ export default class Api {
     ex_date,
     all_day,
     start_date,
-    end_date
+    end_date,
+    group_id
   ) => {
     return (await this.init(token)).post("/api/event", {
       title,
@@ -52,11 +53,20 @@ export default class Api {
       all_day,
       start_date,
       end_date,
+      group_id,
     });
   };
 
-  getEvents = async (token) => {
-    return (await (await this.init(token)).get("/api/event")).data;
+  getEvents = async (token, group_id) => {
+    return (
+      await (
+        await this.init(token)
+      ).get("/api/event", {
+        params: {
+          group_id,
+        },
+      })
+    ).data;
   };
 
   deleteEvent = async (token, id) => {
@@ -147,8 +157,8 @@ export default class Api {
   };
   leaveGroup = async (token, id) => {
     return (await this.init(token)).post(`/api/friendGroup/leave/${id}`);
-  }
+  };
   joinGroup = async (token, id) => {
     return (await this.init(token)).post(`/api/friendGroup/join/${id}`);
-  }
+  };
 }
