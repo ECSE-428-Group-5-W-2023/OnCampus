@@ -137,4 +137,9 @@ export default class Api {
     });
   };
 
+  getAllUsers = async (token) => {
+    return (await (await this.init(token)).get("/api/users")).data.users;
+
+  }
+
 }

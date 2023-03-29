@@ -39,6 +39,7 @@ export default function Schedule() {
   const [friendGroups, setFriendGroups] = useState([]);
   const [mappedEvents, setMappedEvents] = useState([]);
   const [file, setFile] = useState(null);
+  const [selectedGroupId, setSelectedGroupId] = useState(null);
   const api = new Api();
 
   useEffect(() => {
