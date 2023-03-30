@@ -32,7 +32,12 @@ CREATE TABLE "friendship" (
 );
 CREATE TABLE "friend_group" (
     "id" SERIAL PRIMARY KEY,
-    "group_name" VARCHAR(255),
-    "profile_id" VARCHAR(255)  NOT NULL,
-    CONSTRAINT "friend_group_fk1" FOREIGN KEY ("profile_id") REFERENCES "profile"("profile_id")
+    "name" VARCHAR(255),
+    "description" VARCHAR(255)
+);
+CREATE TABLE "group_membership"(
+    "id" SERIAL PRIMARY KEY,
+    "friend_group_id" integer NOT NULL,
+    "profile_id" VARCHAR(255) NOT NULL,
+    CONSTRAINT "group_membership_fk1" FOREIGN KEY ("friend_group_id") REFERENCES "friend_group"("id")
 );

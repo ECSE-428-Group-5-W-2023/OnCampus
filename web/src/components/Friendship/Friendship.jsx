@@ -14,16 +14,49 @@ const Friendship = () => {
   const [showPopupModal, setShowPopupModal] = useState(false);
   const [modalPopupTitle, setModalPopupTitle] = useState(false);
   const [modalPopupDescription, setModalPopupDescription] = useState(false);
-
+  const [userList, setUserList] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const api = new Api();
 
   useEffect(() => {
+    setFilteredUsers(
+      userList.filter((user) => {
+        return user.username.toLowerCase().includes(searchTerm.toLowerCase());
+      })
+    );
+    console.log(filteredUsers);
+  }, [searchTerm, userList]);
+
+  useEffect(() => {
     try {
-        getFriend(usernameFriend);
+      getFriend(usernameFriend);
+      getAllUsers();
     } catch (err) {
       console.log("error" + err);
     }
   }, []);
+  async function getAllUsers() {
+    try {
+      api.getAllUsers(await getAccessTokenSilently()).then((users) => {
+        setUserList(users);
+      });
+    } catch (err) {
+      console.log("error" + err);
+    }
+  }
+
+  const handleSearchInputChange = (event) => {
+    setSearchTerm(event.target.value);
+    setIsDropdownOpen(true);
+  };
+
+  const handleUserSelect = (user) => {
+    setSearchTerm("");
+    setUserProfileFriend(user);
+    setUsernameFriend(user.username);
+  };
 
   async function friendNotFound() {
     setModalPopupTitle("Account Does Not Exist");
@@ -35,45 +68,35 @@ const Friendship = () => {
 
   async function friendshipExists() {
     setModalPopupTitle("You are already friends!");
-    setModalPopupDescription(
-      "You have already added this person as a friend."
-    );
+    setModalPopupDescription("You have already added this person as a friend.");
     setShowPopupModal(true);
   }
 
   async function addingYourself() {
     setModalPopupTitle("You are adding yourself!");
-    setModalPopupDescription(
-      "You cannot add yourself as a friend."
-    );
+    setModalPopupDescription("You cannot add yourself as a friend.");
     setShowPopupModal(true);
   }
 
   async function friendshipDoesNotExist() {
     setModalPopupTitle("You are not friends!");
-    setModalPopupDescription(
-      "You have not added this person as a friend."
-    );
+    setModalPopupDescription("You have not added this person as a friend.");
     setShowPopupModal(true);
   }
 
   async function friendshipDeleted() {
     setModalPopupTitle("Friendship Deleted!");
-    setModalPopupDescription(
-      "You have successfully deleted this friend."
-    );
+    setModalPopupDescription("You have successfully deleted this friend.");
     setShowPopupModal(true);
   }
 
   async function getFriend(usernameFriend) {
     try {
-      api.getFriend(
-      await getAccessTokenSilently(),
-      usernameFriend
-      )
-      .then((res) => {
-        setUserProfileFriend(res.data.profileFriend[0]);
-      });
+      api
+        .getFriend(await getAccessTokenSilently(), usernameFriend)
+        .then((res) => {
+          setUserProfileFriend(res.data.profileFriend[0]);
+        });
     } catch (err) {
       console.log("error" + err);
     }
@@ -81,21 +104,19 @@ const Friendship = () => {
     handleModalOpen();
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault(); //prevent page refresh
+  async function handleSubmit(event = null) {
+    event?.preventDefault(); //prevent page refresh
     try {
-      api.getFriend(
-      await getAccessTokenSilently(),
-      usernameFriend
-      )
-      .then((res) => {
-        if (res.data.profileFriend.length === 0) {
+      api
+        .getFriend(await getAccessTokenSilently(), usernameFriend)
+        .then((res) => {
+          if (res.data.profileFriend.length === 0) {
             friendNotFound();
             console.log("username not found!");
-        } else {
+          } else {
             setUserProfileFriend(res.data.profileFriend[0]);
-        }
-      });
+          }
+        });
     } catch (err) {
       console.log("error" + err);
     }
@@ -107,18 +128,15 @@ const Friendship = () => {
     //create or update profile
     console.log(usernameFriend);
     await api
-      .createFriendship(
-        await getAccessTokenSilently(),
-        usernameFriend
-      )
+      .createFriendship(await getAccessTokenSilently(), usernameFriend)
       .then((res) => {
         console.log(res);
         if (res.data.message == "Friendship already exists") {
-            friendshipExists();
-            console.log("friendship already exists!");
+          friendshipExists();
+          console.log("friendship already exists!");
         } else if (res.data.message == "Adding yourself") {
-            addingYourself();
-            console.log("adding yourself!");
+          addingYourself();
+          console.log("adding yourself!");
         }
       });
     setShowModal(false);
@@ -128,18 +146,15 @@ const Friendship = () => {
   async function deleteFriendship(event) {
     event.preventDefault(); //prevent page refresh
     await api
-      .deleteFriendship(
-        await getAccessTokenSilently(),
-        usernameFriend
-      )
+      .deleteFriendship(await getAccessTokenSilently(), usernameFriend)
       .then((res) => {
         console.log(res);
         if (res.data.message == "Friendship does not exist") {
-            friendshipDoesNotExist();
-            console.log("friendship does not exist!");
+          friendshipDoesNotExist();
+          console.log("friendship does not exist!");
         } else if (res.data.message == "Friendship deleted") {
-            friendshipDeleted();
-            console.log("friendship deleted!");
+          friendshipDeleted();
+          console.log("friendship deleted!");
         }
       });
     setShowModal(false);
@@ -152,83 +167,75 @@ const Friendship = () => {
 
   return (
     <div className="friend-profile">
-      {userProfileFriend ? (
-      <div>
-        <div>
-          <h1 className="text-white">Search a friend!</h1>
-          <div>
-            <form onSubmit={handleSubmit}>
-              <label
-                htmlFor="usernameFriend"
-                className="text-white text-lg font-bold m-3 mx-auto"
-              >
-                Friend's Username:
-              </label>
-              <input
-                type="text"
-                id="usernameFriend"
-                value={usernameFriend}
-                onChange={(event) => setUsernameFriend(event.target.value)}
-              />
-              <br></br>
-              <Popup
-                open={showPopupModal}
-                setOpen={setShowPopupModal}
-                title={modalPopupTitle}
-                description={modalPopupDescription}
-              />
-              <Button type="submit">Search</Button>
-            </form>
+      <div className="relative">
+        <div className="flex flex-row">
+          <input
+            type="text"
+            value={searchTerm}
+            placeholder="Search for a friend"
+            onClick={() => setIsDropdownOpen(true)}
+            onChange={handleSearchInputChange}
+            className="border border-gray-300 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
+          />
+          <Button onClick={handleSubmit} className="ml-1">
+            Search
+          </Button>
+        </div>
+
+        {isDropdownOpen && (
+          <div
+            className="absolute z-10 w-full mt-2 bg-white rounded-md shadow-lg"
+            onMouseLeave={() => {
+              setIsDropdownOpen(false);
+            }}
+          >
+            <ul className="py-1">
+              {filteredUsers.map((user) => (
+                <li
+                  key={user.id}
+                  className="px-3 py-2 cursor-pointer hover:bg-gray-200"
+                  onClick={() => {
+                    handleUserSelect(user);
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  {user.username} ({user.name})
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-        <div className="text-white text-lg font-bold m-3 mx-auto">
-            Username: {userProfileFriend.username}
-        </div>
-        <div className="text-white text-lg font-bold m-3 mx-auto">
-            Name: {userProfileFriend.name}
-        </div>
-        <div className="text-white text-lg font-bold m-3 mx-auto">
-            School: {userProfileFriend.school}
-        </div>
-        <div className="text-white text-lg font-bold m-3 mx-auto">
-            Bio: {userProfileFriend.bio}
-        </div>
-        <Popup
-            open={showPopupModal}
-            setOpen={setShowPopupModal}
-            title={modalPopupTitle}
-            description={modalPopupDescription}
-        />
-        <Button onClick={createFriendship}>Add Friend!</Button>
-        &nbsp;
-        <Button onClick={deleteFriendship}>Delete Friend!</Button>
+        )}
       </div>
-      ) : (
+      {userProfileFriend && (
         <div>
-          <h1 className="text-white">Search a friend!</h1>
           <div>
-            <form onSubmit={handleSubmit}>
-              <label
-                htmlFor="usernameFriend"
-                className="text-white text-lg font-bold m-3 mx-auto"
-              >
-                Friend's Username:
-              </label>
-              <input
-                type="text"
-                id="usernameFriend"
-                value={usernameFriend}
-                onChange={(event) => setUsernameFriend(event.target.value)}
-              />
-              <br></br>
-              <Popup
-                open={showPopupModal}
-                setOpen={setShowPopupModal}
-                title={modalPopupTitle}
-                description={modalPopupDescription}
-              />
-              <Button type="submit">Search</Button>
-            </form>
+            <Popup
+              open={showPopupModal}
+              setOpen={setShowPopupModal}
+              title={modalPopupTitle}
+              description={modalPopupDescription}
+            />
+            <div className="text-white text-lg font-bold m-3 mx-auto">
+              Username: {userProfileFriend.username}
+            </div>
+            <div className="text-white text-lg font-bold m-3 mx-auto">
+              Name: {userProfileFriend.name}
+            </div>
+            <div className="text-white text-lg font-bold m-3 mx-auto">
+              School: {userProfileFriend.school}
+            </div>
+            <div className="text-white text-lg font-bold m-3 mx-auto">
+              Bio: {userProfileFriend.bio}
+            </div>
+            <Popup
+              open={showPopupModal}
+              setOpen={setShowPopupModal}
+              title={modalPopupTitle}
+              description={modalPopupDescription}
+            />
+            <Button onClick={createFriendship}>Add Friend!</Button>
+            &nbsp;
+            <Button onClick={deleteFriendship}>Delete Friend!</Button>
           </div>
         </div>
       )}
