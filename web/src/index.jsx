@@ -10,6 +10,8 @@ import Schedule from "./components/Schedule/Schedule";
 import AccountInfo from "./components/Auth/AccountInfo";
 import Friendship from "./components/Friendship/Friendship";
 import FriendGroup from "./components/FriendGroup/FriendGroup";
+import FriendRequests from "./components/Friendship/FriendRequests";
+
 
 const router = createBrowserRouter([
   {
@@ -33,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/friendGroup",
         element: <FriendGroup />,
+      },
+      {
+        path: "/friendrequests",
+        element: <FriendRequests />,
       }
     ],
   },
