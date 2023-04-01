@@ -19,7 +19,10 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const usernameFriend = req.query.usernameFriend;
-  console.log("usernameFriend: " + usernameFriend, "userProfile: " + userProfile.sub.replace("|", "_"));
+  console.log(
+    "usernameFriend: " + usernameFriend,
+    "userProfile: " + userProfile.sub.replace("|", "_")
+  );
   // Get friend from profile list
   const queryProfile = `
     SELECT * FROM profile
@@ -28,10 +31,12 @@ router.post("/", async (req, res) => {
   const valuesProfile = [usernameFriend];
   try {
     const profileFriend = await pool.query(queryProfile, valuesProfile);
-    
-    if (userProfile.sub.replace("|", "_") === profileFriend.rows[0].profile_id) {
-        res.json({ message: "Adding yourself" });
-        return;
+
+    if (
+      userProfile.sub.replace("|", "_") === profileFriend.rows[0].profile_id
+    ) {
+      res.json({ message: "Adding yourself" });
+      return;
     }
 
     // check if they are already friends
@@ -41,8 +46,14 @@ router.post("/", async (req, res) => {
       WHERE (profile_id_one = $1 AND profile_id_two = $2)
         OR (profile_id_one = $2 AND profile_id_two = $1)
     `;
-    const valuesFriendshipExists = [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id];
-    const friendshipExists = await pool.query(queryFriendshipExists, valuesFriendshipExists);
+    const valuesFriendshipExists = [
+      userProfile.sub.replace("|", "_"),
+      profileFriend.rows[0].profile_id,
+    ];
+    const friendshipExists = await pool.query(
+      queryFriendshipExists,
+      valuesFriendshipExists
+    );
     if (friendshipExists.rows[0].count > 0) {
       res.json({ message: "Friendship already exists" });
       return;
@@ -55,7 +66,10 @@ router.post("/", async (req, res) => {
         VALUES ($1, $2)
         RETURNING *
       `,
-      values: [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id]
+      values: [
+        userProfile.sub.replace("|", "_"),
+        profileFriend.rows[0].profile_id,
+      ],
     };
     const friendship = await pool.query(queryCreateFriendship);
     res.json({ message: "Successfully posted" });
@@ -76,7 +90,7 @@ router.delete("/", async (req, res) => {
   const valuesProfile = [usernameFriend];
   try {
     const profileFriend = await pool.query(queryProfile, valuesProfile);
-  
+
     // check if they are friends
     const queryFriendshipExists = `
       SELECT COUNT(*) as count
@@ -84,8 +98,14 @@ router.delete("/", async (req, res) => {
       WHERE (profile_id_one = $1 AND profile_id_two = $2)
         OR (profile_id_one = $2 AND profile_id_two = $1)
     `;
-    const valuesFriendshipExists = [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id];
-    const friendshipExists = await pool.query(queryFriendshipExists, valuesFriendshipExists);
+    const valuesFriendshipExists = [
+      userProfile.sub.replace("|", "_"),
+      profileFriend.rows[0].profile_id,
+    ];
+    const friendshipExists = await pool.query(
+      queryFriendshipExists,
+      valuesFriendshipExists
+    );
     if (friendshipExists.rows[0].count <= 0) {
       res.json({ message: "Friendship does not exist" });
       return;
@@ -98,7 +118,10 @@ router.delete("/", async (req, res) => {
       WHERE (profile_id_one = $1 AND profile_id_two = $2)
         OR (profile_id_one = $2 AND profile_id_two = $1)
     `;
-    const valuesDelete = [userProfile.sub.replace("|", "_"), profileFriend.rows[0].profile_id];
+    const valuesDelete = [
+      userProfile.sub.replace("|", "_"),
+      profileFriend.rows[0].profile_id,
+    ];
     await pool.query(queryDelete, valuesDelete);
     res.json({ message: "Friendship deleted" });
   } catch (error) {

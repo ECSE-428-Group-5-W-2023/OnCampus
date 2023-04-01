@@ -90,6 +90,12 @@ const Friendship = () => {
     setShowPopupModal(true);
   }
 
+  async function requestAlreadyMade() {
+    setModalPopupTitle("You've already requested this person as a friend!");
+    setModalPopupDescription("You cannot send two friend requests to the same person.");
+    setShowPopupModal(true);
+  }
+
   async function getFriend(usernameFriend) {
     try {
       api
@@ -128,7 +134,7 @@ const Friendship = () => {
     //create or update profile
     console.log(usernameFriend);
     await api
-      .createFriendship(await getAccessTokenSilently(), usernameFriend)
+      .sendFriendRequest(await getAccessTokenSilently(), usernameFriend)
       .then((res) => {
         console.log(res);
         if (res.data.message == "Friendship already exists") {
@@ -137,6 +143,9 @@ const Friendship = () => {
         } else if (res.data.message == "Adding yourself") {
           addingYourself();
           console.log("adding yourself!");
+        }else if (res.data.message == "Friend Request already exists") {
+          requestAlreadyMade();
+          console.log("Friend Request already exists");
         }
       });
     setShowModal(false);
