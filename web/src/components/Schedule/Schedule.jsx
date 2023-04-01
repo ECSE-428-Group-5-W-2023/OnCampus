@@ -401,7 +401,7 @@ export default function Schedule() {
         <Paper>
           <Scheduler data={mappedEvents}>
             <EditingState onCommitChanges={commitChanges} />
-            <ViewState defaultCurrentDate="2023-02-05" />
+            <ViewState defaultCurrentDate= {new Date().toLocaleDateString()}/>
             <WeekView startDayHour={6} endDayHour={24} />
             <IntegratedEditing />
             <Toolbar />
@@ -413,7 +413,8 @@ export default function Schedule() {
               description={modalDescription}
             />
             <ConfirmationDialog />
-            <Appointments />
+            <Appointments />            
+
             <AppointmentTooltip showDeleteButton showOpenButton />
             <AppointmentForm
               basicLayoutComponent={BasicLayout}
