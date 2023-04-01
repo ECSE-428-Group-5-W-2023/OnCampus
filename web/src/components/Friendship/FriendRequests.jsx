@@ -8,8 +8,8 @@ import Popup from "../Common/Popup";
 const Friendrequests= () => {
   const [requests, setRequests] = useState([]);
   const { getAccessTokenSilently } = useAuth0();
-  const [userProfileFriend, setUserProfileFriend] = useState(null);
-  const [usernameFriend, setUsernameFriend] = useState("");
+  const [userProfileFriends, setUserProfileFriends] = useState([]);
+  const [usernameFriend, setUsernameFriend] = useState(null);
 
 
   const api = new Api();
@@ -17,6 +17,8 @@ const Friendrequests= () => {
   useEffect(() => {
     try {
       getAllFriendRequests();
+      console.log(userProfileFriends); 
+
     } catch (err) {
       console.log("error" + err);
     }
@@ -24,7 +26,7 @@ const Friendrequests= () => {
 
   useEffect(() => {
     try {
-      getFriendInformation(usernameFriend);
+      getFriendInformation();
     } catch (err) {
       console.log("error" + err);
     }
@@ -39,22 +41,39 @@ const Friendrequests= () => {
   }
 
 
-  async function getFriendInformation(usernameFriend) {
+  async function getFriendInformation() {
     console.log("Getting friend");
-    try {
-      api
-        .getFriendInformation(await getAccessTokenSilently(), usernameFriend)
-        .then((res) => {
-          console.log("hi"); 
-          setUserProfileFriend(res.data.profileFriend[0]);
-          console.log(res.data.profileFriend[0]);
-        });
-    } catch (err) {
-      console.log("error" + err);
+
+    const friends = []; 
+    for (let i = 0; i < requests.length; i++) {
+      
+      console.log(requests[i].sending_profile_id); 
+      try {
+        api
+          .getFriendInformation(await getAccessTokenSilently(), requests[i].sending_profile_id)
+          .then((res) => {
+            // setUserProfileFriend(res.data.profileFriend[0]);
+            friends[i] = res.data.profileFriend[0];
+            setUserProfileFriends(friends); 
+            setUsernameFriend(res.data.profileFriend[0])
+            // console.log(res.data.profileFriend[0])
+          });
+      } catch (err) {
+        console.log("error" + err);
+      }
+
     }
+    console.log(usernameFriend);
+    // setUserProfileFriends(friends); 
+
+
   }
 
+
+
   async function declineFriendRequest(id) {
+    console.log("Declining Request"); 
+    getFriendInformation(); 
 
     //delete event with specified id
     api.deleteFriendRequest(await getAccessTokenSilently(), id).then(() => {
@@ -64,9 +83,9 @@ const Friendrequests= () => {
   }
 
   async function acceptFriendRequest(friendID, requestID) {
+    console.log("Accepting Request");
 
-    console.log("Accepting friend request");
-    //create friendship with specified id
+    //create friendship with specified id [THIS MAY NOT WORK BECAUSE SHE USES USERNAME AND IM PASSING AUTH AGAIN]
     api.createFriendship(await getAccessTokenSilently(), friendID).then((res) => {
       console.log(res); 
       console.log("Creating Friend Request");
@@ -87,9 +106,9 @@ const Friendrequests= () => {
       <h1 className="text-white">Here are your friend requests!</h1>
       {requests &&
         requests.map((requests, key) => {
-          console.log(requests.sending_profile_id);
+          // console.log(requests.sending_profile_id)
           // getFriendInformation(requests.sending_profile_id); //this returns null for some reason?? 
-          console.log(userProfileFriend);
+          // console.log(userProfileFriend);
           return (
             
             <li className="list-none" key={key}>
@@ -102,14 +121,11 @@ const Friendrequests= () => {
                   {requests.id}
                   <br />  
                   <Button 
-                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`}
-                  onClick={() => declineFriendRequest(requests.id)}>Decline</Button>
-                  <br />  
-                  <br />  
+                  onClick={() => acceptFriendRequest(requests.sending_profile_id, requests.id)}>Accept</Button>
 
                   <Button 
-                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded`}
-                  onClick={() => acceptFriendRequest(requests.sending_profile_id, requests.id)}>Accept</Button>
+                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded margin-left =2`}
+                  onClick={() => declineFriendRequest(requests.id)}>Decline</Button>
 
                 </div>
               }

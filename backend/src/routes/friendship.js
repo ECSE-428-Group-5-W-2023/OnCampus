@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
   // Get friend from profile list
   const queryProfile = `
     SELECT * FROM profile
-    WHERE username = $1
+    WHERE profile_id = $1
   `;
   const valuesProfile = [usernameFriend];
   try {
