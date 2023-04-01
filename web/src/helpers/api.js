@@ -178,7 +178,15 @@ export default class Api {
 
   //Not tested
   deleteFriendRequest = async (token, id) => {
-    return (await this.init(token)).delete(`/api/friendship?id=${id}`);
+    return (await this.init(token)).delete(`/api/friendrequests?id=${id}`);
+  };
+
+  getFriendInformation = async (token, usernameFriend) => {
+    return (await this.init(token)).get("/api/friendGetter", {
+      params: {
+        usernameFriend,
+      },
+    });
   };
   
 }
