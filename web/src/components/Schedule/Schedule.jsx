@@ -28,6 +28,7 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../Common/Button";
+import Invite from "./Invite";
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
@@ -167,6 +168,10 @@ export default function Schedule() {
     return <AppointmentForm.TextEditor {...props} />;
   };
 
+  function inviteFriend(friend){
+    console.log("Trying to invite:",friend)
+  }
+
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
     const onDescriptionChange = (nextValue) => {
       onFieldChange({ description: nextValue });
@@ -188,6 +193,8 @@ export default function Schedule() {
         />
         
         <AppointmentForm.Label text="Description" type="title" />
+        <div className="text-xl">Invite Friend to Event:</div>
+        <Invite inviteFriend={inviteFriend}/>
         <AppointmentForm.TextEditor
           value={appointmentData.description}
           onValueChange={onDescriptionChange}
@@ -419,7 +426,11 @@ export default function Schedule() {
             <AppointmentForm
               basicLayoutComponent={BasicLayout}
               textEditorComponent={TextEditor}
-            />
+
+            >
+
+
+            </AppointmentForm>
             <AllDayPanel />
           </Scheduler>
         </Paper>
