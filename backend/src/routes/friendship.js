@@ -28,7 +28,6 @@ router.get("/all", async (req, res) => {
     `;
     const values = [userProfile.sub.replace("|", "_")];
     const friends = await pool.query(query, values);
-    console.log(friends.rows)
     res.json({ friends: friends.rows });
   } catch (error) {
     console.error(error);
