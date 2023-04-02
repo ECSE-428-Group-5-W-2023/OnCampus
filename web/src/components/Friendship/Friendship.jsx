@@ -4,6 +4,7 @@ import * as React from "react";
 import Api from "../../helpers/api";
 import Button from "../Common/Button";
 import Popup from "../Common/Popup";
+import { Link, createSearchParams } from "react-router-dom";
 
 const Friendship = () => {
   const { user, getAccessTokenSilently } = useAuth0();
@@ -170,6 +171,24 @@ const Friendship = () => {
     getFriend(usernameFriend);
   }
 
+  async function deleteFriendship(event) {
+    event.preventDefault(); //prevent page refresh
+    await api
+      .deleteFriendship(await getAccessTokenSilently(), usernameFriend)
+      .then((res) => {
+        console.log(res);
+        if (res.data.message == "Friendship does not exist") {
+          friendshipDoesNotExist();
+          console.log("friendship does not exist!");
+        } else if (res.data.message == "Friendship deleted") {
+          friendshipDeleted();
+          console.log("friendship deleted!");
+        }
+      });
+    setShowModal(false);
+    getFriend(usernameFriend);
+  }
+
   const handleModalOpen = () => {
     setShowModal(true);
   };
@@ -245,6 +264,17 @@ const Friendship = () => {
             <Button onClick={createFriendship}>Request Friend!</Button>
             &nbsp;
             <Button onClick={deleteFriendship}>Delete Friend!</Button>
+            &nbsp;
+            <Link
+              to={{
+                pathname: "/friendSchedule",
+                search: createSearchParams({
+                  friend: usernameFriend,
+                }).toString(),
+              }}
+            >
+              <Button>View Friend's Schedule</Button>
+            </Link>
           </div>
         </div>
       )}
