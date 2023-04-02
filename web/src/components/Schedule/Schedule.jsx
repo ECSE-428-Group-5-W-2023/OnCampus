@@ -22,6 +22,7 @@ import {
 import Popup from "../Common/Popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faSlash,
   faUpload,
   faUser,
   faUserGroup,
@@ -69,6 +70,7 @@ export default function Schedule() {
           createEvent(
             event.summary,
             event.location,
+            false,
             undefined,
             undefined,
             false,
@@ -166,8 +168,11 @@ export default function Schedule() {
   };
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
-    const onCustomFieldChange = (nextValue) => {
+    const onDescriptionChange = (nextValue) => {
       onFieldChange({ description: nextValue });
+    };
+    const onIsPrivateChange = (nextValue) => {
+      onFieldChange({ is_private: nextValue });
     };
 
     return (
@@ -176,10 +181,16 @@ export default function Schedule() {
         onFieldChange={onFieldChange}
         {...restProps}
       >
+        <AppointmentForm.BooleanEditor
+          value={appointmentData.is_private}
+          onValueChange={onIsPrivateChange}
+          label="Private"
+        />
+        
         <AppointmentForm.Label text="Description" type="title" />
         <AppointmentForm.TextEditor
           value={appointmentData.description}
-          onValueChange={onCustomFieldChange}
+          onValueChange={onDescriptionChange}
           placeholder="Add description"
         />
       </AppointmentForm.BasicLayout>
@@ -215,6 +226,7 @@ export default function Schedule() {
   async function createEvent(
     title,
     description,
+    is_private,
     rRule,
     exDate,
     allDay,
@@ -247,6 +259,7 @@ export default function Schedule() {
     id,
     title,
     description,
+    is_private,
     rRule,
     exDate,
     allDay,
@@ -300,6 +313,7 @@ export default function Schedule() {
       createEvent(
         added.title,
         added.description,
+        added.is_private,
         added.rRule,
         added.exDate,
         added.allDay,
@@ -321,6 +335,7 @@ export default function Schedule() {
         id,
         changes.title,
         changes.description,
+        changes.is_private,
         changes.rRule,
         changes.exDate,
         changes.allDay,
@@ -343,6 +358,7 @@ export default function Schedule() {
       id: value.id,
       title: value.title,
       description: value.description,
+      is_private: value.is_private,
       rRule: value.r_rule,
       exDate: value.ex_date,
       allDay: value.all_day,

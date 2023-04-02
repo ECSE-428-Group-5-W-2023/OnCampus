@@ -18,6 +18,7 @@ import {
   AppointmentTooltip,
   AppointmentForm,
   AllDayPanel,
+  Resources,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import Popup from "../Common/Popup";
 import { useSearchParams } from "react-router-dom";
@@ -38,6 +39,14 @@ export default function FriendSchedule() {
 
   const [searchparams] = useSearchParams();
 
+  const TextEditor = (props) => {
+    // eslint-disable-next-line react/destructuring-assignment
+    if (props.type === "multilineTextEditor") {
+      return null;
+    }
+    return <AppointmentForm.TextEditor {...props} />;
+  };
+
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
     return (
       <AppointmentForm.BasicLayout
@@ -45,7 +54,17 @@ export default function FriendSchedule() {
         appointmentData={appointmentData}
         {...restProps}
       >
+        <AppointmentForm.BooleanEditor
+          readOnly={true}
+          value={appointmentData.is_private}
+          label="Private"
+        />
         <AppointmentForm.Label text="Description" type="title" />
+        <AppointmentForm.TextEditor
+          readOnly={true}
+          value={appointmentData.description}
+          placeholder="Add description"
+        />
       </AppointmentForm.BasicLayout>
     );
   };
@@ -59,6 +78,14 @@ export default function FriendSchedule() {
     )),
     [false]
   );
+
+  //display color gray for private events
+  const resources = [{
+    fieldName: 'is_private',
+    instances: [
+      { id: true, text: 'private', color: '#808080' },
+    ],
+  }];
 
   // disable deleting an event
   const CommandButton = React.useCallback(
@@ -118,12 +145,20 @@ export default function FriendSchedule() {
       id: value.id,
       title: value.title,
       description: value.description,
+      is_private: value.is_private,
       rRule: value.r_rule,
       exDate: value.ex_date,
       allDay: value.all_day,
       startDate: value.start_date,
       endDate: value.end_date,
     }));
+    mapped?.forEach(mappedEvent => {
+      if(mappedEvent.is_private){
+        mappedEvent.title = "---";
+        mappedEvent.description = "---";
+      }
+    
+    });
     return mapped;
   }
 
@@ -155,6 +190,11 @@ export default function FriendSchedule() {
           <AppointmentTooltip showDeleteButton={false} showOpenButton />
           <AppointmentForm
             readOnly={true} //disable editing an event
+            basicLayoutComponent={BasicLayout}
+            textEditorComponent={TextEditor}
+          />
+          <Resources
+            data={resources}
           />
           <AllDayPanel />
         </Scheduler>
