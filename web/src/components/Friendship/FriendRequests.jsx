@@ -14,7 +14,6 @@ const Friendrequests = () => {
 
   useEffect(() => {
     try {
-      console.log("getting friend requests");
       getAllFriendRequests();
     } catch (err) {
       console.log("error" + err);
@@ -23,7 +22,6 @@ const Friendrequests = () => {
 
   useEffect(() => {
     try {
-      console.log("getting friend information");
       getFriendInformation();
     } catch (err) {
       console.log("error" + err);
@@ -39,8 +37,6 @@ const Friendrequests = () => {
   async function getFriendInformation() {
     const friendsTemp = [];
     for (let i = 0; i < requests.length; i++) {
-      console.log("friend # " + i);
-      console.log(requests[i].sending_profile_id);
       try {
         api
           .getFriendInformation(
@@ -48,10 +44,8 @@ const Friendrequests = () => {
             requests[i].sending_profile_id
           )
           .then((res) => {
-            console.log(res);
             friendsTemp[i] = res.data.profileFriend[0];
             setFriends(friendsTemp);
-            console.log(friends);
           });
       } catch (err) {
         console.log("error" + err);
@@ -60,35 +54,30 @@ const Friendrequests = () => {
   }
 
   async function declineFriendRequest(id) {
-    console.log("Declining Request");
-    console.log(id);
 
     //delete event with specified id
     api.deleteFriendRequest(await getAccessTokenSilently(), id).then(() => {
-      console.log("Deleting Friend Request");
       getAllFriendRequests();
+      window.location.reload();
     });
   }
 
   async function acceptFriendRequest(friendID) {
-    console.log("Accepting Request");
 
     //create friendship with specified id
     api
       .createFriendship(await getAccessTokenSilently(), friendID)
       .then((res) => {
         console.log(res);
-        console.log("Creating Friend Request");
       });
 
-    console.log("id: " + friendID);
 
     //delete event with specified id
     api
       .deleteFriendRequest(await getAccessTokenSilently(), friendID)
       .then(() => {
-        console.log("Deleting Friend Request");
         getAllFriendRequests();
+        window.location.reload();
       });
   }
 
