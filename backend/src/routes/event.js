@@ -251,13 +251,13 @@ router.put("/invitation", async (req, res) => {
 });
 
 router.get("/invitation", async (req, res) => {
-  const user_id = req.auth.payload.sub.replace("|", "_");
+  const recipient_profile_id = req.auth.payload.sub.replace("|", "_");
 
   const query = `
     SELECT * FROM event_invitation
-    WHERE recipient_profile_id = $1
+    WHERE recipient_profile_id = $1 AND status = 'pending'
   `;
-  const values = [user_id];
+  const values = [recipient_profile_id];
 
   const result = await pool.query(query, values);
 
