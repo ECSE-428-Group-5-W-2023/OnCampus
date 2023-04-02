@@ -105,4 +105,19 @@ router.get("/all", async (req, res) => {
   });
 });
 
+router.post("/remove/:name/:username", async (req, res) => {
+  const friendGroupName = req.params.name;
+  const memberUser = req.params.username;
+
+  const groupId = await pool.query(`SELECT id FROM friend_group WHERE name = '${friendGroupName}'`);
+  const userId = await pool.query(`SELECT profile_id FROM profile WHERE username = '${memberUser}'`);
+  // Remove the user from the group membership
+  const query = `DELETE FROM group_membership WHERE friend_group_id = '${groupId.rows[0]}' 
+  AND profile_id = '${userId.rows[0]}'`;
+
+  await pool.query(query);
+
+  res.json({ message: "Successfully removed the user from the friend group" });
+});
+
 module.exports = router;

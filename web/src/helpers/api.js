@@ -181,4 +181,8 @@ export default class Api {
   joinGroup = async (token, id) => {
     return (await this.init(token)).post(`/api/friendGroup/join/${id}`);
   };
+
+  removeUser = async (token, groupName, username) => {
+    return (await this.init(token)).post(`/api/friendGroup/remove/${groupName}/${username}`);
+  };
 }

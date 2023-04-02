@@ -9,6 +9,8 @@ const FriendGroup = () => {
   const { user, getAccessTokenSilently } = useAuth0();
   const [name, setGroupName] = useState("");
   const [description, setGroupDescription] = useState("");
+  const [username, setMemberUsername] = useState("");
+  const [groupName, setName] = useState("");
   const [userFriendGroups, setUserFriendGroups] = useState([]);
   const [allGroups, setAllGroups] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +20,7 @@ const FriendGroup = () => {
   const [modalPopupTitle, setModalPopupTitle] = useState(false);
   const [modalPopupDescription, setModalPopupDescription] = useState(false);
   const [showDescriptions, setShowDescriptions] = useState({});
+
 
   const api = new Api();
 
@@ -56,6 +59,7 @@ const FriendGroup = () => {
       });
     getGroups(); // get all groups so we can update the display
   }
+  
   useEffect(() => {
     filter();
   }, [searchTerm, allGroups]);
@@ -70,6 +74,25 @@ const FriendGroup = () => {
     );
   };
 
+  async function removeUserFromGroup(event) {
+    event.preventDefault(); //prevent page refresh
+    try{
+      await api
+        .removeUser(await getAccessTokenSilently(), groupName, username)
+        .then((res) => {
+          if (res.data.message == "Successfully removed from friend group") {
+            //it's a valid group
+            console.log("data content: " + res.data);
+          } else {
+            console.log("Nothing created, there must be a mistake!");
+          }
+        });
+    }catch (err){
+      console.log("error"+err);
+    }
+    getGroups(); // get all groups so we can update the display
+  };
+
   const joinGroup = async (groupId) => {
     await api.joinGroup(await getAccessTokenSilently(), groupId);
     getGroups();
@@ -79,6 +102,7 @@ const FriendGroup = () => {
     await api.leaveGroup(await getAccessTokenSilently(), groupId);
     getGroups();
   };
+
   return (
     <div className="friend-group">
       <div>
@@ -204,6 +228,47 @@ const FriendGroup = () => {
               description={modalPopupDescription}
             />
             <Button type="submit">Create</Button>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <h1 className="text-white">Remove a user from a group</h1>
+        <div>
+          <form onSubmit={removeUserFromGroup}>
+            <label
+              htmlFor="groupName                                                               r"
+              className="text-white text-lg font-bold m-3 mx-auto"
+            >
+              Group name:
+            </label>
+            <input
+              type="text"
+              id="groupName"
+              value={groupName}
+              onChange={(event) => setName(event.target.value)}
+            />
+            <br></br>
+            <label
+              htmlFor="memberUser"
+              className="text-white text-lg font-bold m-3 mx-auto"
+            >
+              Username:
+            </label>
+            <input
+              type="text"
+              id="memberUser"
+              value={username}
+              onChange={(event) => setMemberUsername(event.target.value)}
+            />
+            <br></br>
+            <Popup
+              open={showPopupModal}
+              setOpen={setShowPopupModal}
+              title={modalPopupTitle}
+              description={modalPopupDescription}
+            />
+            <Button type="submit">Remove</Button>
           </form>
         </div>
       </div>
