@@ -242,7 +242,7 @@ const Friendship = () => {
               title={modalPopupTitle}
               description={modalPopupDescription}
             />
-            <Button onClick={createFriendship}>Add Friend!</Button>
+            <Button onClick={createFriendship}>Request Friend!</Button>
             &nbsp;
             <Button onClick={deleteFriendship}>Delete Friend!</Button>
           </div>
