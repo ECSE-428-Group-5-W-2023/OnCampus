@@ -255,6 +255,17 @@ const Friendship = () => {
             <Button onClick={createFriendship}>Add Friend!</Button>
             &nbsp;
             <Button onClick={deleteFriendship}>Delete Friend!</Button>
+            &nbsp;
+            <Link
+              to={{
+                pathname: "/friendSchedule",
+                search: createSearchParams({
+                  friend: usernameFriend,
+                }).toString(),
+              }}
+            >
+              <Button>View Friend's Schedule</Button>
+            </Link>
           </div>
         </div>
       )}
