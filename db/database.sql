@@ -16,6 +16,8 @@ CREATE TABLE "event" (
     "end_date" VARCHAR(255),
     CONSTRAINT "event_fk1" FOREIGN KEY ("event_list_id") REFERENCES "event_list"("id")
 );
+
+
 CREATE TABLE "profile" (
     "id" SERIAL PRIMARY KEY,
     "profile_id" VARCHAR(255) NOT NULL UNIQUE,
@@ -25,6 +27,18 @@ CREATE TABLE "profile" (
     "school" VARCHAR(255),
     "bio" VARCHAR(255)
 );
+
+CREATE TABLE "event_invitation" (
+    "id" SERIAL PRIMARY KEY,
+    "event_id" integer NOT NULL,
+    "sender_profile_id" VARCHAR(255) NOT NULL,
+    "recipient_profile_id" VARCHAR(255) NOT NULL,
+    "status" VARCHAR(255) NOT NULL,
+    CONSTRAINT "event_invitation_fk1" FOREIGN KEY ("event_id") REFERENCES "event"("id"),
+    CONSTRAINT "event_invitation_fk2" FOREIGN KEY ("sender_profile_id") REFERENCES "profile"("profile_id"),
+    CONSTRAINT "event_invitation_fk3" FOREIGN KEY ("recipient_profile_id") REFERENCES "profile"("profile_id")
+);
+
 CREATE TABLE "friendship" (
     "id" SERIAL PRIMARY KEY,
     "profile_id_one" VARCHAR(255),

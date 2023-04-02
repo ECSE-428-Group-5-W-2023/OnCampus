@@ -72,10 +72,10 @@ router.post("/", async (req, res) => {
       event.start_date,
       event.end_date,
     ];
-    await pool.query(query, values);
+    var event_id = await pool.query(query, values);
   }
 
-  res.json({ message: "Successfully posted" });
+  res.json({ message: "Successfully posted", eventID: event_id });
 });
 
 router.put("/", async (req, res) => {
@@ -113,6 +113,94 @@ router.delete("/", async (req, res) => {
   await pool.query(query);
 
   res.json({ message: "Successfully deleted" });
+});
+
+router.post("/invitation", async (req, res) => {
+  const { event_id, sender_profile_id, recipient_profile_id } = req.body;
+
+  const query = `
+    INSERT INTO event_invitation (event_id, sender_profile_id, recipient_profile_id, status)
+    VALUES ($1, $2, $3, 'pending')
+  `;
+  const values = [event_id, sender_profile_id, recipient_profile_id];
+
+  await pool.query(query, values);
+
+  res.json({ message: "Successfully sent event invitation" });
+});
+
+router.put("/invitation", async (req, res) => {
+  const { event_id, recipient_profile_id } = req.body;
+
+  // Update event invitation status to 'accepted'
+  const query1 = `
+    UPDATE event_invitation
+    SET status = 'accepted'
+    WHERE event_id = $1 AND recipient_profile_id = $2
+  `;
+  const values1 = [event_id, recipient_profile_id];
+  await pool.query(query1, values1);
+
+  // Get event information
+  const query2 = `
+    SELECT * FROM event WHERE id = $1
+  `;
+  const values2 = [event_id];
+  const result = await pool.query(query2, values2);
+
+  if (result.rows.length > 0) {
+    const event = result.rows[0];
+    const {
+      title,
+      description,
+      is_private,
+      event_tags,
+      r_rule,
+      ex_date,
+      all_day,
+      start_date,
+      end_date,
+    } = event;
+
+    // Get event list for user
+    const eventlist = await pool.query(`
+      SELECT * FROM event_list WHERE owner_id = '${recipient_profile_id}'
+    `);
+
+    // Create event list if it doesn't exist
+    if (eventlist.rows.length === 0) {
+      const query3 = `
+        INSERT INTO event_list (owner_id) VALUES ($1) RETURNING id
+      `;
+      const values3 = [recipient_profile_id];
+      eventlist = await pool.query(query3, values3);
+    }
+
+    // Create event for user
+    const query4 = `
+      INSERT INTO event (event_list_id, title, description, is_private, event_tags, r_rule, ex_date, all_day, start_date, end_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    `;
+    const values4 = [
+      eventlist.rows[0].id,
+      title,
+      description,
+      is_private,
+      event_tags,
+      r_rule,
+      ex_date,
+      all_day,
+      start_date,
+      end_date,
+    ];
+    await pool.query(query4, values4);
+
+    res.json({
+      message: "Successfully accepted event invitation and created event",
+    });
+  } else {
+    res.status(404).json({ message: "Event not found" });
+  }
 });
 
 module.exports = router;

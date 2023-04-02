@@ -276,8 +276,15 @@ export default function Schedule() {
         endDate,
         selectedGroupId
       )
-      .then((res) => {
-        setEvents(res.events);
+      .then(async (res) => {
+        const eventId = res.eventID;
+        if (friendsToInvite.length > 0) {
+          await api.inviteFriends(
+            await getAccessTokenSilently(),
+            eventId,
+            friendsToInvite
+          );
+        }
       });
 
     getAllEvents();
