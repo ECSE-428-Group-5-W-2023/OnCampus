@@ -4,11 +4,16 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const userProfile = req.auth.payload;
+  const group_id = req.query.group_id;
 
   // Get event list for user
   const eventlist = await pool.query(
     `SELECT * FROM event_list 
-    WHERE owner_id = '${userProfile.sub.replace("|", "_")}'`
+    WHERE owner_id = '${
+      group_id && group_id > 0
+        ? `group_${group_id}`
+        : userProfile.sub.replace("|", "_")
+    }'`
   );
 
   var events = null;
@@ -23,10 +28,15 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const event = req.body;
+  const group_id = event.group_id;
   // Get event list for user
   var eventlist = await pool.query(
     `SELECT * FROM event_list 
-      WHERE owner_id = '${userProfile.sub.replace("|", "_")}'`
+      WHERE owner_id = '${
+        group_id && group_id > 0
+          ? `group_${group_id}`
+          : userProfile.sub.replace("|", "_")
+      }'`
   );
   // Create event list if it doesn't exist
   if (eventlist.rows.length === 0) {
@@ -35,7 +45,11 @@ router.post("/", async (req, res) => {
         VALUES ($1)
         RETURNING id
       `;
-    const values = [userProfile.sub.replace("|", "_")];
+    const values = [
+      group_id && group_id > 0
+        ? `group_${group_id}`
+        : userProfile.sub.replace("|", "_"),
+    ];
     eventlist = await pool.query(query, values);
   }
 

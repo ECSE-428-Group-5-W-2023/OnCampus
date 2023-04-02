@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const usernameFriend = req.query.usernameFriend;
-
+  console.log("usernameFriend: " + usernameFriend, "userProfile: " + userProfile.sub.replace("|", "_"));
   // Get friend from profile list
   const queryProfile = `
     SELECT * FROM profile
@@ -28,12 +28,10 @@ router.post("/", async (req, res) => {
   const valuesProfile = [usernameFriend];
   try {
     const profileFriend = await pool.query(queryProfile, valuesProfile);
-
-    if (
-      userProfile.sub.replace("|", "_") === profileFriend.rows[0].profile_id
-    ) {
-      res.json({ message: "Adding yourself" });
-      return;
+    
+    if (userProfile.sub.replace("|", "_") === profileFriend.rows[0].profile_id) {
+        res.json({ message: "Adding yourself" });
+        return;
     }
 
     // check if they are already friends

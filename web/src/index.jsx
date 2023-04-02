@@ -9,6 +9,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import Schedule from "./components/Schedule/Schedule";
 import AccountInfo from "./components/Auth/AccountInfo";
 import Friendship from "./components/Friendship/Friendship";
+import FriendGroup from "./components/FriendGroup/FriendGroup";
 import FriendSchedule from "./components/Friendship/FriendSchedule";
 
 const router = createBrowserRouter([
@@ -31,10 +32,14 @@ const router = createBrowserRouter([
         element: <Friendship />,
       },
       {
+        path: "/friendGroup",
+        element: <FriendGroup />,
+      },      
+      {
         path: "/friendSchedule",
         element: <FriendSchedule />,
       },
-    ],
+   ],
   },
 ]);
 

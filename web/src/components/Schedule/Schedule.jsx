@@ -21,7 +21,12 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 import Popup from "../Common/Popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUpload,
+  faUser,
+  faUserGroup,
+} from "@fortawesome/free-solid-svg-icons";
+import Button from "../Common/Button";
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
@@ -31,12 +36,21 @@ export default function Schedule() {
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState(false);
   const [modalDescription, setModalDescription] = useState(false);
-
+  const [friendGroups, setFriendGroups] = useState([]);
   const [mappedEvents, setMappedEvents] = useState([]);
   const [file, setFile] = useState(null);
-
+  const [selectedGroupId, setSelectedGroupId] = useState(-1);
   const api = new Api();
 
+  useEffect(() => {
+    getGroups();
+  }, []);
+
+  async function getGroups() {
+    api.getFriendGroups(await getAccessTokenSilently()).then((res) => {
+      setFriendGroups(res.profile);
+    });
+  }
   const handleFileChange = (event) => {
     console.log(event.target.files[0]);
     setFile(event.target.files[0]);
@@ -59,8 +73,7 @@ export default function Schedule() {
             undefined,
             false,
             event.start,
-            event.end
-          );
+            event.end          );
         }
         setFile(null);
       };
@@ -180,16 +193,18 @@ export default function Schedule() {
       console.log("error" + err);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [selectedGroupId]);
 
   useEffect(() => {
     setMappedEvents(mapEvents); //map to another form that can be read by react scheduler
   }, [events]);
 
   async function getAllEvents() {
-    await api.getEvents(await getAccessTokenSilently()).then((res) => {
-      setEvents(res.events);
-    });
+    await api
+      .getEvents(await getAccessTokenSilently(), selectedGroupId)
+      .then((res) => {
+        setEvents(res.events);
+      });
   }
 
   //Updating the is_private boolean when the checkbox is clicked
@@ -218,7 +233,8 @@ export default function Schedule() {
         exDate,
         allDay,
         startDate,
-        endDate
+        endDate,
+        selectedGroupId
       )
       .then((res) => {
         setEvents(res.events);
@@ -332,39 +348,65 @@ export default function Schedule() {
       allDay: value.all_day,
       startDate: value.start_date,
       endDate: value.end_date,
-      //rRule: value.isReccuring,     TODO: once create recurring event is implemented
-      //endPeriod: value.
-      //description and event_list_id are not mapped
     }));
     return mapped;
   }
 
   return (
     <div>
-      <Paper>
-        <Scheduler data={mappedEvents} height={750}>
-          <EditingState onCommitChanges={commitChanges} />
-          <ViewState defaultCurrentDate="2023-02-05" />
-          <WeekView startDayHour={6} endDayHour={24} />
-          <IntegratedEditing />
-          <Toolbar />
-          <DateNavigator />
-          <Popup
-            open={showModal}
-            setOpen={setShowModal}
-            title={modalTitle}
-            description={modalDescription}
-          />
-          <ConfirmationDialog />
-          <Appointments />
-          <AppointmentTooltip showDeleteButton showOpenButton />
-          <AppointmentForm
-            basicLayoutComponent={BasicLayout}
-            textEditorComponent={TextEditor}
-          />
-          <AllDayPanel />
-        </Scheduler>
-      </Paper>
+      <div>
+        <Button
+          onClick={() => {
+            getAllEvents();
+            setSelectedGroupId(-1);
+          }}
+          className="mr-1 mb-1"
+          selected={selectedGroupId === -1}
+        >
+          <FontAwesomeIcon icon={faUser} className="mr-1" />
+          My Schedule
+        </Button>
+        {friendGroups?.map((friendGroup) => {
+          return (
+            <Button
+              onClick={() => {
+                setSelectedGroupId(friendGroup.id);
+              }}
+              className="mr-1 mb-1"
+              selected={selectedGroupId === friendGroup.id}
+            >
+              <FontAwesomeIcon icon={faUserGroup} className="mr-1" />
+              {friendGroup.name}
+            </Button>
+          );
+        })}
+      </div>
+      <div className="h-3/4 flex">
+        <Paper>
+          <Scheduler data={mappedEvents}>
+            <EditingState onCommitChanges={commitChanges} />
+            <ViewState defaultCurrentDate="2023-02-05" />
+            <WeekView startDayHour={6} endDayHour={24} />
+            <IntegratedEditing />
+            <Toolbar />
+            <DateNavigator />
+            <Popup
+              open={showModal}
+              setOpen={setShowModal}
+              title={modalTitle}
+              description={modalDescription}
+            />
+            <ConfirmationDialog />
+            <Appointments />
+            <AppointmentTooltip showDeleteButton showOpenButton />
+            <AppointmentForm
+              basicLayoutComponent={BasicLayout}
+              textEditorComponent={TextEditor}
+            />
+            <AllDayPanel />
+          </Scheduler>
+        </Paper>
+      </div>
 
       <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-4 mt-2 ">
         <label

@@ -4,7 +4,7 @@ import UserProfile from "../Auth/AuthInfo";
 import LoginButton from "../Auth/Login";
 import NavIcon from "./NavIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendar } from "@fortawesome/free-solid-svg-icons";
+import { faCalendar, faPerson, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 export default function Navbar() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -34,8 +34,15 @@ export default function Navbar() {
       </Link>
       <Link to={"friendship"}>
         {NavIcon(
-            <FontAwesomeIcon icon={faCalendar} />,
+            <FontAwesomeIcon icon={faPerson} />,
             "Search Friend",
+            !isAuthenticated
+        )}
+      </Link>
+      <Link to={"friendgroup"}>
+        {NavIcon(
+            <FontAwesomeIcon icon={faUserGroup} />,
+            "Friend Groups",
             !isAuthenticated
         )}
       </Link>
