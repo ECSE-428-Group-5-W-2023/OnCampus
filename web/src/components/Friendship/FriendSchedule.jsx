@@ -24,8 +24,6 @@ import { useSearchParams } from "react-router-dom";
 
 export default function FriendSchedule() {
   const { getAccessTokenSilently } = useAuth0();
-  const [is_private, setIsPrivate] = useState(false);
-  const [event_tags, setEventTags] = useState([]);
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalTitle, setModalTitle] = useState(false);
@@ -98,12 +96,6 @@ export default function FriendSchedule() {
     setShowPopupModal(true);
   }
 
-  async function friendshipDeleted() {
-    setModalPopupTitle("Friendship Deleted!");
-    setModalPopupDescription("You have successfully deleted this friend.");
-    setShowPopupModal(true);
-  }
-
   async function getAllEvents() {
     await api
       .getFriendsEvents(
@@ -131,9 +123,6 @@ export default function FriendSchedule() {
       allDay: value.all_day,
       startDate: value.start_date,
       endDate: value.end_date,
-      //rRule: value.isReccuring,     TODO: once create recurring event is implemented
-      //endPeriod: value.
-      //description and event_list_id are not mapped
     }));
     return mapped;
   }
