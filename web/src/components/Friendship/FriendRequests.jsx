@@ -120,6 +120,7 @@ const Friendrequests= () => {
       <h1 className="text-white">Here are your friend requests!</h1>
       {friends?.map((friend) => {
           return (
+              <li className="list-none" key={friend.id}>
                 <div className="bg-slate-300 w-fit my-1 py-1 px-2 rounded ">
                   Username:
                   <br />
@@ -148,8 +149,9 @@ const Friendrequests= () => {
                   <Button 
                   className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded margin-left =2`}
                   onClick={() => declineFriendRequest(requests.id)}>Decline</Button> */}
-
                 </div>
+                </li>
+                
           );
         })}
       {/* {friends &&
