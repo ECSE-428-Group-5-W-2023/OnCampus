@@ -195,22 +195,24 @@ export default function Schedule() {
           label="Private"
         />
         <div>
-          {friendsToInvite?.map((friend) => {
-            return (
-              <div className="m-2 bg-slate-200 rounded w-fit p-2 ">
-                {friend.name}
-                <FontAwesomeIcon
-                  icon={faClose}
-                  onClick={() => {
-                    setFriendsToInvite(
-                      friendsToInvite.filter((f) => f !== friend)
-                    );
-                  }}
-                  className="ml-2 cursor-pointer"
-                />
-              </div>
-            );
-          })}
+          <div className="flex flex-row">
+            {friendsToInvite?.map((friend) => {
+              return (
+                <div className="m-2 bg-slate-200 rounded w-fit p-2 ">
+                  {friend.name}
+                  <FontAwesomeIcon
+                    icon={faClose}
+                    onClick={() => {
+                      setFriendsToInvite(
+                        friendsToInvite.filter((f) => f !== friend)
+                      );
+                    }}
+                    className="ml-2 cursor-pointer"
+                  />
+                </div>
+              );
+            })}
+          </div>
 
           <Invite inviteFriend={inviteFriend} />
         </div>{" "}
