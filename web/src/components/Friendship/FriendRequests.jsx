@@ -19,7 +19,7 @@ const Friendrequests= () => {
     try {
       console.log("getting friend requests");
       getAllFriendRequests();
-      console.log(userProfileFriends); 
+      // console.log(userProfileFriends); 
 
     } catch (err) {
       console.log("error" + err);
@@ -83,11 +83,10 @@ const Friendrequests= () => {
 
   }
 
-
-
   async function declineFriendRequest(id) {
     console.log("Declining Request"); 
-    getFriendInformation(); 
+    console.log(id); 
+    // getFriendInformation(); 
 
     //delete event with specified id
     api.deleteFriendRequest(await getAccessTokenSilently(), id).then(() => {
@@ -96,7 +95,7 @@ const Friendrequests= () => {
     });
   }
 
-  async function acceptFriendRequest(friendID, requestID) {
+  async function acceptFriendRequest(friendID) {
     console.log("Accepting Request");
 
     //create friendship with specified id [THIS MAY NOT WORK BECAUSE SHE USES USERNAME AND IM PASSING AUTH AGAIN]
@@ -105,8 +104,10 @@ const Friendrequests= () => {
       console.log("Creating Friend Request");
     });
 
+    console.log("id: "+friendID)
+
     //delete event with specified id
-    api.deleteFriendRequest(await getAccessTokenSilently(), requestID).then(() => {
+    api.deleteFriendRequest(await getAccessTokenSilently(), friendID).then(() => {
       console.log("deleting");
       getAllFriendRequests();
     });
@@ -122,48 +123,25 @@ const Friendrequests= () => {
           return (
               <li className="list-none" key={friend.id}>
                 <div className="bg-slate-300 w-fit my-1 py-1 px-2 rounded ">
-                  Username:
+                  Username: {friend.username}
                   <br />
-                  {friend.username}
+                  Name: {friend.name}
                   <br />
-                  Name:
+                  School: {friend.school}
                   <br />
-                  {friend.name}
+                  Bio: {friend.bio}
                   <br />
-                  School:
-                  <br />
-                  {friend.school}
-                  <br />  
-                  Bio:
-                  <br />
-                  {friend.bio}
-                  <br />
-                  <Button >Accept</Button>
-                  <br />
-                  <Button 
-                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded margin-left =2`}>Decline</Button>
-                  
-                  {/* <Button 
-                  onClick={() => acceptFriendRequest(requests.sending_profile_id, requests.id)}>Accept</Button>
+                 <Button 
+                  onClick={() => acceptFriendRequest(friend.profile_id)}>Accept</Button>
 
                   <Button 
                   className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded margin-left =2`}
-                  onClick={() => declineFriendRequest(requests.id)}>Decline</Button> */}
+                  onClick={() => declineFriendRequest(friend.profile_id)}>Decline</Button>
                 </div>
                 </li>
                 
           );
         })}
-      {/* {friends &&
-        friends.map((friends, key) => {
-          // console.log(requests.sending_profile_id)
-          // getFriendInformation(requests.sending_profile_id); //this returns null for some reason?? 
-          // console.log(userProfileFriend);
-          return (
-            
-
-          );
-        })} */}
     </div>
   
   );

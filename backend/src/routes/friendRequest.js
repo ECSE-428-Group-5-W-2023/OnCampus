@@ -84,12 +84,16 @@ router.post("/", async (req, res) => {
 
 //Not tested, but should delete a friend request
 router.delete("/", async (req, res) => {
+  const userProfile = req.auth.payload;
+  const profile = req.query.usernameFriend;
+
   // Delete friend request
   const query = `
-          DELETE FROM friendrequest WHERE id = ${req.query.id} 
+          DELETE FROM friendrequest WHERE (sending_profile_id = $1 AND receiving_profile_id = '${userProfile.sub.replace("|", "_")}')
         `;
-  await pool.query(query);
 
+  const values = [profile];
+  await pool.query(query, values);
   res.json({ message: "Successfully deleted" });
 });
 
