@@ -35,11 +35,12 @@ function Invite({inviteFriend}) {
   };
 
   return (
-    <div>
+    <div className="mb-10">
       <input
         type="text"
-        placeholder="Search friends"
+        placeholder="Invite friends"
         value={searchTerm}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
         onChange={(event) => setSearchTerm(event.target.value)}
         onClick={() => {
           setShowDropdown(true);
@@ -47,7 +48,7 @@ function Invite({inviteFriend}) {
       />
       {showDropdown && (
         <div
-          className="absolute z-10 w-full mt-2 bg-white rounded-md shadow-lg"
+          className="z-10 w-full mt-2 bg-white rounded-md shadow-lg"
           onMouseLeave={() => {
             setShowDropdown(false);
           }}

@@ -22,7 +22,7 @@ import {
 import Popup from "../Common/Popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSlash,
+  faClose,
   faUpload,
   faUser,
   faUserGroup,
@@ -42,6 +42,7 @@ export default function Schedule() {
   const [mappedEvents, setMappedEvents] = useState([]);
   const [file, setFile] = useState(null);
   const [selectedGroupId, setSelectedGroupId] = useState(-1);
+  const [friendsToInvite, setFriendsToInvite] = useState([]);
   const api = new Api();
 
   useEffect(() => {
@@ -76,7 +77,8 @@ export default function Schedule() {
             undefined,
             false,
             event.start,
-            event.end          );
+            event.end
+          );
         }
         setFile(null);
       };
@@ -168,8 +170,10 @@ export default function Schedule() {
     return <AppointmentForm.TextEditor {...props} />;
   };
 
-  function inviteFriend(friend){
-    console.log("Trying to invite:",friend)
+  function inviteFriend(friend) {
+    console.log("Trying to invite:", friend);
+    if (!friendsToInvite.includes(friend))
+      setFriendsToInvite([...friendsToInvite, friend]);
   }
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
@@ -191,10 +195,27 @@ export default function Schedule() {
           onValueChange={onIsPrivateChange}
           label="Private"
         />
-        
+        <div>
+          {friendsToInvite?.map((friend) => {
+            return (
+              <div className="m-2 bg-slate-200 rounded w-fit p-2 ">
+                {friend.name}
+                <FontAwesomeIcon
+                  icon={faClose}
+                  onClick={() => {
+                    setFriendsToInvite(
+                      friendsToInvite.filter((f) => f !== friend)
+                    );
+                  }}
+                  className="ml-2 cursor-pointer"
+                />
+              </div>
+            );
+          })}
+
+          <Invite inviteFriend={inviteFriend} />
+        </div>{" "}
         <AppointmentForm.Label text="Description" type="title" />
-        <div className="text-xl">Invite Friend to Event:</div>
-        <Invite inviteFriend={inviteFriend}/>
         <AppointmentForm.TextEditor
           value={appointmentData.description}
           onValueChange={onDescriptionChange}
@@ -408,7 +429,7 @@ export default function Schedule() {
         <Paper>
           <Scheduler data={mappedEvents}>
             <EditingState onCommitChanges={commitChanges} />
-            <ViewState defaultCurrentDate= {new Date().toLocaleDateString()}/>
+            <ViewState defaultCurrentDate={new Date().toLocaleDateString()} />
             <WeekView startDayHour={6} endDayHour={24} />
             <IntegratedEditing />
             <Toolbar />
@@ -420,17 +441,13 @@ export default function Schedule() {
               description={modalDescription}
             />
             <ConfirmationDialog />
-            <Appointments />            
+            <Appointments />
 
             <AppointmentTooltip showDeleteButton showOpenButton />
             <AppointmentForm
               basicLayoutComponent={BasicLayout}
               textEditorComponent={TextEditor}
-
-            >
-
-
-            </AppointmentForm>
+            ></AppointmentForm>
             <AllDayPanel />
           </Scheduler>
         </Paper>
