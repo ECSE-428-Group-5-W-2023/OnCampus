@@ -10,6 +10,7 @@ import Schedule from "./components/Schedule/Schedule";
 import AccountInfo from "./components/Auth/AccountInfo";
 import Friendship from "./components/Friendship/Friendship";
 import FriendGroup from "./components/FriendGroup/FriendGroup";
+import FriendSchedule from "./components/Friendship/FriendSchedule";
 
 const router = createBrowserRouter([
   {
@@ -33,14 +34,16 @@ const router = createBrowserRouter([
       {
         path: "/friendGroup",
         element: <FriendGroup />,
-      }
-    ],
+      },      
+      {
+        path: "/friendSchedule",
+        element: <FriendSchedule />,
+      },
+   ],
   },
 ]);
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root")
-);
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Auth0Provider
     audience="OnCampus-auth"
