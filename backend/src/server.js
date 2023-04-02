@@ -32,3 +32,5 @@ app.use("/api/profile", checkJwt, require("./routes/profile"));
 app.use("/api/friendship", checkJwt, require("./routes/friendship"));
 app.use("/api/friendGroup", checkJwt, require("./routes/friendGroup")); //route for friend groups.
 app.use("/api/users", checkJwt, require("./routes/users"));
+app.use("/api/friendrequests", checkJwt, require("./routes/friendRequest"));
+app.use("/api/friendGetter", checkJwt, require("./routes/friendGetter"));
