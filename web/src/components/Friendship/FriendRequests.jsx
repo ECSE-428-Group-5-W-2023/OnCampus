@@ -7,6 +7,7 @@ import Popup from "../Common/Popup";
 
 const Friendrequests= () => {
   const [requests, setRequests] = useState([]);
+  const [friends, setFriends] = useState([]);
   const { getAccessTokenSilently } = useAuth0();
   const [userProfileFriends, setUserProfileFriends] = useState([]);
   const [usernameFriend, setUsernameFriend] = useState(null);
@@ -16,6 +17,7 @@ const Friendrequests= () => {
 
   useEffect(() => {
     try {
+      console.log("getting friend requests");
       getAllFriendRequests();
       console.log(userProfileFriends); 
 
@@ -26,44 +28,56 @@ const Friendrequests= () => {
 
   useEffect(() => {
     try {
+      console.log("getting friend information");
       getFriendInformation();
     } catch (err) {
       console.log("error" + err);
     }
-  }, []);
+  }, [requests]);
 
 
   
   async function getAllFriendRequests() {
     await api.getFriendRequests(await getAccessTokenSilently()).then((res) => {
+      console.log("entered get friend requests");
+      console.log("res");
+      console.log(res);
       setRequests(res.friendRequests);
     });
   }
 
 
   async function getFriendInformation() {
-    console.log("Getting friend");
+    console.log("entered get friend information");
+    console.log("requests"); 
+    console.log(requests);
 
-    const friends = []; 
+    const friendsTemp = []; 
     for (let i = 0; i < requests.length; i++) {
-      
+      console.log("friend # " + i);
       console.log(requests[i].sending_profile_id); 
       try {
         api
           .getFriendInformation(await getAccessTokenSilently(), requests[i].sending_profile_id)
           .then((res) => {
+            console.log(res);
             // setUserProfileFriend(res.data.profileFriend[0]);
-            friends[i] = res.data.profileFriend[0];
-            setUserProfileFriends(friends); 
-            setUsernameFriend(res.data.profileFriend[0])
+            friendsTemp[i] = res.data.profileFriend[0];
+            console.log(friendsTemp[i]);
+            // setUserProfileFriends(friendsTemp); 
+            // setUsernameFriend(res.data.profileFriend[0])
             // console.log(res.data.profileFriend[0])
+            console.log("friends set");
+            setFriends(friendsTemp);
+            console.log(friends);
           });
       } catch (err) {
         console.log("error" + err);
       }
 
     }
-    console.log(usernameFriend);
+    // console.log(usernameFriend);
+
     // setUserProfileFriends(friends); 
 
 
@@ -104,34 +118,50 @@ const Friendrequests= () => {
     <div>
       
       <h1 className="text-white">Here are your friend requests!</h1>
-      {requests &&
-        requests.map((requests, key) => {
+      {friends?.map((friend) => {
+          return (
+                <div className="bg-slate-300 w-fit my-1 py-1 px-2 rounded ">
+                  Username:
+                  <br />
+                  {friend.username}
+                  <br />
+                  Name:
+                  <br />
+                  {friend.name}
+                  <br />
+                  School:
+                  <br />
+                  {friend.school}
+                  <br />  
+                  Bio:
+                  <br />
+                  {friend.bio}
+                  <br />
+                  <Button >Accept</Button>
+                  <br />
+                  <Button 
+                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded margin-left =2`}>Decline</Button>
+                  
+                  {/* <Button 
+                  onClick={() => acceptFriendRequest(requests.sending_profile_id, requests.id)}>Accept</Button>
+
+                  <Button 
+                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded margin-left =2`}
+                  onClick={() => declineFriendRequest(requests.id)}>Decline</Button> */}
+
+                </div>
+          );
+        })}
+      {/* {friends &&
+        friends.map((friends, key) => {
           // console.log(requests.sending_profile_id)
           // getFriendInformation(requests.sending_profile_id); //this returns null for some reason?? 
           // console.log(userProfileFriend);
           return (
             
-            <li className="list-none" key={key}>
-              {
-                <div className="bg-slate-300 w-fit my-1 py-1 px-2 rounded ">
-                  {requests.sending_profile_id}
-                  <br />
-                  {requests.receiving_profile_id}
-                  <br />
-                  {requests.id}
-                  <br />  
-                  <Button 
-                  onClick={() => acceptFriendRequest(requests.sending_profile_id, requests.id)}>Accept</Button>
 
-                  <Button 
-                  className={`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded margin-left =2`}
-                  onClick={() => declineFriendRequest(requests.id)}>Decline</Button>
-
-                </div>
-              }
-            </li>
           );
-        })}
+        })} */}
     </div>
   
   );
