@@ -82,14 +82,17 @@ router.post("/", async (req, res) => {
   }
 });
 
-//Not tested, but should delete a friend request
+//delete a friend request
 router.delete("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const profile = req.query.usernameFriend;
 
   // Delete friend request
   const query = `
-          DELETE FROM friendrequest WHERE (sending_profile_id = $1 AND receiving_profile_id = '${userProfile.sub.replace("|", "_")}')
+          DELETE FROM friendrequest WHERE (sending_profile_id = $1 AND receiving_profile_id = '${userProfile.sub.replace(
+            "|",
+            "_"
+          )}')
         `;
 
   const values = [profile];
@@ -97,22 +100,19 @@ router.delete("/", async (req, res) => {
   res.json({ message: "Successfully deleted" });
 });
 
-//need an api call to get all the friendrequests associated with the user that is logged in 
-//WIP
+//Get all friend requests for a given user
 router.get("/", async (req, res) => {
   const userProfile = req.auth.payload;
 
   //Get friend request list from user (ngl not sure if receiving profile is the user that didn't send)
-  const query = 
-    `SELECT * FROM friendrequest 
+  const query = `SELECT * FROM friendrequest 
     WHERE receiving_profile_id = '${userProfile.sub.replace("|", "_")}'`;
 
-  //Putting the list obtained into a variable 
-  var friendRequests = null
+  //Putting the list obtained into a variable
+  var friendRequests = null;
   friendRequests = await pool.query(query);
 
   res.json({ friendRequests: friendRequests?.rows });
 });
-
 
 module.exports = router;
