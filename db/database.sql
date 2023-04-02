@@ -41,3 +41,8 @@ CREATE TABLE "group_membership"(
     "profile_id" VARCHAR(255) NOT NULL,
     CONSTRAINT "group_membership_fk1" FOREIGN KEY ("friend_group_id") REFERENCES "friend_group"("id")
 );
+CREATE TABLE "friendrequest"(
+    "id" SERIAL PRIMARY KEY,
+    "sending_profile_id" VARCHAR(255),
+    "receiving_profile_id" VARCHAR(255)
+);

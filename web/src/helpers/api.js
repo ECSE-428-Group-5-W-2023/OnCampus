@@ -181,4 +181,32 @@ export default class Api {
   joinGroup = async (token, id) => {
     return (await this.init(token)).post(`/api/friendGroup/join/${id}`);
   };
+
+  getFriendRequests = async (token) => {
+    return (await (await this.init(token)).get("/api/friendrequests")).data;
+  };
+  
+  sendFriendRequest = async (token, usernameFriend) => {
+    return (await this.init(token)).post("/api/friendrequests", null, {
+      params: {
+        usernameFriend,
+      },
+    });
+  };
+
+  deleteFriendRequest = async (token, usernameFriend) => {
+    return (await this.init(token)).delete("/api/friendrequests", {
+      params: {
+        usernameFriend,
+      },
+    });
+  };
+
+  getFriendInformation = async (token, usernameFriend) => {
+    return (await this.init(token)).get("/api/friendGetter", {
+      params: {
+        usernameFriend,
+      },
+    });
+  };
 }
