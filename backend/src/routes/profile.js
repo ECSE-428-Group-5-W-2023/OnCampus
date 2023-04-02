@@ -4,7 +4,6 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const userProfile = req.auth.payload;
-  console.log(req.query);
   // Get user from profile list
   var profile = await pool.query(
     `SELECT * FROM profile
