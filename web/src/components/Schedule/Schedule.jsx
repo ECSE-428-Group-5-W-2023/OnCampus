@@ -171,7 +171,6 @@ export default function Schedule() {
   };
 
   function inviteFriend(friend) {
-    console.log("Trying to invite:", friend);
     if (!friendsToInvite.includes(friend))
       setFriendsToInvite([...friendsToInvite, friend]);
   }
@@ -277,7 +276,7 @@ export default function Schedule() {
         selectedGroupId
       )
       .then(async (res) => {
-        const eventId = res.eventID;
+        const eventId = res.data.eventID;
         if (friendsToInvite.length > 0) {
           await api.inviteFriends(
             await getAccessTokenSilently(),

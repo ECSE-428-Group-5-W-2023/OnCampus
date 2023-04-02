@@ -12,6 +12,7 @@ import Friendship from "./components/Friendship/Friendship";
 import FriendGroup from "./components/FriendGroup/FriendGroup";
 import FriendRequests from "./components/Friendship/FriendRequests";
 import FriendSchedule from "./components/Friendship/FriendSchedule";
+import ViewInvitations from "./components/Schedule/ViewInvitations";
 
 const router = createBrowserRouter([
   {
@@ -44,7 +45,11 @@ const router = createBrowserRouter([
         path: "/friendSchedule",
         element: <FriendSchedule />,
       },
-   ],
+      {
+        path: "/invites",
+        element: <ViewInvitations />,
+      },
+    ],
   },
 ]);
 

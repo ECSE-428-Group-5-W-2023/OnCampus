@@ -25,6 +25,24 @@ router.get("/", async (req, res) => {
   res.json({ events: events?.rows });
 });
 
+router.get("/specific/:eventId", async (req, res) => {
+  const eventId = req.params.eventId;
+  try {
+    const { rows } = await pool.query(
+      "SELECT * FROM event WHERE id = $1 LIMIT 1",
+      [eventId]
+    );
+    if (rows.length === 0) {
+      res.status(404).json({ message: "Event not found" });
+    } else {
+      res.json({ event: rows[0] });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const event = req.body;
@@ -72,10 +90,12 @@ router.post("/", async (req, res) => {
       event.start_date,
       event.end_date,
     ];
-    var event_id = await pool.query(query, values);
-  }
 
-  res.json({ message: "Successfully posted", eventID: event_id });
+    const event_id = await pool.query(query, values);
+    res.json({ message: "Successfully posted", eventID: event_id.rows[0].id });
+  } else {
+    res.json({ message: "Event List not found " });
+  }
 });
 
 router.put("/", async (req, res) => {
@@ -116,8 +136,9 @@ router.delete("/", async (req, res) => {
 });
 
 router.post("/invitation", async (req, res) => {
-  const { event_id, sender_profile_id, recipient_profile_id } = req.body;
+  sender_profile_id = req.auth.payload.sub.replace("|", "_");
 
+  const { event_id, recipient_profile_id } = req.body;
   const query = `
     INSERT INTO event_invitation (event_id, sender_profile_id, recipient_profile_id, status)
     VALUES ($1, $2, $3, 'pending')
@@ -130,77 +151,117 @@ router.post("/invitation", async (req, res) => {
 });
 
 router.put("/invitation", async (req, res) => {
-  const { event_id, recipient_profile_id } = req.body;
+  const { invitation_id, status } = req.body;
 
-  // Update event invitation status to 'accepted'
-  const query1 = `
-    UPDATE event_invitation
-    SET status = 'accepted'
-    WHERE event_id = $1 AND recipient_profile_id = $2
-  `;
-  const values1 = [event_id, recipient_profile_id];
-  await pool.query(query1, values1);
+  try {
+    // Get the invitation
+    const { rows } = await pool.query(
+      "SELECT * FROM event_invitation WHERE id = $1 LIMIT 1",
+      [invitation_id]
+    );
 
-  // Get event information
-  const query2 = `
-    SELECT * FROM event WHERE id = $1
-  `;
-  const values2 = [event_id];
-  const result = await pool.query(query2, values2);
-
-  if (result.rows.length > 0) {
-    const event = result.rows[0];
-    const {
-      title,
-      description,
-      is_private,
-      event_tags,
-      r_rule,
-      ex_date,
-      all_day,
-      start_date,
-      end_date,
-    } = event;
-
-    // Get event list for user
-    const eventlist = await pool.query(`
-      SELECT * FROM event_list WHERE owner_id = '${recipient_profile_id}'
-    `);
-
-    // Create event list if it doesn't exist
-    if (eventlist.rows.length === 0) {
-      const query3 = `
-        INSERT INTO event_list (owner_id) VALUES ($1) RETURNING id
-      `;
-      const values3 = [recipient_profile_id];
-      eventlist = await pool.query(query3, values3);
+    if (rows.length === 0) {
+      res.status(404).json({ message: "Invitation not found" });
+      return;
     }
 
-    // Create event for user
-    const query4 = `
-      INSERT INTO event (event_list_id, title, description, is_private, event_tags, r_rule, ex_date, all_day, start_date, end_date)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    `;
-    const values4 = [
-      eventlist.rows[0].id,
-      title,
-      description,
-      is_private,
-      event_tags,
-      r_rule,
-      ex_date,
-      all_day,
-      start_date,
-      end_date,
-    ];
-    await pool.query(query4, values4);
+    // Check if the authenticated user is the recipient of the invitation
+    const recipient_profile_id = req.auth.payload.sub.replace("|", "_");
+    if (rows[0].recipient_profile_id !== recipient_profile_id) {
+      res.status(403).json({ message: "Not authorized" });
+      return;
+    }
 
-    res.json({
-      message: "Successfully accepted event invitation and created event",
-    });
-  } else {
-    res.status(404).json({ message: "Event not found" });
+    // Update the invitation status
+    const query = `
+      UPDATE event_invitation
+      SET status = $1
+      WHERE id = $2
+    `;
+    const values = [status, invitation_id];
+    await pool.query(query, values);
+
+    // If the status is "accepted", create the event in the user's calendar
+    if (status === "accepted") {
+      // Fetch the event data using the event_id provided in the invitation
+      const event_id = rows[0].event_id;
+      const { rows: eventRows } = await pool.query(
+        "SELECT * FROM event WHERE id = $1 LIMIT 1",
+        [event_id]
+      );
+
+      if (eventRows.length === 0) {
+        res.status(404).json({ message: "Event not found" });
+        return;
+      }
+
+      const event = eventRows[0];
+      const group_id = event?.group_id;
+
+      // Get event list for user
+      var eventlist = await pool.query(
+        `SELECT * FROM event_list 
+          WHERE owner_id = '${
+            group_id && group_id > 0
+              ? `group_${group_id}`
+              : recipient_profile_id
+          }'`
+      );
+
+      // Create event list if it doesn't exist
+      if (eventlist.rows.length === 0) {
+        const query = `
+          INSERT INTO event_list (owner_id)
+          VALUES ($1)
+          RETURNING id
+        `;
+        const values = [
+          group_id && group_id > 0 ? `group_${group_id}` : recipient_profile_id,
+        ];
+        eventlist = await pool.query(query, values);
+      }
+
+      // Create the event
+      const query2 = `
+        INSERT INTO event (event_list_id, title, description, is_private, event_tags, r_rule, ex_date, all_day, start_date, end_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING id
+      `;
+      const values2 = [
+        eventlist.rows[0].id,
+        event.title,
+        event.description,
+        event.is_private,
+        event.event_tags,
+        event.r_rule,
+        event.ex_date,
+        event.all_day,
+        event.start_date,
+        event.end_date,
+      ];
+
+      await pool.query(query2, values2);
+    }
+
+    res.json({ message: "Invitation updated successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
+});
+
+router.get("/invitation", async (req, res) => {
+  const user_id = req.auth.payload.sub.replace("|", "_");
+
+  const query = `
+    SELECT * FROM event_invitation
+    WHERE recipient_profile_id = $1
+  `;
+  const values = [user_id];
+
+  const result = await pool.query(query, values);
+
+  res.json({ invitations: result.rows });
 });
 
 module.exports = router;
