@@ -9,10 +9,10 @@ Given the user opens up their friend's profile
 When the user requests to see their friend's schedule
 Then the friend's schedule is displayed 
 
-Scenario Outline: Attempt to view friend's schedule but the friend unfriended them (Error Flow)
+Scenario Outline: Attempt to view a person's schedule but the they are not friends (Error Flow)
 
-Given the user opens up their friend's profile
-And the friend unfriends them 
-When the user requests to see their friend's schedule
+Given the user opens up the person's profile
+And the user is not friends with the person
+When the user requests to see the person's schedule
 Then an "Access Denied" message is issued
-And their friend's schedule is not displayed
+And their person's schedule is not displayed
