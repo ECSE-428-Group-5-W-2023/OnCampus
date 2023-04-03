@@ -69,6 +69,11 @@ export default class Api {
     ).data;
   };
 
+  getEvent = async (token, id) => {
+    return (await (await this.init(token)).get(`/api/event/specific/${id}`))
+      .data;
+  };
+
   deleteEvent = async (token, id) => {
     return (await this.init(token)).delete(`/api/event?id=${id}`);
   };
@@ -99,6 +104,36 @@ export default class Api {
     });
   };
 
+  inviteFriends = async (token, event_id, friends) => {
+    for (let friend of friends) {
+      console.log(friend);
+      const id = friend.profile_id;
+      return (await this.init(token)).post("/api/event/invitation", {
+        event_id: event_id,
+        recipient_profile_id: id,
+      });
+    }
+  };
+
+  getInvitations = async (token) => {
+    return (await (await this.init(token)).get("/api/event/invitation")).data
+      .invitations;
+  };
+
+  acceptInvitation = async (token, invitation_id) => {
+    return (await this.init(token)).put("/api/event/invitation", {
+      invitation_id: invitation_id,
+      status: "accepted",
+    });
+  };
+
+  declineInvitation = async (token, invitation_id) => {
+    return (await this.init(token)).put("/api/event/invitation", {
+      invitation_id: invitation_id,
+      status: "rejected",
+    });
+  };
+
   createProfile = async (token, email, name, username, school, bio) => {
     return (await this.init(token)).post("/api/profile", {
       email,
@@ -111,6 +146,10 @@ export default class Api {
 
   getProfile = async (token) => {
     return (await (await this.init(token)).get("/api/profile")).data;
+  };
+
+  getProfileWithId = async (token, userId) => {
+    return (await (await this.init(token)).get(`/api/profile/${userId}`)).data;
   };
 
   createFriendship = async (token, usernameFriend) => {
@@ -141,12 +180,9 @@ export default class Api {
     ).data;
   };
 
-  deleteFriendship = async (token, usernameFriend) => {
-    return (await this.init(token)).delete("/api/friendship", {
-      params: {
-        usernameFriend,
-      },
-    });
+  getAllFriends = async (token) => {
+    return (await (await this.init(token)).get("/api/friendship/all")).data
+      .friends;
   };
 
   deleteFriendship = async (token, usernameFriend) => {
@@ -185,7 +221,7 @@ export default class Api {
   getFriendRequests = async (token) => {
     return (await (await this.init(token)).get("/api/friendrequests")).data;
   };
-  
+
   sendFriendRequest = async (token, usernameFriend) => {
     return (await this.init(token)).post("/api/friendrequests", null, {
       params: {

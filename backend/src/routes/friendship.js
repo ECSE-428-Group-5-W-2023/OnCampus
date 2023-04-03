@@ -16,6 +16,26 @@ router.get("/", async (req, res) => {
   res.json({ profileFriend: profileFriend?.rows });
 });
 
+router.get("/all", async (req, res) => {
+  const userProfile = req.auth.payload;
+  try {
+    const query = `
+      SELECT *
+      FROM profile 
+      JOIN friendship ON (profile.profile_id = friendship.profile_id_one OR profile.profile_id = friendship.profile_id_two) 
+      WHERE (friendship.profile_id_one = $1 OR friendship.profile_id_two = $1)
+        AND profile.profile_id != $1
+    `;
+    const values = [userProfile.sub.replace("|", "_")];
+    const friends = await pool.query(query, values);
+    res.json({ friends: friends.rows });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+
+
 router.post("/", async (req, res) => {
   const userProfile = req.auth.payload;
   const usernameFriend = req.query.usernameFriend;

@@ -22,12 +22,13 @@ import {
 import Popup from "../Common/Popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSlash,
+  faClose,
   faUpload,
   faUser,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../Common/Button";
+import Invite from "./Invite";
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
@@ -41,6 +42,7 @@ export default function Schedule() {
   const [mappedEvents, setMappedEvents] = useState([]);
   const [file, setFile] = useState(null);
   const [selectedGroupId, setSelectedGroupId] = useState(-1);
+  const [friendsToInvite, setFriendsToInvite] = useState([]);
   const api = new Api();
 
   useEffect(() => {
@@ -75,7 +77,8 @@ export default function Schedule() {
             undefined,
             false,
             event.start,
-            event.end          );
+            event.end
+          );
         }
         setFile(null);
       };
@@ -167,6 +170,11 @@ export default function Schedule() {
     return <AppointmentForm.TextEditor {...props} />;
   };
 
+  function inviteFriend(friend) {
+    if (!friendsToInvite.includes(friend))
+      setFriendsToInvite([...friendsToInvite, friend]);
+  }
+
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
     const onDescriptionChange = (nextValue) => {
       onFieldChange({ description: nextValue });
@@ -186,7 +194,28 @@ export default function Schedule() {
           onValueChange={onIsPrivateChange}
           label="Private"
         />
-        
+        <div>
+          <div className="flex flex-row">
+            {friendsToInvite?.map((friend) => {
+              return (
+                <div className="m-2 bg-slate-200 rounded w-fit p-2 ">
+                  {friend.name}
+                  <FontAwesomeIcon
+                    icon={faClose}
+                    onClick={() => {
+                      setFriendsToInvite(
+                        friendsToInvite.filter((f) => f !== friend)
+                      );
+                    }}
+                    className="ml-2 cursor-pointer"
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <Invite inviteFriend={inviteFriend} />
+        </div>{" "}
         <AppointmentForm.Label text="Description" type="title" />
         <AppointmentForm.TextEditor
           value={appointmentData.description}
@@ -248,8 +277,15 @@ export default function Schedule() {
         endDate,
         selectedGroupId
       )
-      .then((res) => {
-        setEvents(res.events);
+      .then(async (res) => {
+        const eventId = res.data.eventID;
+        if (friendsToInvite.length > 0) {
+          await api.inviteFriends(
+            await getAccessTokenSilently(),
+            eventId,
+            friendsToInvite
+          );
+        }
       });
 
     getAllEvents();
@@ -401,7 +437,7 @@ export default function Schedule() {
         <Paper>
           <Scheduler data={mappedEvents}>
             <EditingState onCommitChanges={commitChanges} />
-            <ViewState defaultCurrentDate="2023-02-05" />
+            <ViewState defaultCurrentDate={new Date().toLocaleDateString()} />
             <WeekView startDayHour={6} endDayHour={24} />
             <IntegratedEditing />
             <Toolbar />
@@ -414,11 +450,12 @@ export default function Schedule() {
             />
             <ConfirmationDialog />
             <Appointments />
+
             <AppointmentTooltip showDeleteButton showOpenButton />
             <AppointmentForm
               basicLayoutComponent={BasicLayout}
               textEditorComponent={TextEditor}
-            />
+            ></AppointmentForm>
             <AllDayPanel />
           </Scheduler>
         </Paper>
