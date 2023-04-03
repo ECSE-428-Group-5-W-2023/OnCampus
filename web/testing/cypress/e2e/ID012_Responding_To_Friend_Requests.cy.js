@@ -103,6 +103,7 @@ it("Accept Friend Request", () => {
     .not(':contains("friendName")')
     .not(':contains("friendSchool")')
     .not(':contains("friendBio")');
+  cy.wait(5000);
   });
 
 it("Decline Friend Request", () => {
@@ -201,5 +202,6 @@ it("Decline Friend Request", () => {
     .not(':contains("friendName")')
     .not(':contains("friendSchool")')
     .not(':contains("friendBio")');
+  cy.wait(5000);
   });
 });
