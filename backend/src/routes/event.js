@@ -54,8 +54,8 @@ router.post("/", async (req, res) => {
   }
 
   const query = `
-        INSERT INTO event (event_list_id, title, description, is_private, event_tags, r_rule, ex_date, all_day, start_date, end_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        INSERT INTO event (event_list_id, title, description, is_private, event_tags, r_rule, ex_date, all_day, start_date, end_date, like_count, dislike_count)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
         RETURNING id
       `;
 
@@ -71,6 +71,8 @@ router.post("/", async (req, res) => {
       event.all_day,
       event.start_date,
       event.end_date,
+      event.like_count,
+      event.dislike_count,
     ];
     await pool.query(query, values);
   }
@@ -84,7 +86,7 @@ router.put("/", async (req, res) => {
   // Update event
   const query = `
         UPDATE event
-        SET title = COALESCE($1, title), description = COALESCE($2, description), is_private = COALESCE($3, is_private), event_tags = COALESCE($4, event_tags), r_rule = COALESCE($5, r_rule), ex_date = COALESCE($6, ex_date), all_day = COALESCE($7, all_day), start_date = COALESCE($8, start_date), end_date =COALESCE($9, end_date)
+        SET title = COALESCE($1, title), description = COALESCE($2, description), is_private = COALESCE($3, is_private), event_tags = COALESCE($4, event_tags), r_rule = COALESCE($5, r_rule), ex_date = COALESCE($6, ex_date), all_day = COALESCE($7, all_day), start_date = COALESCE($8, start_date), end_date =COALESCE($9, end_date), like_count = COALESCE($10, like_count), dislike_count = COALESCE($11, dislike_count)
         WHERE id = ${req.query.id}
       `;
 
@@ -98,6 +100,8 @@ router.put("/", async (req, res) => {
     event.all_day,
     event.start_date,
     event.end_date,
+    event.like_count,
+    event.dislike_count,
   ];
   await pool.query(query, values);
 

@@ -41,7 +41,9 @@ export default class Api {
     all_day,
     start_date,
     end_date,
-    group_id
+    group_id,
+    like_count,
+    dislike_count
   ) => {
     return (await this.init(token)).post("/api/event", {
       title,
@@ -54,6 +56,8 @@ export default class Api {
       start_date,
       end_date,
       group_id,
+      like_count,
+      dislike_count,
     });
   };
 

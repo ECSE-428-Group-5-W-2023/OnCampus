@@ -247,6 +247,7 @@ export default function Schedule() {
     startDate,
     endDate,
     like_count,
+    dislike_count,
   ) {
     //create even with specified title and description, set start time to now and end time to 1 hour from now (can be changed once we have interface to pick those)
     await api
@@ -262,7 +263,8 @@ export default function Schedule() {
         startDate,
         endDate,
         selectedGroupId,
-        like_count,
+        0,
+        0,
       )
       .then((res) => {
         setEvents(res.events);
@@ -282,6 +284,7 @@ export default function Schedule() {
     startDate,
     endDate,
     like_count,
+    dislike_count
   ) {
     await api
       .editEvent(
@@ -297,6 +300,7 @@ export default function Schedule() {
         startDate,
         endDate,
         like_count,
+        dislike_count
       )
       .then((res) => {
         setEvents(res.events);
@@ -338,6 +342,7 @@ export default function Schedule() {
         added.startDate,
         added.endDate,
         added.like_count,
+        added.dislike_count,
       );
       console.log("ADDED");
     }

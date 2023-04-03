@@ -14,6 +14,8 @@ CREATE TABLE "event" (
     "all_day" BOOLEAN,
     "start_date" VARCHAR(255),
     "end_date" VARCHAR(255),
+    "like_count" integer,
+    "dislike_count" integer,
     CONSTRAINT "event_fk1" FOREIGN KEY ("event_list_id") REFERENCES "event_list"("id")
 );
 CREATE TABLE "profile" (
