@@ -28,6 +28,8 @@ import {
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../Common/Button";
+import Likes from "../Common/Likes";
+import Dislikes from "../Common/Dislikes";
 
 export default function Schedule() {
   const { getAccessTokenSilently } = useAuth0();
@@ -75,7 +77,8 @@ export default function Schedule() {
             undefined,
             false,
             event.start,
-            event.end          );
+            event.end,
+                      );
         }
         setFile(null);
       };
@@ -166,6 +169,17 @@ export default function Schedule() {
     }
     return <AppointmentForm.TextEditor {...props} />;
   };
+    
+  const Content = (({
+    appointmentData, ...restProps
+  }) => (
+    <AppointmentTooltip.Content {...restProps} appointmentData={appointmentData}>
+      <div>
+        < Likes /> 
+        < Dislikes />
+      </div>
+    </AppointmentTooltip.Content>
+  ));
 
   const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
     const onDescriptionChange = (nextValue) => {
@@ -231,7 +245,8 @@ export default function Schedule() {
     exDate,
     allDay,
     startDate,
-    endDate
+    endDate,
+    like_count,
   ) {
     //create even with specified title and description, set start time to now and end time to 1 hour from now (can be changed once we have interface to pick those)
     await api
@@ -246,7 +261,8 @@ export default function Schedule() {
         allDay,
         startDate,
         endDate,
-        selectedGroupId
+        selectedGroupId,
+        like_count,
       )
       .then((res) => {
         setEvents(res.events);
@@ -264,7 +280,8 @@ export default function Schedule() {
     exDate,
     allDay,
     startDate,
-    endDate
+    endDate,
+    like_count,
   ) {
     await api
       .editEvent(
@@ -278,7 +295,8 @@ export default function Schedule() {
         exDate,
         allDay,
         startDate,
-        endDate
+        endDate,
+        like_count,
       )
       .then((res) => {
         setEvents(res.events);
@@ -318,7 +336,8 @@ export default function Schedule() {
         added.exDate,
         added.allDay,
         added.startDate,
-        added.endDate
+        added.endDate,
+        added.like_count,
       );
       console.log("ADDED");
     }
@@ -340,7 +359,8 @@ export default function Schedule() {
         changes.exDate,
         changes.allDay,
         changes.startDate,
-        changes.endDate
+        changes.endDate,
+        changes.like_count
       );
       console.log("CHANGED");
     }
@@ -414,7 +434,11 @@ export default function Schedule() {
             />
             <ConfirmationDialog />
             <Appointments />
-            <AppointmentTooltip showDeleteButton showOpenButton />
+            <AppointmentTooltip 
+              showDeleteButton 
+              showOpenButton 
+              contentComponent={Content}
+            />
             <AppointmentForm
               basicLayoutComponent={BasicLayout}
               textEditorComponent={TextEditor}
