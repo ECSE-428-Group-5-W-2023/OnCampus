@@ -18,7 +18,7 @@ describe("Leave a group", () => {
           { args: { userEmail1 } },
           ({ userEmail1 }) => {
             cy.get("a").contains("Sign up").click();
-            cy.get("input#email").type(userEmail1); // might have to go through signup every time and create a new account? might trigger the auth0 limits if we do that...
+            cy.get("input#email").type(userEmail1); 
             cy.get("input#password").type("#e5PUJe9@mroL$", { log: false });
             cy.contains("button[value=default]", "Continue").click();
             cy.get("button").contains("Accept").click();
