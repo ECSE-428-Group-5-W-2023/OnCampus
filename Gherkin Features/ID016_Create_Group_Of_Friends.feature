@@ -14,14 +14,7 @@ As an OnCampus User
     Then a new <group_id> is generated with <email> as a member
     Then a new friend group is created with <group_id> and <email>
 
-  Scenario Outline: Create another new group of friends event (Alternate Flow)
-    And the user already has a group of friends with <group_id> and <email>
-    And the following group of friends exist
-
-    When the user requests to create a new group of friends
-    Then a new friend group is created with a new <new_group_id> and <email>
-    
-  Scenario Outline: Create a new group of friends event malfunction with wrong creator (Error Flow)
-    When the user requests to create a new group of friends with ANOTHER_EMAIL as the creator  
-    Then an "Invalid group creator, the creator of the friend group must be yourself" message is issued
+  Scenario Outline: Create a new group of friends while not being logged in (Error Flow)
+    When the user requests to create a new group of friends without being logged in 
+    Then a new friend group is not successfully created
 
