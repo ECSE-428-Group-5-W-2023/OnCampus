@@ -365,7 +365,8 @@ export default function Schedule() {
         changes.allDay,
         changes.startDate,
         changes.endDate,
-        changes.like_count
+        changes.like_count,
+        changes.dislike_count
       );
       console.log("CHANGED");
     }
